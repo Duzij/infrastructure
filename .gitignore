@@ -3,3 +3,11 @@
 ################################################################################
 
 /MongoDb.DDD.Infrastructure/Client.Console/obj
+/MongoDb.DDD.Infrastructure/Client.Console/bin/Debug/netcoreapp3.0
+/MongoDb.DDD.Infrastructure/Infrastructure.Core/obj
+/MongoDb.DDD.Infrastructure/Infrastructure.Core/bin/Debug/netcoreapp3.0
+/MongoDb.DDD.Infrastructure/Test.DAL/obj
+/MongoDb.DDD.Infrastructure/Test.DAL/bin/Debug/netcoreapp3.0
+/MongoDb.DDD.Infrastructure/.vs/MongoDb.DDD.Infrastructure
+/MongoDb.DDD.Infrastructure/Test.Client/obj
+/MongoDb.DDD.Infrastructure/Test.Client/bin/Debug/netcoreapp3.0
