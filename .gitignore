@@ -11,3 +11,5 @@
 /MongoDb.DDD.Infrastructure/.vs/MongoDb.DDD.Infrastructure
 /MongoDb.DDD.Infrastructure/Test.Client/obj
 /MongoDb.DDD.Infrastructure/Test.Client/bin/Debug/netcoreapp3.0
+/.vs
+/MongoDb.DDD.Infrastructure/Test.Client/.vs/Test.Client
