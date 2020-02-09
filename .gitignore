@@ -13,3 +13,17 @@
 /MongoDb.DDD.Infrastructure/Test.Client/bin/Debug/netcoreapp3.0
 /.vs
 /MongoDb.DDD.Infrastructure/Test.Client/.vs/Test.Client
+/MongoDb.DDD.Infrastructure/Infrastructure.Mongo/obj
+/MongoDb.DDD.Infrastructure/Infrastructure.Mongo/bin/Debug
+/MongoDb.DDD.Infrastructure/Infrastucture.Tests/obj
+/MongoDb.DDD.Infrastructure/Infrastucture.Tests/bin/Debug/netcoreapp3.1
+/MongoDb.DDD.Infrastructure/Library.ApplicationLayer/obj
+/MongoDb.DDD.Infrastructure/Library.ApplicationLayer/bin/Debug
+/MongoDb.DDD.Infrastructure/Library.Client/.vs/Test.Client
+/MongoDb.DDD.Infrastructure/Library.Client/bin/Debug/netcoreapp3.0
+/MongoDb.DDD.Infrastructure/Library.Client/obj
+/MongoDb.DDD.Infrastructure/Library.Domain/.vs/Library.Domain
+/MongoDb.DDD.Infrastructure/Library.Domain/bin/Debug/netcoreapp3.0
+/MongoDb.DDD.Infrastructure/Library.Domain/obj
+/MongoDb.DDD.Infrastructure/Library.Tests/bin/Debug/netcoreapp3.1
+/MongoDb.DDD.Infrastructure/Library.Tests/obj

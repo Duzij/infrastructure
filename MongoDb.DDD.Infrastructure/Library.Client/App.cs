@@ -24,7 +24,7 @@ namespace Test.Client
             Console.WriteLine("Hello world!");
             Console.WriteLine();
 
-            bookService.Create(new DAL.Book() { BookName = "Test", Author = "Test author" });
+            //bookService.Create(new DAL.Book() { BookName = "Test", Author = "Test author" });
 
             _logger.LogInformation("sdaf");
             Console.WriteLine();

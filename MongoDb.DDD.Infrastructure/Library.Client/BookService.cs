@@ -29,7 +29,7 @@ namespace Test.Client
             _books.Find(book => true).ToList();
 
         public Book Get(string id) =>
-            _books.Find<Book>(book => book.Id == id).FirstOrDefault();
+            _books.Find<Book>(book => book.Id.Equals(id)).FirstOrDefault();
 
         public Book Create(Book book)
         {
@@ -38,12 +38,12 @@ namespace Test.Client
         }
 
         public void Update(string id, Book bookIn) =>
-            _books.ReplaceOne(book => book.Id == id, bookIn);
+            _books.ReplaceOne(book => book.Id.Equals(id), bookIn);
 
         public void Remove(Book bookIn) =>
             _books.DeleteOne(book => book.Id == bookIn.Id);
 
         public void Remove(string id) =>
-            _books.DeleteOne(book => book.Id == id);
+            _books.DeleteOne(book => book.Id.Equals(id));
     }
 }

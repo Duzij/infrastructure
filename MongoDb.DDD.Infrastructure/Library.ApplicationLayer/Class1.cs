@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Infrastructure.Core
+namespace Library.ApplicationLayer
 {
     public class Class1
     {
