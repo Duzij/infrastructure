@@ -5,9 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Test.Domain
+namespace Library.Domain
 {
-    public class BookId : Entity
+    public class BookId : Value<BookId>
     {
         private readonly Guid value;
 
@@ -16,11 +16,6 @@ namespace Test.Domain
         public BookId(Guid value)
         {
             this.value = value;
-        }
-
-        public override bool IsValid()
-        {
-            return value == default;
         }
     }
 }

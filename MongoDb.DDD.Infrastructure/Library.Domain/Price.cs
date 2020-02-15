@@ -3,20 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Test.Domain
+namespace Library.Domain
 {
-    public class Price : Entity
+    public class Price : Value<Price>
     {
         private readonly decimal amount;
 
         public Price(decimal amount)
         {
+            if (amount<0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(Price) + "cannot be less than 0");
+            }
             this.amount = amount;
         }
 
-        public override bool IsValid()
-        {
-            return amount < 0;
-        }
     }
 }

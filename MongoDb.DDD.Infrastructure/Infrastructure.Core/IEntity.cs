@@ -4,6 +4,6 @@
     {
         bool Equals(object other);
         int GetHashCode();
-        bool IsValid();
+        bool CheckState();
     }
 }

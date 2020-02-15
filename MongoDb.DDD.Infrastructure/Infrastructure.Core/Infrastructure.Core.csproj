@@ -4,9 +4,4 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CompareNETObjects" Version="4.65.0" />
-    <PackageReference Include="MongoDB.Driver" Version="2.10.1" />
-  </ItemGroup>
-
 </Project>

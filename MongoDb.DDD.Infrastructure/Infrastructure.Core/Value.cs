@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
-namespace Marketplace.Framework
+namespace Infrastructure.Core
 {
     public abstract class Value<T> where T : Value<T>
     {
