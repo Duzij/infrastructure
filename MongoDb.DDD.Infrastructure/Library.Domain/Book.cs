@@ -19,26 +19,33 @@ namespace Library.Domain
         public string Category { get; private set; }
         public string Author { get; private set; }
 
-        private BookState State {get; set;}
-   
-        public override void Apply(object @event)
+        public BookState State {get; private set;}
+
+        public Book(Guid id, decimal price, int amount, string title, string description, string category, string author)
         {
-            switch (@event) { 
-                case BookCreated e: 
-                    Id = new BookId(e.Id); 
-                    Price = new Price(e.Price);
-                    Amount = new BookAmount(e.Amount);
-                    Title = e.Title;
-                    Description= e.Description;
-                    Author= e.Author;
-                    State = BookState.InStock; 
-                    break;
-                case BookPriceChanged e:
-                    Price = new Price(e.Price); 
-                    break; 
-            }
+            Id = new BookId(id);
+            Price = new Price(price);
+            Amount = new BookAmount(amount);
+            Title = title;
+            Description = description;
+            Category = category;
+            Author = author;
+            State = BookState.InStock;
+            AddEvent(new BookCreated(Id.value));
         }
 
+        public void ChangeTitle(string title)
+        {
+            Title = title;
+            AddEvent(new BookTitleChange(this.Id.value));
+        }
+
+        public void ChangePrice(decimal newPrice)
+        {
+            this.Price = new Price(newPrice);
+            AddEvent(new BookPriceChanged(this.Id.value));
+        }
+   
         public override bool CheckState()
         {
             if (Id == null || Price == null || Amount == null || 
@@ -55,14 +62,34 @@ namespace Library.Domain
         
     }
 
-    public class BookPriceChanged
+    internal class BookTitleChange : IEvent
     {
-        public decimal Price { get; set; }
+        public BookTitleChange(Guid bookId)
+        {
+            this.EntityId = bookId;
+        }
+
+        public Guid EntityId { get; set; }
     }
 
-    public class BookCreated
+    public class BookPriceChanged : IEvent
     {
-        public Guid Id { get; set; }
+        public Guid EntityId { get; set; }
+
+        public BookPriceChanged(Guid bookId)
+        {
+            this.EntityId = bookId;
+        }
+    }
+
+    public class BookCreated : IEvent
+    {
+        public Guid EntityId { get; set; }
+
+        public BookCreated(Guid bookId)
+        {
+            this.EntityId = bookId;
+        }
         public string Title { get; set; }
         public string Description { get; set; }
         public string Author { get; set; }

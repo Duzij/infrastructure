@@ -9,14 +9,9 @@ namespace Library.Domain
     {
         public ICollection<Book> Books { get; set; }
 
-        public override void Apply(object @event)
-        {
-            throw new NotImplementedException();
-        }
-
         public override bool CheckState()
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

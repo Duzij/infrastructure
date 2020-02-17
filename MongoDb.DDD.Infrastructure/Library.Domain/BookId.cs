@@ -9,7 +9,7 @@ namespace Library.Domain
 {
     public class BookId : Value<BookId>
     {
-        private readonly Guid value;
+        public Guid value { get; set; }
 
         public static implicit operator Guid(BookId self) => self.value;
 

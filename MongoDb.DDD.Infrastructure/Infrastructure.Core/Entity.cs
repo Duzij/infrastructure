@@ -7,7 +7,9 @@ namespace Infrastructure.Core
     public abstract class Entity : IEntity
     {
 
-        public List<IEvent> Events { get; }
+        private List<IEvent> Events { get; }
+
+        public List<IEvent> GetEvents() => Events;
 
         public Entity()
         {
@@ -16,13 +18,9 @@ namespace Infrastructure.Core
 
         protected void AddEvent(IEvent @event)
         {
-            Apply(@event);
             CheckState();
             Events.Add(@event);
         }
-
-        //change of the state
-        public abstract void Apply(object @event);  
 
         //for complex state cheking between properties
         public abstract bool CheckState();
