@@ -29,3 +29,4 @@
 /MongoDb.DDD.Infrastructure/Library.Tests/obj
 /MongoDb.DDD.Infrastructure/Library.Client/bin/Debug/netcoreapp3.1
 /MongoDb.DDD.Infrastructure/Library.Client/wwwroot/lib
+/MongoDb.DDD.Infrastructure/Library.Tests/bin/Debug/netcoreapp3.0
