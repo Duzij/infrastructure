@@ -26,6 +26,8 @@ namespace Library.Client.Pages
 
         public void OnGet()
         {
+            bookFacade.Create(new BookCreateDTO() { Title = "test" });
+
             LibraryRecords = new List<LibraryRecord>()
             {
                 new LibraryRecord(){Id=1,BookCount = 1, State =LendRecordState.Lend, UserName = "Test" },
