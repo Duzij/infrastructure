@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Infrastructure.MongoDb;
 using Library.ApplicationLayer;
+using Library.Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -26,6 +27,7 @@ namespace Library.Client
         {
             services.AddRazorPages();
             services.AddTransient<IBookFacade,BookFacade>();
+            services.AddTransient<Repository<Book>>();
             services.AddMongoDbInfrastructure();
         }
 

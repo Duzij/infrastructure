@@ -2,9 +2,9 @@
 
 namespace Infrastructure.Core
 {
-    public interface IEvent
+    public interface IEvent<TKey>
     {
         //Id of an entity this event happened on
-        public Guid EntityId { get; set; }
+        public TKey EntityId { get; set; }
     }
 }

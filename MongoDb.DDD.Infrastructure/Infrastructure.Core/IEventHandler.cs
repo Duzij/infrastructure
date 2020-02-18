@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Infrastructure.Core
 {
-    public interface ICommandHandler
+    public interface IEventHandler<TEntityKey>
     {
-        void Hadle(object command);
+        void Hadle(IEvent<TEntityKey> @event);
     }
 }

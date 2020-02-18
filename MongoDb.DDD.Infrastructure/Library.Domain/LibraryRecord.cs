@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Core;
+using Infrastructure.MongoDb;
 using System;
 using System.Collections.Generic;
 using System.Text;

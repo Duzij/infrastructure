@@ -11,28 +11,21 @@ namespace Infrastructure.MongoDb
     {
         public static IServiceCollection AddMongoDbInfrastructure(this IServiceCollection services)
         {
+            services.AddSingleton<IMongoDbSettings>(new MongoDbSettings("mongodb://localhost"));
             AddMongoDbInfrastructureServices(services);
             return services;
         }
 
         public static IServiceCollection AddMongoDbInfrastructure<TServiceConfigurator>(this IServiceCollection services, MongoDbSettings settings = null)
         {
+            services.AddSingleton<IMongoDbSettings>(settings);
             AddMongoDbInfrastructureServices(services);
-            if (settings == null)
-            {
-                services.AddSingleton<IMongoDbSettings>(new MongoDbSettings("mongodb://localhost"));
-            }
-            else
-            {
-                services.AddSingleton<IMongoDbSettings>(settings);
-            }
-
             return services;
         }
 
         private static void AddMongoDbInfrastructureServices(IServiceCollection services)
         {
-            services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
+            services.AddTransient<EventWriter>();
         }
     }
 }

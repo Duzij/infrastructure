@@ -6,15 +6,15 @@ using MongoDB.Driver;
 
 namespace Infrastructure.MongoDb
 {
-    public class EventWriter : IEventWriter<MongoEvent>
+    public class EventWriter : IEventWriter<Event, string>
     {
-        private IMongoCollection<MongoEvent> collection;
+        private IMongoCollection<Event> collection;
 
         public EventWriter(IMongoDbSettings dbSettings)
         {
-            collection = new MongoClient().GetDatabase(dbSettings.ConnectionString).GetCollection<MongoEvent>("events");
+            collection = new MongoClient().GetDatabase(dbSettings.ConnectionString).GetCollection<Event>("events");
         }
-        public void Write(MongoEvent @event)
+        public void Write(Event @event)
         {
             collection.InsertOne(@event);
         }

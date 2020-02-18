@@ -1,22 +1,27 @@
-﻿using System;
+﻿using Infrastructure.Core;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Infrastructure.Core
+namespace Infrastructure.MongoDb
 {
-    public abstract class Entity : IEntity
+    public abstract class Entity : IEntity<string>
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
+        private List<IEvent<string>> Events { get; }
 
-        private List<IEvent> Events { get; }
-
-        public List<IEvent> GetEvents() => Events;
+        public List<IEvent<string>> GetEvents() => Events;
 
         public Entity()
         {
-            Events = new List<IEvent>();
+            Events = new List<IEvent<string>>();
         }
 
-        protected void AddEvent(IEvent @event)
+        protected void AddEvent(IEvent<string> @event)
         {
             CheckState();
             Events.Add(@event);

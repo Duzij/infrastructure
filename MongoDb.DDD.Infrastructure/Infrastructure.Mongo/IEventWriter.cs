@@ -2,7 +2,7 @@
 
 namespace Infrastructure.MongoDb
 {
-    public interface IEventWriter<TEvent> where TEvent : class, IEvent
+    public interface IEventWriter<TEvent, TEntityKey> where TEvent : class, IEvent<TEntityKey>
     {
         void Write(TEvent @event);
     }

@@ -3,8 +3,8 @@ using Infrastructure.Core;
 
 namespace Infrastructure.MongoDb
 {
-    public class MongoEvent : IEvent
+    public class Event : IEvent<string>
     {
-        public Guid EntityId { get; set; }
+        public string EntityId { get; set; }
     }
 }

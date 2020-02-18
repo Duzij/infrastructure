@@ -1,22 +1,24 @@
 ﻿using Infrastructure.Core;
+using Infrastructure.MongoDb;
 using Library.Domain;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Library.ApplicationLayer
 {
     public class BookFacade : IBookFacade
     {
-        private readonly IRepository<Book> repository;
+        private readonly Repository<Book> repository;
 
-        public BookFacade(IRepository<Book> repository)
+        public BookFacade(Repository<Book> repository)
         {
             this.repository = repository;
         }
-        public void Create(BookCreateDTO bookCreateDTO)
+        public async Task Create(BookCreateDTO bookCreateDTO)
         {
-            repository.Create(new Book(new Guid(), 10, 10, bookCreateDTO.Title, "Test", "Category", "Test Author"));
+           await repository.Create(new Book(new Guid(), 10, 10, bookCreateDTO.Title, "Test", "Category", "Test Author"));
         }
     }
 }

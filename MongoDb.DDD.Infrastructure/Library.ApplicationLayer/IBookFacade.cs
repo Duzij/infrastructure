@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Library.ApplicationLayer
 {
     public interface IBookFacade
     {
-        void Create(BookCreateDTO record);
+        Task Create(BookCreateDTO record);
     }
 }

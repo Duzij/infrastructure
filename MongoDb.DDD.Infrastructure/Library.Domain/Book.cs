@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Core;
+using Infrastructure.MongoDb;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
@@ -10,7 +11,6 @@ namespace Library.Domain
 {
     public class Book : Entity
     {
-        public BookId Id { get; private set; }
         public Price Price { get; private set; }
         public BookAmount Amount { get; private set; }
 
@@ -23,7 +23,7 @@ namespace Library.Domain
 
         public Book(Guid id, decimal price, int amount, string title, string description, string category, string author)
         {
-            Id = new BookId(id);
+            Id = id.ToString();
             Price = new Price(price);
             Amount = new BookAmount(amount);
             Title = title;
@@ -31,19 +31,19 @@ namespace Library.Domain
             Category = category;
             Author = author;
             State = BookState.InStock;
-            AddEvent(new BookCreated(Id.value));
+            AddEvent(new BookCreated(Id));
         }
 
         public void ChangeTitle(string title)
         {
             Title = title;
-            AddEvent(new BookTitleChange(this.Id.value));
+            AddEvent(new BookTitleChange(this.Id));
         }
 
         public void ChangePrice(decimal newPrice)
         {
             this.Price = new Price(newPrice);
-            AddEvent(new BookPriceChanged(this.Id.value));
+            AddEvent(new BookPriceChanged(this.Id));
         }
    
         public override bool CheckState()
@@ -62,31 +62,32 @@ namespace Library.Domain
         
     }
 
-    internal class BookTitleChange : IEvent
+    internal class BookTitleChange : IEvent<string>
     {
-        public BookTitleChange(Guid bookId)
+        public string EntityId { get; set; }
+
+        public BookTitleChange(string bookId)
         {
             this.EntityId = bookId;
         }
 
-        public Guid EntityId { get; set; }
     }
 
-    public class BookPriceChanged : IEvent
+    public class BookPriceChanged : IEvent<string>
     {
-        public Guid EntityId { get; set; }
+        public string EntityId { get; set; }
 
-        public BookPriceChanged(Guid bookId)
+        public BookPriceChanged(string bookId)
         {
             this.EntityId = bookId;
         }
     }
 
-    public class BookCreated : IEvent
+    public class BookCreated : IEvent<string>
     {
-        public Guid EntityId { get; set; }
+        public string EntityId { get; set; }
 
-        public BookCreated(Guid bookId)
+        public BookCreated(string bookId)
         {
             this.EntityId = bookId;
         }

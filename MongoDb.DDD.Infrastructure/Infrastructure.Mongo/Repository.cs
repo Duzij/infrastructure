@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.MongoDb
 {
-    public class Repository<T> : IRepository<T> where T : MongoEntity
+    public class Repository<T> : IRepository<T, string> where T : IEntity<string>
     {
         private readonly IMongoCollection<T> collection;
-        private readonly IEventWriter<MongoEvent> eventWriter;
+        private readonly EventWriter eventWriter;
 
-        public Repository(IMongoDbSettings settings, IEventWriter<MongoEvent> eventWriter)
+        public Repository(IMongoDbSettings settings, EventWriter eventWriter)
         {
             collection = new MongoClient().GetDatabase(settings.ConnectionString).GetCollection<T>(nameof(T));
             this.eventWriter = eventWriter;
@@ -43,11 +43,11 @@ namespace Infrastructure.MongoDb
             return entity;
         }
 
-        private void SaveEntityEvents(List<IEvent> events)
+        private void SaveEntityEvents(List<IEvent<string>> events)
         {
             foreach (var @event in events)
             {
-                eventWriter.Write((MongoEvent)@event);
+                eventWriter.Write((Event)@event);
             }
         }
 
@@ -55,7 +55,7 @@ namespace Infrastructure.MongoDb
            await collection.ReplaceOneAsync(entity => entity.Id.Equals(id), entity);
 
         public async Task Remove(T entity) =>
-           await collection.DeleteOneAsync(book => book.Id == entity.Id);
+           await collection.DeleteOneAsync(book => book.Id.Equals(entity.Id));
 
         public async Task Remove(string id) =>
            await collection.DeleteOneAsync(book => book.Id.Equals(id));
