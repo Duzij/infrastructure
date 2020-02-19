@@ -3,6 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Infrastructure.MongoDb
@@ -12,16 +13,16 @@ namespace Infrastructure.MongoDb
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
-        private List<IEvent<string>> Events { get; }
+        private IList<object> Events { get; }
 
-        public List<IEvent<string>> GetEvents() => Events;
+        public IList<object> GetEvents() => Events.ToList<object>();
 
-        public Entity()
+        protected Entity()
         {
-            Events = new List<IEvent<string>>();
+            Events = new List<object>();
         }
 
-        protected void AddEvent(IEvent<string> @event)
+        protected void AddEvent(object @event)
         {
             CheckState();
             Events.Add(@event);
@@ -41,6 +42,31 @@ namespace Infrastructure.MongoDb
         public override int GetHashCode()
         {
             return base.GetHashCode();
+        }
+
+        bool IEntity<string>.Equals(object other)
+        {
+            throw new NotImplementedException();
+        }
+
+        int IEntity<string>.GetHashCode()
+        {
+            throw new NotImplementedException();
+        }
+
+        bool IEntity<string>.CheckState()
+        {
+            throw new NotImplementedException();
+        }
+
+        void IEntity<string>.AddEvent(object @event)
+        {
+            throw new NotImplementedException();
+        }
+
+        IList<object> IEntity<string>.GetEvents()
+        {
+            throw new NotImplementedException();
         }
     }
 }

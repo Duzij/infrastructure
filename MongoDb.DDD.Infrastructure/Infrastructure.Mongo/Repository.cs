@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.MongoDb
 {
-    public class Repository<T> : IRepository<T, string> where T : IEntity<string>
+    public class Repository<T> : IRepository<T, string> where T : Entity
     {
         private readonly IMongoCollection<T> collection;
         private readonly EventWriter eventWriter;
@@ -38,15 +38,16 @@ namespace Infrastructure.MongoDb
 
         public async Task<T> Create(T entity)
         {
-            SaveEntityEvents(entity.GetEvents());
             await collection.InsertOneAsync(entity);
+            SaveEntityEvents(entity.GetEvents(), entity.Id);
             return entity;
         }
 
-        private void SaveEntityEvents(List<IEvent<string>> events)
+        private void SaveEntityEvents(IList<object> events, string entityId)
         {
             foreach (var @event in events)
             {
+                var mongoEvent = new Event(@event.GetType(), @event, entityId);
                 eventWriter.Write((Event)@event);
             }
         }

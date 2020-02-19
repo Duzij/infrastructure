@@ -62,7 +62,7 @@ namespace Library.Domain
         
     }
 
-    internal class BookTitleChange : IEvent<string>
+    internal class BookTitleChange 
     {
         public string EntityId { get; set; }
 
@@ -73,7 +73,7 @@ namespace Library.Domain
 
     }
 
-    public class BookPriceChanged : IEvent<string>
+    public class BookPriceChanged 
     {
         public string EntityId { get; set; }
 
@@ -83,7 +83,7 @@ namespace Library.Domain
         }
     }
 
-    public class BookCreated : IEvent<string>
+    public class BookCreated 
     {
         public string EntityId { get; set; }
 

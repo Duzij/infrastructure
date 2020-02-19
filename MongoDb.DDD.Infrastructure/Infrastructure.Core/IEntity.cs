@@ -8,6 +8,7 @@ namespace Infrastructure.Core
         bool Equals(object other);
         int GetHashCode();
         bool CheckState();
-        List<IEvent<string>> GetEvents();
+        protected void AddEvent(object @event);
+        IList<object> GetEvents();
     }
 }
