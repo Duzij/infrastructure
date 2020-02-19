@@ -10,9 +10,9 @@ namespace Infrastructure.MongoDb
     {
         private IMongoCollection<Event> collection;
 
-        public EventWriter(IMongoDbSettings dbSettings)
+        public EventWriter(IMongoDbContext dbContext)
         {
-            collection = new MongoClient().GetDatabase(dbSettings.ConnectionString).GetCollection<Event>("events");
+            collection = dbContext.Database.GetCollection<Event>("Events");
         }
         public void Write(Event @event)
         {

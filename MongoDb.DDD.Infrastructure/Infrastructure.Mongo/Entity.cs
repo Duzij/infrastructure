@@ -11,7 +11,6 @@ namespace Infrastructure.MongoDb
     public abstract class Entity : IEntity<string>
     {
         [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
         private IList<object> Events { get; }
 
@@ -22,15 +21,8 @@ namespace Infrastructure.MongoDb
             Events = new List<object>();
         }
 
-        protected void AddEvent(object @event)
-        {
-            CheckState();
-            Events.Add(@event);
-        }
-
         //for complex state cheking between properties
         public abstract bool CheckState();
-
 
         public override bool Equals(object other)
         {
@@ -44,29 +36,15 @@ namespace Infrastructure.MongoDb
             return base.GetHashCode();
         }
 
-        bool IEntity<string>.Equals(object other)
+        protected void AddEvent(object @event)
         {
-            throw new NotImplementedException();
-        }
-
-        int IEntity<string>.GetHashCode()
-        {
-            throw new NotImplementedException();
-        }
-
-        bool IEntity<string>.CheckState()
-        {
-            throw new NotImplementedException();
+            CheckState();
+            Events.Add(@event);
         }
 
         void IEntity<string>.AddEvent(object @event)
         {
-            throw new NotImplementedException();
-        }
-
-        IList<object> IEntity<string>.GetEvents()
-        {
-            throw new NotImplementedException();
+            AddEvent(@event);
         }
     }
 }

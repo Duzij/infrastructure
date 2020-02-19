@@ -11,11 +11,14 @@ namespace Infrastructure.MongoDb
     {
         private readonly IMongoCollection<T> collection;
         private readonly EventWriter eventWriter;
+        private readonly IMongoDbContext dbContext;
 
-        public Repository(IMongoDbSettings settings, EventWriter eventWriter)
+        public Repository(EventWriter eventWriter, IMongoDbContext dbContext)
         {
-            collection = new MongoClient().GetDatabase(settings.ConnectionString).GetCollection<T>(nameof(T));
             this.eventWriter = eventWriter;
+            this.dbContext = dbContext;
+            collection = dbContext.Database.GetCollection<T>(typeof(T).FullName);
+           
         }
 
         public async Task<List<T>> GetAsync()
@@ -38,8 +41,16 @@ namespace Infrastructure.MongoDb
 
         public async Task<T> Create(T entity)
         {
-            await collection.InsertOneAsync(entity);
-            SaveEntityEvents(entity.GetEvents(), entity.Id);
+            try
+            {
+                await collection.InsertOneAsync(entity);
+                SaveEntityEvents(entity.GetEvents(), entity.Id);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
             return entity;
         }
 
@@ -48,7 +59,7 @@ namespace Infrastructure.MongoDb
             foreach (var @event in events)
             {
                 var mongoEvent = new Event(@event.GetType(), @event, entityId);
-                eventWriter.Write((Event)@event);
+                eventWriter.Write(mongoEvent);
             }
         }
 

@@ -7,15 +7,15 @@ namespace Library.Domain
 {
     public class Price : Value<Price>
     {
-        private readonly decimal amount;
+        public decimal Value { get; private set; }
 
-        public Price(decimal amount)
+        public Price(decimal value)
         {
-            if (amount<0)
+            if (value<0)
             {
                 throw new ArgumentOutOfRangeException(nameof(Price) + "cannot be less than 0");
             }
-            this.amount = amount;
+            this.Value = value;
         }
 
     }

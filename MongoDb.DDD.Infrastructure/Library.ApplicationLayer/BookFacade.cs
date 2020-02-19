@@ -18,7 +18,7 @@ namespace Library.ApplicationLayer
         }
         public async Task Create(BookCreateDTO bookCreateDTO)
         {
-           await repository.Create(new Book(new Guid(), 10, 10, bookCreateDTO.Title, "Test", "Category", "Test Author"));
+           await repository.Create(new Book(Guid.NewGuid(), 10, 10, bookCreateDTO.Title, "Test", "Category", "Test Author"));
         }
     }
 }
