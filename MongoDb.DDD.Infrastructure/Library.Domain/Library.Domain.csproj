@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Infrastructure.Core\Infrastructure.Core.csproj" />
-    <ProjectReference Include="..\Infrastructure.Mongo\Infrastructure.MongoDb.csproj" />
   </ItemGroup>
 
 </Project>

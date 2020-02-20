@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Infrastructure.Core
 {
-    public interface IEventHandler<TEntityKey>
+    public interface IEventHandler<TEvent>
     {
-        void Hadle(IEvent<TEntityKey> @event);
+        void Handle(TEvent @event);
     }
 }

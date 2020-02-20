@@ -1,18 +1,28 @@
 ﻿using Infrastructure.Core;
-using Infrastructure.MongoDb;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Library.Domain
 {
-    public class LibraryRecord : Entity
+    public class LibraryRecord : IEntity<string>
     {
         public ICollection<Book> Books { get; set; }
+        public string Id { get; set; }
 
-        public override bool CheckState()
+        public void AddEvent(object @event)
         {
-            return true;
+            throw new NotImplementedException();
+        }
+
+        public bool CheckState()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IList<object> GetEvents()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,7 +1,4 @@
 ﻿using Infrastructure.Core;
-using Infrastructure.MongoDb;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -58,8 +55,6 @@ namespace Library.Domain
             }
             return true;
         }
-
-        
     }
 
     internal class BookTitleChange 

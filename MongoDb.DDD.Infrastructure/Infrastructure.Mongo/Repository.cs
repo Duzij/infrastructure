@@ -7,18 +7,15 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.MongoDb
 {
-    public class Repository<T> : IRepository<T, string> where T : Entity
+    public class Repository<T> : IRepository<T, string> where T : IEntity<string>
     {
         private readonly IMongoCollection<T> collection;
         private readonly EventWriter eventWriter;
-        private readonly IMongoDbContext dbContext;
 
         public Repository(EventWriter eventWriter, IMongoDbContext dbContext)
         {
             this.eventWriter = eventWriter;
-            this.dbContext = dbContext;
             collection = dbContext.Database.GetCollection<T>(typeof(T).FullName);
-           
         }
 
         public async Task<List<T>> GetAsync()
@@ -27,19 +24,22 @@ namespace Infrastructure.MongoDb
             return document.ToList();
         }
 
-        public async Task<T> GetById(string id)
-        {
-            var entity = await collection.FindAsync(entity => entity.Id.Equals(id));
-            return await entity.FirstOrDefaultAsync();
-        }
-
         public async Task<bool> Exists(string id)
         {
             var entity = await collection.FindAsync(entity => entity.Id.Equals(id));
             return entity != null;
         }
 
-        public async Task<T> Create(T entity)
+        private void SaveEntityEvents(IList<object> events, string entityId)
+        {
+            foreach (var @event in events)
+            {
+                var mongoEvent = new Event(@event.GetType(), @event, entityId);
+                eventWriter.Write(mongoEvent);
+            }
+        }
+
+        public async Task<T> CreateAsync(T entity)
         {
             try
             {
@@ -54,24 +54,24 @@ namespace Infrastructure.MongoDb
             return entity;
         }
 
-        private void SaveEntityEvents(IList<object> events, string entityId)
+        public async Task<T> GetByIdAsync(string id)
         {
-            foreach (var @event in events)
-            {
-                var mongoEvent = new Event(@event.GetType(), @event, entityId);
-                eventWriter.Write(mongoEvent);
-            }
+            var entity = await collection.FindAsync(entity => entity.Id.Equals(id));
+            return await entity.FirstOrDefaultAsync();
         }
 
-        public async Task Update(string id, T entity) =>
-           await collection.ReplaceOneAsync(entity => entity.Id.Equals(id), entity);
+        public async Task RemoveAsync(string id)
+        {
+            await collection.DeleteOneAsync(book => book.Id.Equals(id));
+        }
 
-        public async Task Remove(T entity) =>
-           await collection.DeleteOneAsync(book => book.Id.Equals(entity.Id));
-
-        public async Task Remove(string id) =>
-           await collection.DeleteOneAsync(book => book.Id.Equals(id));
-
-
+        public async Task GetAndModify(string id, Func<T,T> modifyFunc)
+        {
+            var filter = Builders<T>.Filter.Eq("_id", id);
+            var entity = await GetByIdAsync(id);
+            entity = modifyFunc(entity);
+            //atomic Mongo update
+            await collection.FindOneAndReplaceAsync(filter,entity);
+        }
     }
 }

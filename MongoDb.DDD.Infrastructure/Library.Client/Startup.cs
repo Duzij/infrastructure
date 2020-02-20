@@ -28,6 +28,7 @@ namespace Library.Client
             services.AddRazorPages();
             services.AddTransient<IBookFacade,BookFacade>();
             services.AddTransient<Repository<Book>>();
+            services.AddTransient<BookCreatedEventHandler>();
             services.AddMongoDbInfrastructure();
         }
 

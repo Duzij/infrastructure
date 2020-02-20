@@ -10,9 +10,10 @@ namespace Library.Domain
         {
         }
 
+        public override string Message => "Entity state is invalid.";
+
         public InvalidEntityStateException(string message) : base(message)
         {
-            message = "Entity state is invalid.";
         }
 
         public InvalidEntityStateException(string message, Exception innerException) : base(message, innerException)
