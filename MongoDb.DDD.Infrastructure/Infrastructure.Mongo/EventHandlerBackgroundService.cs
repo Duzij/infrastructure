@@ -1,9 +1,11 @@
 ﻿using Infrastructure.Core;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,37 +16,53 @@ namespace Infrastructure.MongoDb
     {
         private readonly IMongoDbContext dbContext;
         private readonly IServiceProvider serviceProvider;
+        private readonly ILogger<EventHandlerBackgroundService> logger;
 
-        public EventHandlerBackgroundService(IMongoDbContext dbContext, IServiceProvider serviceProvider)
+        public EventHandlerBackgroundService(IMongoDbContext dbContext, IServiceProvider serviceProvider, ILogger<EventHandlerBackgroundService> logger)
         {
             this.dbContext = dbContext;
             this.serviceProvider = serviceProvider;
+            this.logger = logger;
         }
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var collection = dbContext.Database.GetCollection<Event>("__events");
-            var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<Event>>()
-            .Match(x => x.OperationType == ChangeStreamOperationType.Insert);
-            using (var cursor = collection.Watch(pipeline))
+            var collection = dbContext.Database.GetCollection<Event>(MongoDefaultSettings.EventsDocument);
+
+            using (var cursor = await collection.WatchAsync())
             {
-                foreach (var change in cursor.ToEnumerable())
+                await cursor.ForEachAsync(change =>
                 {
-                   ProcessEvent(change);
+                    logger.LogError($"{change.CollectionNamespace.FullName} changed. Processing change.");
+                    ProcessEvent(change);
+                });
+            }
+        }
+
+        public static Type GetType(string typeName)
+        {
+            var type = Type.GetType(typeName);
+            if (type != null) return type;
+            foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                Assembly assembly = Assembly.Load(a.FullName);
+                foreach (Type assemblyType in assembly.GetTypes())
+                {
+                    if (assemblyType.Name == typeName)
+                        return assemblyType;
                 }
             }
-
-            return Task.CompletedTask;
+            return null;
         }
 
         private void ProcessEvent(ChangeStreamDocument<Event> change)
         {
             var @event = change.FullDocument;
 
-            var eventHandlerType = @event.EvenType.Name + "EventHandler";
-            var service = serviceProvider.GetService(Type.GetType(eventHandlerType)) as IEventHandler<Event>;
+            var eventHandlerType = @event.EvenType + "EventHandler";
+            var service = serviceProvider.GetService(GetType(eventHandlerType)) as IEventHandler<Event>;
             if (service == null)
             {
-                throw new EventHandlerNotFoundException(@event.EvenType);
+                logger.LogError(new EventHandlerNotFoundException(@event.EvenType), "EventHandlerNotFoundException occured");
             }
             else
             {

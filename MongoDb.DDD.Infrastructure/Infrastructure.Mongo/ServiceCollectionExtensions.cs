@@ -17,7 +17,7 @@ namespace Infrastructure.MongoDb
             var index = projectDbName.AsSpan(0, projectDbName.IndexOf(".dll")).ToString();
             index = index.Replace(".", "");
 
-            services.AddSingleton<IMongoDbSettings>(new MongoDbSettings("mongodb://localhost", index));
+            services.AddSingleton<IMongoDbSettings>(new MongoDbSettings(MongoDefaultSettings.ConnectionString, index));
             AddMongoDbInfrastructureServices(services);
             return services;
         }

@@ -1,17 +1,25 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using Infrastructure.Core;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Infrastructure.MongoDb
 {
     public class Event : IEvent<string>
     {
-        public Type EvenType { get; }
-        public object EventValue { get; }
-        public string EntityId { get; }
+        [BsonElement]
+        public string EvenType { get; set; }
+
+        [BsonElement]
+        public object EventValue { get; set; }
+
+        [BsonId]
+        public string EntityId { get; set; }
 
         public Event(Type evenType, object @event, string entityId)
         {
-            EvenType = evenType;
+            EvenType = evenType.Name;
             EventValue = @event;
             EntityId = entityId;
         }
