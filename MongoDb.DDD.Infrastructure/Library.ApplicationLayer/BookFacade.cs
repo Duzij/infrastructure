@@ -10,9 +10,9 @@ namespace Library.ApplicationLayer
 {
     public class BookFacade : IBookFacade
     {
-        private readonly Repository<Book> repository;
+        private readonly IRepository<Book, string> repository;
 
-        public BookFacade(Repository<Book> repository)
+        public BookFacade(IRepository<Book, string> repository)
         {
             this.repository = repository;
         }

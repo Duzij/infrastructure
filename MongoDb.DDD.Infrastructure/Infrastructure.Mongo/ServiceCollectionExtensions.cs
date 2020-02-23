@@ -33,7 +33,7 @@ namespace Infrastructure.MongoDb
         {
             services.AddTransient<EventWriter>();
             services.AddTransient<IMongoDbContext, MongoDbContext>();
-            services.AddTransient(typeof(IRepository<,>), typeof(Repository<>));
+            services.AddTransient(typeof(IRepository<,>), typeof(Repository<,>));
             services.AddHostedService<EventHandlerBackgroundService>();
         }
     }

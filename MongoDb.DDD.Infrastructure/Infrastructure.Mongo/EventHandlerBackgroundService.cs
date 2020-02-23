@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Core;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
@@ -15,20 +16,21 @@ namespace Infrastructure.MongoDb
     public class EventHandlerBackgroundService : BackgroundService
     {
         private readonly IMongoDbContext dbContext;
-        private readonly IServiceProvider serviceProvider;
+        private readonly IServiceScopeFactory serviceScopeFactory;
         private readonly ILogger<EventHandlerBackgroundService> logger;
 
-        public EventHandlerBackgroundService(IMongoDbContext dbContext, IServiceProvider serviceProvider, ILogger<EventHandlerBackgroundService> logger)
+        public EventHandlerBackgroundService(IMongoDbContext dbContext, IServiceScopeFactory serviceScopeFactory, ILogger<EventHandlerBackgroundService> logger)
         {
             this.dbContext = dbContext;
-            this.serviceProvider = serviceProvider;
+            this.serviceScopeFactory = serviceScopeFactory;
             this.logger = logger;
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var collection = dbContext.Database.GetCollection<Event>(MongoDefaultSettings.EventsDocument);
-
-            using (var cursor = await collection.WatchAsync())
+            var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<Event>>()
+           .Match(x => x.OperationType == ChangeStreamOperationType.Insert);
+            using (var cursor = await collection.WatchAsync(pipeline))
             {
                 await cursor.ForEachAsync(change =>
                 {
@@ -38,36 +40,21 @@ namespace Infrastructure.MongoDb
             }
         }
 
-        public static Type GetType(string typeName)
-        {
-            var type = Type.GetType(typeName);
-            if (type != null) return type;
-            foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                Assembly assembly = Assembly.Load(a.FullName);
-                foreach (Type assemblyType in assembly.GetTypes())
-                {
-                    if (assemblyType.Name == typeName)
-                        return assemblyType;
-                }
-            }
-            return null;
-        }
-
         private void ProcessEvent(ChangeStreamDocument<Event> change)
         {
             var @event = change.FullDocument;
 
-            var eventHandlerType = @event.EvenType + "EventHandler";
-            var service = serviceProvider.GetService(GetType(eventHandlerType)) as IEventHandler<Event>;
-            if (service == null)
+            using (var factory = serviceScopeFactory.CreateScope())
             {
-                logger.LogError(new EventHandlerNotFoundException(@event.EvenType), "EventHandlerNotFoundException occured");
+                var eventType = Type.GetType(@event.EvenType);
+                Type handlerGenericType = typeof(IEventHandler<>).MakeGenericType(eventType);
+                var service = factory.ServiceProvider.GetRequiredService(handlerGenericType);
+                var methodInfo = service.GetType().GetMethod("Handle");
+
+                var parameters = new object[1]{@event.EventValue};
+                methodInfo.Invoke(service, parameters);
             }
-            else
-            {
-                service.Handle(@event);
-            }
+           
         }
     }
 }

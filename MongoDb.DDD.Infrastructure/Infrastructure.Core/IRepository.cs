@@ -7,7 +7,7 @@ namespace Infrastructure.Core
     public interface IRepository<T, TKey> where T : IEntity<TKey>
     {
         Task<T> CreateAsync(T entity);
-        Task<bool> Exists(TKey id);
+        Task<bool> ExistsAsync(TKey id);
         Task<List<T>> GetAsync();
         Task<T> GetByIdAsync(TKey id);
         Task RemoveAsync(TKey id);

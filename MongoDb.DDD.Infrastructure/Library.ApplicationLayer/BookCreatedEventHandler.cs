@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Library.ApplicationLayer
 {
-    public class BookCreatedEventHandler : IEventHandler<Event>
+    public class BookCreatedEventHandler : IEventHandler<BookCreated>
     {
         private readonly ILogger<BookCreatedEventHandler> logger;
 
@@ -16,12 +16,11 @@ namespace Library.ApplicationLayer
         {
             this.logger = logger;
         }
-        public void Handle(Event @event)
+        public void Handle(BookCreated @event)
         {
-            var createEvent = (BookCreated)@event.EventValue;
-            logger.LogInformation(createEvent.Description);
-            logger.LogInformation(createEvent.Title);
-            logger.LogInformation(createEvent.Author);
+            logger.LogInformation(@event.Description);
+            logger.LogInformation(@event.Title);
+            logger.LogInformation(@event.Author);
         }
     }
 }

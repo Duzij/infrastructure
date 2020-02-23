@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F5C51B8F-3F33-4FC8-A88D-9190557769C1}"
 	ProjectSection(SolutionItems) = preProject
 		global.json = global.json
+		mongod.cfg = mongod.cfg
 		mongoInitScript.txt = mongoInitScript.txt
 	EndProjectSection
 EndProject

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Infrastructure.Core;
 using Infrastructure.MongoDb;
 using Library.ApplicationLayer;
 using Library.Domain;
@@ -27,8 +28,8 @@ namespace Library.Client
         {
             services.AddRazorPages();
             services.AddTransient<IBookFacade,BookFacade>();
-            services.AddTransient<Repository<Book>>();
-            services.AddTransient<BookCreatedEventHandler>();
+            //services.AddTransient<Repository<Book>>();
+            services.AddTransient<IEventHandler<BookCreated>, BookCreatedEventHandler>();
             services.AddMongoDbInfrastructure();
 
             services.AddLogging();

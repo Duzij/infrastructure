@@ -19,7 +19,7 @@ namespace Infrastructure.MongoDb
 
         public Event(Type evenType, object @event, string entityId)
         {
-            EvenType = evenType.Name;
+            EvenType = evenType.AssemblyQualifiedName;
             EventValue = @event;
             EntityId = entityId;
         }

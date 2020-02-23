@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.MongoDb
 {
-    public class Repository<T> : IRepository<T, string> where T : IEntity<string>
+    public class Repository<T, TKey> : IRepository<T, string> where T : IEntity<string>
     {
         private readonly IMongoCollection<T> collection;
         private readonly EventWriter eventWriter;
@@ -24,7 +24,7 @@ namespace Infrastructure.MongoDb
             return document.ToList();
         }
 
-        public async Task<bool> Exists(string id)
+        public async Task<bool> ExistsAsync(string id)
         {
             var entity = await collection.FindAsync(entity => entity.Id.Equals(id));
             return entity != null;
