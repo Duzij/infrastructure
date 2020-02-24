@@ -14,25 +14,25 @@ namespace Library.Domain
 
         public Author(Guid id, IList<string> bookTitles, string name, string surname)
         {
-            Id = new AuthorId(id);
+            Id = new AuthorId(id.ToString());
             BookTitles = bookTitles;
             Name = name;
             Surname = surname;
         }
         public override void CheckState()
         {
-            if (Id == null || Id.Value == Guid.Empty || string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Surname) || BookTitles == null)
+            if (Id == null || string.IsNullOrWhiteSpace(Id.Value) || string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Surname) || BookTitles == null)
             {
                 throw new InvalidEntityStateException();
             }
         }
     }
 
-    public class AuthorId : IId<Guid>
+    public class AuthorId : IId<string>
     {
-        public Guid Value { get; set; }
+        public string Value { get; set; }
 
-        public AuthorId(Guid id)
+        public AuthorId(string id)
         {
             Value = id;
         }

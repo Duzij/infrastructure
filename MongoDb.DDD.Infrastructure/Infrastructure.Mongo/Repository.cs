@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.MongoDb
 {
-    public class Repository<T, TKey> : IRepository<T, Guid> where T : IEntity<Guid>
+    public class Repository<T, TKey> : IRepository<T, string> where T : IEntity<string>
     {
         private readonly IMongoCollection<T> collection;
         private readonly EventWriter eventWriter;
@@ -20,17 +20,17 @@ namespace Infrastructure.MongoDb
 
         public async Task<List<T>> GetAsync()
         {
-            var document = await collection.FindAsync(book => true);
+            var document = await collection.FindAsync(entity => true);
             return document.ToList();
         }
 
-        public async Task<bool> ExistsAsync(Guid id)
+        public async Task<bool> ExistsAsync(string id)
         {
             var entity = await collection.FindAsync(entity => entity.Id.Equals(id));
             return entity != null;
         }
 
-        private void SaveEntityEvents(IList<object> events, Guid entityId)
+        private void SaveEntityEvents(IList<object> events, string entityId)
         {
             foreach (var @event in events)
             {
@@ -44,7 +44,7 @@ namespace Infrastructure.MongoDb
             try
             {
                 await collection.InsertOneAsync(entity);
-                SaveEntityEvents(entity.GetEvents(), entity.Id.Value);
+                SaveEntityEvents(entity.GetEvents(), entity.Id.Value.ToString());
             }
             catch (Exception e)
             {
@@ -54,20 +54,22 @@ namespace Infrastructure.MongoDb
             return entity;
         }
 
-        public async Task<T> GetByIdAsync(Guid id)
+        public async Task<T> GetByIdAsync(string id)
         {
-            var entity = await collection.FindAsync(entity => entity.Id.Equals(id));
+            var filter = Builders<T>.Filter.Eq("_id.Value", id);
+            var entity = await collection.FindAsync(filter);
             return await entity.FirstOrDefaultAsync();
         }
 
-        public async Task RemoveAsync(Guid id)
+        public async Task RemoveAsync(string id)
         {
-            await collection.DeleteOneAsync(book => book.Id.Equals(id));
+            var filter = Builders<T>.Filter.Eq("_id.Value", id);
+            await collection.FindOneAndDeleteAsync(filter);
         }
 
-        public async Task GetAndModify(Guid id, Func<T,T> modifyFunc)
+        public async Task GetAndModify(string id, Func<T,T> modifyFunc)
         {
-            var filter = Builders<T>.Filter.Eq("_id", id);
+            var filter = Builders<T>.Filter.Eq("_id.Value", id);
             var entity = await GetByIdAsync(id);
             entity = modifyFunc(entity);
             //atomic Mongo update

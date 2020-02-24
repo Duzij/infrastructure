@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MongoDB.Bson.Serialization;
 
 namespace Library.Client
 {
@@ -28,7 +29,11 @@ namespace Library.Client
         {
             services.AddRazorPages();
             services.AddTransient<IBookFacade,BookFacade>();
+            services.AddTransient<IUserFacade, UserFacade>();
             services.AddTransient<IEventHandler<BookCreated>, BookCreatedEventHandler>();
+
+            BsonClassMap.RegisterClassMap<UserId>();
+
             services.AddMongoDbInfrastructure();
             services.AddLogging();
         }

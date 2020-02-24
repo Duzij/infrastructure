@@ -19,7 +19,7 @@ namespace Library.Domain
 
         public Book(Guid id, decimal price, int amount, string title, string description, string category, AuthorId authorId)
         {
-            Id = new BookId(id);
+            Id = new BookId(id.ToString());
             Price = new Price(price);
             Amount = new BookAmount(amount);
             Title = title;
@@ -44,8 +44,7 @@ namespace Library.Domain
 
     public class BookCreated 
     {
-        public Guid BookId { get; private set; }
-
+        public string BookId { get; private set; }
         public string Title { get; private set; }
         public string Description { get; private set; }
         public string AuthorId { get; private set; }
@@ -53,7 +52,7 @@ namespace Library.Domain
         public decimal Price { get; private set; }
         public int Amount { get; private set; }
 
-        public BookCreated(Guid bookId, decimal price, int amount, string title, string description, string category, string author)
+        public BookCreated(string bookId, decimal price, int amount, string title, string description, string category, string author)
         {
             BookId = bookId;
             Price = price;

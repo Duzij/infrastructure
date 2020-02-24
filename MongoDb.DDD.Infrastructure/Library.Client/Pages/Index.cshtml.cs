@@ -14,7 +14,7 @@ namespace Library.Client.Pages
         private readonly ILogger<IndexModel> _logger;
         private readonly IBookFacade bookFacade;
 
-        public IList<LibraryRecord> LibraryRecords { get; set; }
+        public IList<LibraryRecordDTO> LibraryRecords { get; set; }
 
         public IndexModel(ILogger<IndexModel> logger, IBookFacade bookFacade)
         {
@@ -26,22 +26,22 @@ namespace Library.Client.Pages
         {
             bookFacade.Create(new BookCreateDTO() { Title = "test" });
 
-            LibraryRecords = new List<LibraryRecord>()
+            LibraryRecords = new List<LibraryRecordDTO>()
             {
-                new LibraryRecord(){Id=1,BookCount = 1, State =LendRecordState.Lend, UserName = "Test" },
-                new LibraryRecord(){Id=2,BookCount = 1, State =LendRecordState.Lend, UserName = "Test" },
-                new LibraryRecord(){Id=3,BookCount = 1, State =LendRecordState.Lend, UserName = "Test" },
-                new LibraryRecord(){Id=4,BookCount = 1, State =LendRecordState.Lend, UserName = "Test" }
+                new LibraryRecordDTO(){Id="1", State =LendRecordState.Lend, UserName = "Test" },
+                new LibraryRecordDTO(){Id="2", State =LendRecordState.Lend, UserName = "Test" },
+                new LibraryRecordDTO(){Id="3", State =LendRecordState.Lend, UserName = "Test" },
+                new LibraryRecordDTO(){Id="4", State =LendRecordState.Lend, UserName = "Test" }
             };
         }
     }
 
-    public class LibraryRecord
+    public class LibraryRecordDTO
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string UserName { get; set; }
-        public int BookCount { get; set; }
-
+        public int BookCount => Books.Count;
+        public List<string> Books { get; set; } = new List<string>();
         public LendRecordState State { get; set; }
     }
 

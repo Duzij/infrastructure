@@ -46,9 +46,9 @@ namespace Library.Domain
     public class BookRemovedFromLibraryRecord
     {
         private string iSBN;
-        private Guid BookId;
+        private string BookId;
 
-        public BookRemovedFromLibraryRecord(string iSBN, Guid bookId)
+        public BookRemovedFromLibraryRecord(string iSBN, string bookId)
         {
             this.iSBN = iSBN;
             this.BookId = bookId;
@@ -58,9 +58,9 @@ namespace Library.Domain
     public class BookAddedToLibraryRecord
     {
         private string iSBN;
-        private Guid BookId;
+        private string BookId;
 
-        public BookAddedToLibraryRecord(string iSBN, Guid bookId)
+        public BookAddedToLibraryRecord(string iSBN, string bookId)
         {
             this.iSBN = iSBN;
             this.BookId = bookId;

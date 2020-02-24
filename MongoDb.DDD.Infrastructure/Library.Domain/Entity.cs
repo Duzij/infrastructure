@@ -6,10 +6,10 @@ using System.Text;
 
 namespace Library.Domain
 {
-    public abstract class Entity : IEntity<Guid>
+    public abstract class Entity : IEntity<string>
     {
         private IList<object> Events { get; }
-        public IId<Guid> Id { get; set; }
+        public IId<string> Id { get; set; }
 
         public IList<object> GetEvents() => Events.ToList<object>();
 
@@ -33,15 +33,10 @@ namespace Library.Domain
             return base.GetHashCode();
         }
 
-        protected void AddEvent(object @event)
+        public void AddEvent(object @event)
         {
             CheckState();
             Events.Add(@event);
-        }
-
-        void IEntity<Guid>.AddEvent(object @event)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -1,0 +1,60 @@
+﻿@page
+@model UsersModel
+@{
+    ViewData["Title"] = "Users";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>All library users are displayed here.</p>
+
+<a asp-page="./Users/CreateUser" class="btn btn-primary">Create new user</a>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Surname
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Is banned
+            </th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Users)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Surname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsBanned)
+                </td>
+                <td>
+                    <a asp-page="./Users/EditUser" class="btn" asp-route-id="@item.Id">Edit</a>
+                </td>
+                <td>
+                    <form asp-page-handler="delete" asp-route-id="@item.Id" method="post">
+                        <button class="btn ">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
