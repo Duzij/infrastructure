@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Test.Domain;
 
 namespace Library.Domain
 {
@@ -14,83 +13,56 @@ namespace Library.Domain
         public string Title { get; private set; }
         public string Description { get; private set; }
         public string Category { get; private set; }
-        public string Author { get; private set; }
+        public AuthorId AuthorId { get; private set; }
 
         public BookState State {get; private set;}
 
-        public Book(Guid id, decimal price, int amount, string title, string description, string category, string author)
+        public Book(Guid id, decimal price, int amount, string title, string description, string category, AuthorId authorId)
         {
-            Id = id.ToString();
+            Id = new BookId(id);
             Price = new Price(price);
             Amount = new BookAmount(amount);
             Title = title;
             Description = description;
             Category = category;
-            Author = author;
+            AuthorId = authorId;
             State = BookState.InStock;
-            AddEvent(new BookCreated(Id));
-        }
-
-        public void ChangeTitle(string title)
-        {
-            Title = title;
-            AddEvent(new BookTitleChange(this.Id));
-        }
-
-        public void ChangePrice(decimal newPrice)
-        {
-            this.Price = new Price(newPrice);
-            AddEvent(new BookPriceChanged(this.Id));
+            AddEvent(new BookCreated(Id.Value, price, amount, title, description, category, authorId.Value.ToString()));
         }
    
-        public override bool CheckState()
+        public override void CheckState()
         {
-            if (Id == null || Price == null || Amount == null || 
+            if (Id == null || Price == null || Amount == null || AuthorId == null ||
                 String.IsNullOrWhiteSpace(Title) ||
                 String.IsNullOrWhiteSpace(Category) ||
-                String.IsNullOrWhiteSpace(Author) ||
                 String.IsNullOrWhiteSpace(Description))
             {
                 throw new InvalidEntityStateException();
             }
-            return true;
-        }
-    }
-
-    internal class BookTitleChange 
-    {
-        public string EntityId { get; set; }
-
-        public BookTitleChange(string bookId)
-        {
-            this.EntityId = bookId;
-        }
-
-    }
-
-    public class BookPriceChanged 
-    {
-        public string EntityId { get; set; }
-
-        public BookPriceChanged(string bookId)
-        {
-            this.EntityId = bookId;
         }
     }
 
     public class BookCreated 
     {
-        public string EntityId { get; set; }
+        public Guid BookId { get; private set; }
 
-        public BookCreated(string bookId)
+        public string Title { get; private set; }
+        public string Description { get; private set; }
+        public string AuthorId { get; private set; }
+        public string Category { get; private set; }
+        public decimal Price { get; private set; }
+        public int Amount { get; private set; }
+
+        public BookCreated(Guid bookId, decimal price, int amount, string title, string description, string category, string author)
         {
-            this.EntityId = bookId;
+            BookId = bookId;
+            Price = price;
+            Amount = amount;
+            Title = title;
+            Description = description;
+            Category = category;
+            AuthorId = author;
         }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Author { get; set; }
-        public string Category { get; set; }
-        public decimal Price { get; set; }
-        public int Amount { get; set; }
+        
     }
 }

@@ -16,8 +16,6 @@ namespace Library.Client.Pages
 
         public IList<LibraryRecord> LibraryRecords { get; set; }
 
-
-
         public IndexModel(ILogger<IndexModel> logger, IBookFacade bookFacade)
         {
             _logger = logger;

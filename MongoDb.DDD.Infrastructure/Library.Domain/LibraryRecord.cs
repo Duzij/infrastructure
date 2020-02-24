@@ -5,24 +5,65 @@ using System.Text;
 
 namespace Library.Domain
 {
-    public class LibraryRecord : IEntity<string>
+    public class LibraryRecord : Entity
     {
-        public ICollection<Book> Books { get; set; }
-        public string Id { get; set; }
+        public User User { get; set; }
+        public ICollection<string> BookIsbns { get; set; }
 
-        public void AddEvent(object @event)
+        public LibraryRecord(User user)
         {
-            throw new NotImplementedException();
+            if (user.IsNotBanned)
+            {
+                User = user;
+            }
+            throw new InvalidEntityStateException();
         }
 
-        public bool CheckState()
+        public void AddBook(string ISBN)
         {
-            throw new NotImplementedException();
+            BookIsbns.Add(ISBN);
+            AddEvent(new BookAddedToLibraryRecord(ISBN, Id.Value));
         }
 
-        public IList<object> GetEvents()
+        public void RemveBook(string ISBN)
         {
-            throw new NotImplementedException();
+            BookIsbns.Remove(ISBN);
+            AddEvent(new BookRemovedFromLibraryRecord(ISBN, Id.Value));
+        }
+
+        public override void CheckState()
+        {
+            if (BookIsbns != null &&
+                BookIsbns.Count > 0 && 
+                User != null && 
+                User.IsNotBanned)
+            {
+                throw new InvalidEntityStateException();
+            }
+        }
+    }
+
+    public class BookRemovedFromLibraryRecord
+    {
+        private string iSBN;
+        private Guid BookId;
+
+        public BookRemovedFromLibraryRecord(string iSBN, Guid bookId)
+        {
+            this.iSBN = iSBN;
+            this.BookId = bookId;
+        }
+    }
+
+    public class BookAddedToLibraryRecord
+    {
+        private string iSBN;
+        private Guid BookId;
+
+        public BookAddedToLibraryRecord(string iSBN, Guid bookId)
+        {
+            this.iSBN = iSBN;
+            this.BookId = bookId;
         }
     }
 }

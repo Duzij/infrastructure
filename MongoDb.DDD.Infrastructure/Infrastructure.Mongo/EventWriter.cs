@@ -16,6 +16,7 @@ namespace Infrastructure.MongoDb
         }
         public void Write(Event @event)
         {
+            @event.CreatedTime = DateTime.UtcNow;
             collection.InsertOne(@event);
         }
     }

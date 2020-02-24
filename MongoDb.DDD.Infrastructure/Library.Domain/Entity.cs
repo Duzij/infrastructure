@@ -6,10 +6,10 @@ using System.Text;
 
 namespace Library.Domain
 {
-    public abstract class Entity : IEntity<string>
+    public abstract class Entity : IEntity<Guid>
     {
-        public string Id { get; set; }
         private IList<object> Events { get; }
+        public IId<Guid> Id { get; set; }
 
         public IList<object> GetEvents() => Events.ToList<object>();
 
@@ -19,7 +19,7 @@ namespace Library.Domain
         }
 
         //for complex state cheking between properties
-        public abstract bool CheckState();
+        public abstract void CheckState();
 
         public override bool Equals(object other)
         {
@@ -39,9 +39,9 @@ namespace Library.Domain
             Events.Add(@event);
         }
 
-        void IEntity<string>.AddEvent(object @event)
+        void IEntity<Guid>.AddEvent(object @event)
         {
-            AddEvent(@event);
+            throw new NotImplementedException();
         }
     }
 }

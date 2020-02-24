@@ -8,17 +8,19 @@ namespace Infrastructure.MongoDb
 {
     public class Event : IEvent<string>
     {
-        [BsonElement]
-        public string EvenType { get; set; }
-
-        [BsonElement]
-        public object EventValue { get; set; }
-
         [BsonId]
+        public string Id { get; set; }
         public string EntityId { get; set; }
 
-        public Event(Type evenType, object @event, string entityId)
+        public string EvenType { get; set; }
+
+        public object EventValue { get; set; }
+
+        public DateTime CreatedTime { get; set; }
+
+        public Event(string id, Type evenType, object @event, string entityId)
         {
+            Id = id;
             EvenType = evenType.AssemblyQualifiedName;
             EventValue = @event;
             EntityId = entityId;

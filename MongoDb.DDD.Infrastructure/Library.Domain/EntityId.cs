@@ -5,11 +5,11 @@ using System.Text;
 
 namespace Library.Domain
 {
-    public class BookId : IId<Guid>
+    public class EntityId<T> : IId<Guid>
     {
         public Guid Value { get; set; }
 
-        public BookId(Guid value)
+        public EntityId(Guid value)
         {
             Value = value;
         }

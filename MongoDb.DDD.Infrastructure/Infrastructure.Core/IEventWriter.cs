@@ -1,6 +1,6 @@
 ﻿using Infrastructure.Core;
 
-namespace Infrastructure.MongoDb
+namespace Infrastructure.Core
 {
     public interface IEventWriter<TEvent, TEntityKey> where TEvent : class, IEvent<TEntityKey>
     {

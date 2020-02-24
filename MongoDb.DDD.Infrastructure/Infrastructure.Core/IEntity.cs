@@ -4,11 +4,16 @@ namespace Infrastructure.Core
 {
     public interface IEntity<TKey> 
     {
-        public TKey Id { get; set; }
+        public IId<TKey> Id { get; set; }
         bool Equals(object other);
         int GetHashCode();
-        bool CheckState();
+        void CheckState();
         void AddEvent(object @event);
         IList<object> GetEvents();
+    }
+
+    public interface IId<TKey>
+    {
+        public TKey Value { get; set; }
     }
 }

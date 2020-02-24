@@ -46,15 +46,18 @@ namespace Infrastructure.MongoDb
 
             using (var factory = serviceScopeFactory.CreateScope())
             {
-                var eventType = Type.GetType(@event.EvenType);
-                Type handlerGenericType = typeof(IEventHandler<>).MakeGenericType(eventType);
+                Type handlerGenericType = typeof(IEventHandler<>).MakeGenericType(Type.GetType(@event.EvenType));
                 var service = factory.ServiceProvider.GetRequiredService(handlerGenericType);
-                var methodInfo = service.GetType().GetMethod("Handle");
-
-                var parameters = new object[1]{@event.EventValue};
-                methodInfo.Invoke(service, parameters);
+                HandleEvent(service, @event);
             }
            
+        }
+
+        private void HandleEvent(object service, Event @event)
+        {
+            var methodInfo = service.GetType().GetMethod("Handle");
+            var eventParameter = new object[1] { @event.EventValue };
+            methodInfo.Invoke(service, eventParameter);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Library.ApplicationLayer
         {
             logger.LogInformation(@event.Description);
             logger.LogInformation(@event.Title);
-            logger.LogInformation(@event.Author);
+            logger.LogInformation(@event.AuthorId);
         }
     }
 }

@@ -1,6 +1,5 @@
 using Library.Domain;
 using NUnit.Framework;
-using Test.Domain;
 
 namespace Infrastucture.Tests
 {
