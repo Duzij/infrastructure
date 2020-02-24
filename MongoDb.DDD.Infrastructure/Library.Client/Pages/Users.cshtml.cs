@@ -16,8 +16,6 @@ namespace Library.Client.Pages
 
         public List<UserDetailDTO> Users { get; set; } = new List<UserDetailDTO>();
 
-        public UserDetailDTO UserDTO { get; set; }
-
         public UsersModel(ILogger<UsersModel> logger, IUserFacade userFacade)
         {
             _logger = logger;

@@ -29,10 +29,16 @@ namespace Library.Client
         {
             services.AddRazorPages();
             services.AddTransient<IBookFacade,BookFacade>();
+            services.AddTransient<IAuthorFacade, AuthorFacade>();
             services.AddTransient<IUserFacade, UserFacade>();
+
+
             services.AddTransient<IEventHandler<BookCreated>, BookCreatedEventHandler>();
 
             BsonClassMap.RegisterClassMap<UserId>();
+            BsonClassMap.RegisterClassMap<AuthorId>();
+            BsonClassMap.RegisterClassMap<BookId>();
+            BsonClassMap.RegisterClassMap<LibraryRecordId>();
 
             services.AddMongoDbInfrastructure();
             services.AddLogging();

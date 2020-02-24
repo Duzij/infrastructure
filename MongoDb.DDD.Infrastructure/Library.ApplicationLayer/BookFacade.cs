@@ -18,7 +18,24 @@ namespace Library.ApplicationLayer
         }
         public async Task Create(BookCreateDTO bookCreateDTO)
         {
-           await repository.CreateAsync(new Book(Guid.NewGuid(), 10, 10, bookCreateDTO.Title, "Test", "Category", new AuthorId(bookCreateDTO.AuthorId.ToString())));
+           var book = new Book(bookCreateDTO.Id, bookCreateDTO.Title, bookCreateDTO.Description, new AuthorId(bookCreateDTO.AuthorId), bookCreateDTO.AuthorName);
+           await repository.CreateAsync(book);
+        }
+
+        public async Task Delete(string id)
+        {
+            await repository.RemoveAsync(id);
+        }
+
+        public async Task<List<BookDetailDTO>> GetBooks()
+        {
+            var books = await repository.GetAsync();
+            var userdetails = new List<BookDetailDTO>();
+            foreach (var book in books)
+            {
+                userdetails.Add(new BookDetailDTO(book.Id.Value, book.Title, book.Description, book.AuthorName, book.Amount.Amount));
+            }
+            return userdetails;
         }
     }
 }

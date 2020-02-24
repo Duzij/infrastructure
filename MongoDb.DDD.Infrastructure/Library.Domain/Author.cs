@@ -19,6 +19,14 @@ namespace Library.Domain
             Name = name;
             Surname = surname;
         }
+
+        public Author(Guid id, string name, string surname)
+        {
+            Id = new AuthorId(id.ToString());
+            Name = name;
+            Surname = surname;
+        }
+
         public override void CheckState()
         {
             if (Id == null || string.IsNullOrWhiteSpace(Id.Value) || string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Surname) || BookTitles == null)

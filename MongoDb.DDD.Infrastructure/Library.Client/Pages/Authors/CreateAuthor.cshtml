@@ -1,5 +1,5 @@
 ﻿@page
-@model CreateUser
+@model CreateAuthor
 @{
     ViewData["Title"] = "Create User";
 }
@@ -9,18 +9,13 @@
 
 <form method="post">
     <div class="form-group">
-        <label for="name">User name</label>
-        <input name="name" id="name" class="form-control" type="text">
+        <label for="name">Author name</label>
+        <input name="name"  id="name" class="form-control" type="text">
     </div>
 
     <div class="form-group">
-        <label for="surname">User surname</label>
+        <label for="surname">Author surname</label>
         <input name="surname" id="surname"  class="form-control" type="text">
-    </div>
-
-    <div class="form-group">
-        <label for="emailAddress">Email address</label>
-        <input name="emailAddress" type="email" class="form-control" id="emailAddress" placeholder="name@example.com">
     </div>
 
     <button class="btn btn-primary" type="submit">Create user</button>

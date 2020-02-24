@@ -9,9 +9,9 @@ namespace Library.Domain
 
         public BookAmount(int amount)
         {
-            if (amount <= 0)
+            if (amount < 0)
             {
-                throw new ArgumentException(nameof(Price) + "cannot be less or equal to 0");
+                throw new ArgumentException(nameof(Price) + "cannot be less than 0");
             }
             this.Amount = amount;
         }

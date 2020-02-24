@@ -10,8 +10,9 @@ namespace Library.Domain
         public User User { get; set; }
         public ICollection<string> BookIsbns { get; set; }
 
-        public LibraryRecord(User user)
+        public LibraryRecord(Guid id, User user)
         {
+            Id = new LibraryRecordId(id);
             if (user.IsNotBanned)
             {
                 User = user;
@@ -40,6 +41,16 @@ namespace Library.Domain
             {
                 throw new InvalidEntityStateException();
             }
+        }
+    }
+
+    public class LibraryRecordId : IId<string>
+    {
+        public string Value { get; set; }
+
+        public LibraryRecordId(Guid id)
+        {
+            this.Value = id.ToString();
         }
     }
 

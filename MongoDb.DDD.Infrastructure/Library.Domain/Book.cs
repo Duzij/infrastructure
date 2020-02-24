@@ -7,38 +7,49 @@ namespace Library.Domain
 {
     public class Book : Entity
     {
-        public Price Price { get; private set; }
         public BookAmount Amount { get; private set; }
-
         public string Title { get; private set; }
         public string Description { get; private set; }
-        public string Category { get; private set; }
         public AuthorId AuthorId { get; private set; }
-
+        public string AuthorName { get; private set; }
         public BookState State {get; private set;}
 
-        public Book(Guid id, decimal price, int amount, string title, string description, string category, AuthorId authorId)
+        public Book(Guid id, string title, string description, AuthorId authorId, string authorName)
         {
             Id = new BookId(id.ToString());
-            Price = new Price(price);
-            Amount = new BookAmount(amount);
             Title = title;
             Description = description;
-            Category = category;
             AuthorId = authorId;
-            State = BookState.InStock;
-            AddEvent(new BookCreated(Id.Value, price, amount, title, description, category, authorId.Value.ToString()));
+            AuthorName = authorName;
+            State = BookState.InDatabase;
+            Amount = new BookAmount(0);
+            AddEvent(new BookCreated(Id.Value, title, description, authorId.Value.ToString()));
+        }
+
+        public void AddStock(BookAmount amount)
+        {
+            this.Amount = amount;
+            AddEvent(new BookAddedToStock(amount));
         }
    
         public override void CheckState()
         {
-            if (Id == null || Price == null || Amount == null || AuthorId == null ||
+            if (Id == null || Amount == null || AuthorId == null ||
                 String.IsNullOrWhiteSpace(Title) ||
-                String.IsNullOrWhiteSpace(Category) ||
                 String.IsNullOrWhiteSpace(Description))
             {
                 throw new InvalidEntityStateException();
             }
+        }
+    }
+
+    public class BookAddedToStock
+    {
+        public int booksAdded;
+
+        public BookAddedToStock(BookAmount amount)
+        {
+            this.booksAdded = amount.Amount;
         }
     }
 
@@ -48,18 +59,12 @@ namespace Library.Domain
         public string Title { get; private set; }
         public string Description { get; private set; }
         public string AuthorId { get; private set; }
-        public string Category { get; private set; }
-        public decimal Price { get; private set; }
-        public int Amount { get; private set; }
 
-        public BookCreated(string bookId, decimal price, int amount, string title, string description, string category, string author)
+        public BookCreated(string bookId, string title, string description, string author)
         {
             BookId = bookId;
-            Price = price;
-            Amount = amount;
             Title = title;
             Description = description;
-            Category = category;
             AuthorId = author;
         }
         

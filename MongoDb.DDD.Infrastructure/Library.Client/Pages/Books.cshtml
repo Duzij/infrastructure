@@ -5,4 +5,58 @@
 }
 <h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<p>All library books are displayed here.</p>
+
+
+<a asp-page="./Books/CreateBook" class="btn btn-primary">Create new books</a>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Title
+            </th>
+            <th>
+                Description
+            </th>
+            <th>
+                Amount
+            </th>
+            <th>
+                Author name
+            </th>
+            <th>
+            </th>
+            <th>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Books)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Amount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AuthorName)
+            </td>
+            <td>
+                <a asp-page="./Authors/EditAuthor" class="btn" asp-route-id="@item.Id">Edit</a>
+            </td>
+            <td>
+                <form asp-page-handler="delete" asp-route-id="@item.Id" method="post">
+                    <button class="btn">Delete</button>
+                </form>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
