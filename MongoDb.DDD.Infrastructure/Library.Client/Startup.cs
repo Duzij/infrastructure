@@ -35,10 +35,10 @@ namespace Library.Client
 
 
             services.AddTransient<IEventHandler<BookCreated>, BookCreatedEventHandler>();
+            services.AddTransient<IEventHandler<BookAuthorIdChanged>, BookAuthorIdChangedEventHandler>();
+            services.AddTransient<IEventHandler<BookTitleChanged>, BookTitleChangedEventHandler>();
 
             services.AddTransient<IAuthorByBookTitleQuery, AuthorByBookTitleQuery>();
-
-            
 
             BsonClassMap.RegisterClassMap<UserId>();
             BsonClassMap.RegisterClassMap<AuthorId>();

@@ -26,7 +26,7 @@ namespace Library.Domain
             AddEvent(new BookCreated(Id.Value, title, description, authorId.Value.ToString()));
         }
 
-        public void ChangeAuthor(AuthorId authorId)
+        public void ChangeAuthor(AuthorId authorId, string newAuthorName)
         {
             if (authorId.Value == this.AuthorId.Value)
             {
@@ -34,6 +34,7 @@ namespace Library.Domain
             }
             AddEvent(new BookAuthorIdChanged(Id.Value, this.Title.Value, authorId.Value, AuthorId.Value));
             this.AuthorId = authorId;
+            this.AuthorName = newAuthorName;
         }
 
         public void AddStock(BookAmount amount)

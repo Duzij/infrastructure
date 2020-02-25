@@ -79,6 +79,7 @@ namespace Infrastructure.MongoDb
             var entity = await GetByIdAsync(id);
             entity = modifyFunc(entity);
             //atomic Mongo update
+            SaveEntityEvents(entity.GetEvents(), id);
             await collection.FindOneAndReplaceAsync(filter,entity);
         }
     }

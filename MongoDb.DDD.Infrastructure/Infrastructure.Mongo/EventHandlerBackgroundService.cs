@@ -35,7 +35,14 @@ namespace Infrastructure.MongoDb
                 await cursor.ForEachAsync(change =>
                 {
                     logger.LogError($"{change.CollectionNamespace.FullName} changed. Processing change.");
-                    ProcessEvent(change);
+                    try
+                    {
+                        ProcessEvent(change);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex.Message, ex);
+                    }
                 });
             }
         }

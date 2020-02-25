@@ -8,7 +8,7 @@ namespace Library.Domain
 {
     public abstract class Entity : IEntity<string>
     {
-        private IList<object> Events { get; }
+        private IList<object> Events { get; set; } 
         public IId<string> Id { get; set; }
 
         public IList<object> GetEvents() => Events.ToList<object>();
@@ -36,6 +36,10 @@ namespace Library.Domain
         public void AddEvent(object @event)
         {
             CheckState();
+            if (Events == null)
+            {
+                Events = new List<object>();
+            }
             Events.Add(@event);
         }
     }

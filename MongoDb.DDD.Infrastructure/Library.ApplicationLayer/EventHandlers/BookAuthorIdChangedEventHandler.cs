@@ -29,6 +29,12 @@ namespace Library.ApplicationLayer
             logger.LogInformation($"{oldAuthor.Name} titles updated. {@event.BookTitle} removed.");
 
             var newAuthor = await authorFacade.GetById(@event.NewAuthorId);
+
+            if (newAuthor.BookTitles == null)
+            {
+                newAuthor.BookTitles = new List<string>();
+            }
+
             newAuthor.BookTitles.Add(@event.BookTitle);
             await authorFacade.Update(newAuthor);
             logger.LogInformation($"{newAuthor.Name} titles updated. {@event.BookTitle} added.");

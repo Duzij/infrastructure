@@ -14,6 +14,7 @@ namespace Library.Client.Pages.Books
     {
         private readonly ILogger<EditBook> logger;
         private readonly IBookFacade bookFacade;
+        private readonly IAuthorFacade authorFacade;
 
         [BindProperty]
         public BookDetailDTO BookDetail { get; set; }
@@ -25,25 +26,28 @@ namespace Library.Client.Pages.Books
         {
             this.logger = logger;
             this.bookFacade = bookFacade;
-            Authors = authorFacade.GetAuthorSelectorAsync().GetAwaiter().GetResult().Select(a =>
-                                  new SelectListItem
-                                  {
-                                      Value = a.Key.ToString(),
-                                      Text = a.Value
-                                  }).ToList(); ;
+            this.authorFacade = authorFacade;
         }
 
         public async Task OnGet()
         {
             BookDetail = await bookFacade.GetUserById(Request.Query.FirstOrDefault(a => a.Key == "id").Value);
+
+            Authors = authorFacade.GetAuthorSelectorAsync().GetAwaiter().GetResult().Select(a =>
+                                  new SelectListItem
+                                  {
+                                      Selected = BookDetail.AuthorId == a.Key,
+                                      Value = a.Key.ToString(),
+                                      Text = a.Value
+                                  }).ToList();
         }
 
         public async Task<IActionResult> OnPost()
         {
             await bookFacade.Update(BookDetail);
-            logger.LogInformation("User updated");
+            logger.LogInformation("Book updated");
 
-            return RedirectToPage("/Users");
+            return RedirectToPage("/Books");
         }
 
     }

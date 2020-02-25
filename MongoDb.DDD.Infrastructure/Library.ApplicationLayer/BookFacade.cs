@@ -11,10 +11,12 @@ namespace Library.ApplicationLayer
     public class BookFacade : IBookFacade
     {
         private readonly IRepository<Book, string> repository;
+        private readonly IRepository<Author, string> authorRepository;
 
-        public BookFacade(IRepository<Book, string> repository)
+        public BookFacade(IRepository<Book, string> repository, IRepository<Author, string> authorRepository)
         {
             this.repository = repository;
+            this.authorRepository = authorRepository;
         }
         public async Task Create(BookCreateDTO bookCreateDTO)
         {
@@ -38,23 +40,29 @@ namespace Library.ApplicationLayer
             return userdetails;
         }
 
-        public Task<BookDetailDTO> GetUserById(string value)
+        public async Task<BookDetailDTO> GetUserById(string id)
         {
-            throw new NotImplementedException();
+            var book = await repository.GetByIdAsync(id);
+            return new BookDetailDTO(id, book.Title.Value, book.Description, book.AuthorName, book.Amount.Amount, book.AuthorId.Value);
         }
 
         public async Task Update(BookDetailDTO bookDetail)
         {
             var book = await repository.GetByIdAsync(bookDetail.Id);
+            var newAuthor = await authorRepository.GetByIdAsync(bookDetail.AuthorId);
+            var newAuthorName = $"{newAuthor.Name} {newAuthor.Surname}";
 
             if (bookDetail.AuthorId != book.AuthorId.Value)
             {
-                book.ChangeAuthor(new AuthorId(bookDetail.AuthorId));
+                book.ChangeAuthor(new AuthorId(bookDetail.AuthorId), newAuthorName);
             }
             if (bookDetail.Title != book.Title.Value)
             {
                 book.ChangeTitle(new BookTitle(bookDetail.Title));
             }
+
+            await repository.GetAndModify(bookDetail.Id,
+                 (a) => { return book; });
         }
     }
 }
