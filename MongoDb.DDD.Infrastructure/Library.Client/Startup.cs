@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Infrastructure.Core;
 using Infrastructure.MongoDb;
 using Library.ApplicationLayer;
+using Library.ApplicationLayer.Query;
 using Library.Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,6 +35,10 @@ namespace Library.Client
 
 
             services.AddTransient<IEventHandler<BookCreated>, BookCreatedEventHandler>();
+
+            services.AddTransient<IAuthorByBookTitleQuery, AuthorByBookTitleQuery>();
+
+            
 
             BsonClassMap.RegisterClassMap<UserId>();
             BsonClassMap.RegisterClassMap<AuthorId>();

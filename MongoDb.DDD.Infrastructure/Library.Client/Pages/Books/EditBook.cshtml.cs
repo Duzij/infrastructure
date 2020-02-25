@@ -10,18 +10,19 @@ using Microsoft.Extensions.Logging;
 
 namespace Library.Client.Pages.Books
 {
-    public class CreateBook : PageModel
+    public class EditBook : PageModel
     {
-        private readonly ILogger<CreateBook> logger;
+        private readonly ILogger<EditBook> logger;
         private readonly IBookFacade bookFacade;
 
-        public BookCreateDTO BookDto { get; set; }
+        [BindProperty]
+        public BookDetailDTO BookDetail { get; set; }
 
         public List<SelectListItem> Authors { get; set; } = new List<SelectListItem>();
 
-        public CreateBook(ILogger<CreateBook> logger, IBookFacade bookFacade, IAuthorFacade authorFacade)
+
+        public EditBook(ILogger<EditBook> logger, IBookFacade bookFacade, IAuthorFacade authorFacade)
         {
-            BookDto = new BookCreateDTO(Guid.NewGuid());
             this.logger = logger;
             this.bookFacade = bookFacade;
             Authors = authorFacade.GetAuthorSelectorAsync().GetAwaiter().GetResult().Select(a =>
@@ -32,18 +33,19 @@ namespace Library.Client.Pages.Books
                                   }).ToList(); ;
         }
 
-        public IActionResult OnPost()
+        public async Task OnGet()
         {
-            BookDto.AuthorId = Request.Form["authorId"];
-            BookDto.AuthorName = Authors.First(a => a.Value == Request.Form["authorId"]).Text;
-            BookDto.Title = Request.Form["title"];
-            BookDto.Description = Request.Form["description"];
-
-            bookFacade.Create(BookDto);
-            logger.LogInformation("Book created");
-
-            return RedirectToPage("/Books");
+            BookDetail = await bookFacade.GetUserById(Request.Query.FirstOrDefault(a => a.Key == "id").Value);
         }
+
+        public async Task<IActionResult> OnPost()
+        {
+            await bookFacade.Update(BookDetail);
+            logger.LogInformation("User updated");
+
+            return RedirectToPage("/Users");
+        }
+
     }
 
 }

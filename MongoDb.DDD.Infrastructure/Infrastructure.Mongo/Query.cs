@@ -19,6 +19,6 @@ namespace Infrastructure.MongoDb
             return Process(dbContext.Database.GetCollection<TEntity>(typeof(TEntity).FullName));
         }
 
-        internal abstract IList<TResult> Process(IMongoCollection<TEntity> mongoCollection);
+        public abstract IList<TResult> Process(IMongoCollection<TEntity> mongoCollection);
     }
 }

@@ -33,9 +33,28 @@ namespace Library.ApplicationLayer
             var userdetails = new List<BookDetailDTO>();
             foreach (var book in books)
             {
-                userdetails.Add(new BookDetailDTO(book.Id.Value, book.Title, book.Description, book.AuthorName, book.Amount.Amount));
+                userdetails.Add(new BookDetailDTO(book.Id.Value, book.Title.Value, book.Description, book.AuthorName, book.Amount.Amount, book.AuthorId.Value));
             }
             return userdetails;
+        }
+
+        public Task<BookDetailDTO> GetUserById(string value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task Update(BookDetailDTO bookDetail)
+        {
+            var book = await repository.GetByIdAsync(bookDetail.Id);
+
+            if (bookDetail.AuthorId != book.AuthorId.Value)
+            {
+                book.ChangeAuthor(new AuthorId(bookDetail.AuthorId));
+            }
+            if (bookDetail.Title != book.Title.Value)
+            {
+                book.ChangeTitle(new BookTitle(bookDetail.Title));
+            }
         }
     }
 }

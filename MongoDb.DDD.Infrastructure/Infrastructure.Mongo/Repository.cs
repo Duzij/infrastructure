@@ -24,6 +24,12 @@ namespace Infrastructure.MongoDb
             return document.ToList();
         }
 
+        public async Task<List<T>> GetAsync(FilterDefinition<T> filter)
+        {
+            var document = await collection.FindAsync(filter);
+            return document.ToList();
+        }
+
         public async Task<bool> ExistsAsync(string id)
         {
             var entity = await collection.FindAsync(entity => entity.Id.Equals(id));

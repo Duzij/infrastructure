@@ -40,11 +40,11 @@
                 <td>
                     <a asp-page="./Authors/EditAuthor" class="btn" asp-route-id="@item.Id">Edit</a>
                 </td>
-                <td>
+                @*<td>
                     <form asp-page-handler="delete" asp-route-id="@item.Id" method="post">
                         <button class="btn">Delete</button>
                     </form>
-                </td>
+                </td>*@
             </tr>
         }
     </tbody>

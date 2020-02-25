@@ -8,16 +8,16 @@ namespace Library.Domain
     public class Book : Entity
     {
         public BookAmount Amount { get; private set; }
-        public string Title { get; private set; }
+        public BookTitle Title { get; private set; }
         public string Description { get; private set; }
         public AuthorId AuthorId { get; private set; }
         public string AuthorName { get; private set; }
-        public BookState State {get; private set;}
+        public BookState State { get; private set; }
 
         public Book(Guid id, string title, string description, AuthorId authorId, string authorName)
         {
             Id = new BookId(id.ToString());
-            Title = title;
+            Title = new BookTitle(title);
             Description = description;
             AuthorId = authorId;
             AuthorName = authorName;
@@ -26,21 +26,84 @@ namespace Library.Domain
             AddEvent(new BookCreated(Id.Value, title, description, authorId.Value.ToString()));
         }
 
+        public void ChangeAuthor(AuthorId authorId)
+        {
+            if (authorId.Value == this.AuthorId.Value)
+            {
+                throw new ArgumentException("New author id is same as old author id");
+            }
+            AddEvent(new BookAuthorIdChanged(Id.Value, this.Title.Value, authorId.Value, AuthorId.Value));
+            this.AuthorId = authorId;
+        }
+
         public void AddStock(BookAmount amount)
         {
             this.Amount = amount;
             AddEvent(new BookAddedToStock(amount));
         }
-   
+
         public override void CheckState()
         {
-            if (Id == null || Amount == null || AuthorId == null ||
-                String.IsNullOrWhiteSpace(Title) ||
+            if (Id == null || Amount == null ||
+                AuthorId == null ||
+                Title == null ||
+                String.IsNullOrWhiteSpace(AuthorName) ||
                 String.IsNullOrWhiteSpace(Description))
             {
                 throw new InvalidEntityStateException();
             }
         }
+
+        public void ChangeTitle(BookTitle bookTitle)
+        {
+            AddEvent(new BookTitleChanged(Id.Value, this.Title.Value, bookTitle.Value));
+            this.Title = bookTitle;
+        }
+    }
+
+    public class BookTitleChanged
+    {
+        public BookTitleChanged(string bookId, string oldTitle, string newTitle)
+        {
+            BookId = bookId;
+            OldTitle = oldTitle;
+            NewTitle = newTitle;
+        }
+
+        public string BookId { get; }
+        public string OldTitle { get; }
+        public string NewTitle { get; }
+    }
+
+    public class BookTitle
+    {
+        public string Value;
+
+        public BookTitle(string title)
+        {
+            if (String.IsNullOrWhiteSpace(title))
+            {
+                throw new ArgumentException("Book title cannot be null of white space");
+            }
+            this.Value = title;
+        }
+    }
+
+    public class BookAuthorIdChanged
+    {
+        public string BookId { get; }
+        public string BookTitle { get; }
+        public string NewAuthorId { get; }
+        public string OldAuthorId { get; }
+
+        public BookAuthorIdChanged(string bookId, string bookTitle, string newAuthorId, string oldAuthorId)
+        {
+            BookId = bookId;
+            BookTitle = bookTitle;
+            NewAuthorId = newAuthorId;
+            OldAuthorId = oldAuthorId;
+        }
+
     }
 
     public class BookAddedToStock
@@ -53,7 +116,7 @@ namespace Library.Domain
         }
     }
 
-    public class BookCreated 
+    public class BookCreated
     {
         public string BookId { get; private set; }
         public string Title { get; private set; }
@@ -67,6 +130,6 @@ namespace Library.Domain
             Description = description;
             AuthorId = author;
         }
-        
+
     }
 }

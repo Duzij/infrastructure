@@ -14,5 +14,6 @@ namespace Library.ApplicationLayer
         Task Update(AuthorDetailDTO userDto);
         Task<Dictionary<string, string>> GetAuthorSelectorAsync();
         Task UpdateAuthorBooksAsync(string id, IList<string> bookTitles);
+        List<AuthorDetailDTO> GetAuthorsByBookId(string bookId);
     }
 }

@@ -1,7 +1,10 @@
 ﻿using Infrastructure.Core;
+using Library.ApplicationLayer.Query;
 using Library.Domain;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,10 +13,12 @@ namespace Library.ApplicationLayer
     public class AuthorFacade : IAuthorFacade
     {
         private readonly IRepository<Author, string> repository;
+        private readonly IAuthorByBookTitleQuery query;
 
-        public AuthorFacade(IRepository<Author,string> repository)
+        public AuthorFacade(IRepository<Author,string> repository, IAuthorByBookTitleQuery query)
         {
             this.repository = repository;
+            this.query = query;
         }
         public async Task Create(CreateAuthorDTO author)
         {
@@ -34,6 +39,12 @@ namespace Library.ApplicationLayer
                 authorDetails.Add(new AuthorDetailDTO(author.Id.Value, author.Name,author.Surname,author.BookTitles));
             }
             return authorDetails;
+        }
+
+        public List<AuthorDetailDTO> GetAuthorsByBookId(string bookTitle)
+        {
+            query.BookTitle = bookTitle;
+            return query.GetResults().ToList();
         }
 
         public async Task<Dictionary<string, string>> GetAuthorSelectorAsync()
