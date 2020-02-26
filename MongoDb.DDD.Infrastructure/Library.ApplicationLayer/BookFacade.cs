@@ -1,8 +1,10 @@
 ﻿using Infrastructure.Core;
 using Infrastructure.MongoDb;
+using Library.ApplicationLayer.Query;
 using Library.Domain;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,16 +14,18 @@ namespace Library.ApplicationLayer
     {
         private readonly IRepository<Book, string> repository;
         private readonly IRepository<Author, string> authorRepository;
+        private readonly AllBooksQuery bookQuery;
 
-        public BookFacade(IRepository<Book, string> repository, IRepository<Author, string> authorRepository)
+        public BookFacade(IRepository<Book, string> repository, IRepository<Author, string> authorRepository, AllBooksQuery bookQuery)
         {
             this.repository = repository;
             this.authorRepository = authorRepository;
+            this.bookQuery = bookQuery;
         }
         public async Task Create(BookCreateDTO bookCreateDTO)
         {
-           var book = new Book(bookCreateDTO.Id, bookCreateDTO.Title, bookCreateDTO.Description, new AuthorId(bookCreateDTO.AuthorId), bookCreateDTO.AuthorName);
-           await repository.CreateAsync(book);
+           var book = Book.Create(bookCreateDTO.Title, bookCreateDTO.Description, new AuthorId(bookCreateDTO.AuthorId), bookCreateDTO.AuthorName);
+           await repository.SaveAsync(book);
         }
 
         public async Task Delete(string id)
@@ -31,13 +35,8 @@ namespace Library.ApplicationLayer
 
         public async Task<List<BookDetailDTO>> GetBooks()
         {
-            var books = await repository.GetAsync();
-            var userdetails = new List<BookDetailDTO>();
-            foreach (var book in books)
-            {
-                userdetails.Add(new BookDetailDTO(book.Id.Value, book.Title.Value, book.Description, book.AuthorName, book.Amount.Amount, book.AuthorId.Value));
-            }
-            return userdetails;
+            var list = await bookQuery.GetResultsAsync();
+            return list.ToList();
         }
 
         public async Task<BookDetailDTO> GetUserById(string id)
@@ -61,7 +60,7 @@ namespace Library.ApplicationLayer
                 book.ChangeTitle(new BookTitle(bookDetail.Title));
             }
 
-            await repository.GetAndModify(bookDetail.Id,
+            await repository.Update(bookDetail.Id,
                  (a) => { return book; });
         }
     }

@@ -13,16 +13,20 @@ namespace Library.ApplicationLayer
     public class AuthorFacade : IAuthorFacade
     {
         private readonly IRepository<Author, string> repository;
-        private readonly IAuthorByBookTitleQuery query;
+        private readonly AuthorByBookTitleQuery query;
+        private readonly AllAuthorsQuery allAuthorsQuery;
 
-        public AuthorFacade(IRepository<Author,string> repository, IAuthorByBookTitleQuery query)
+        public AuthorFacade(IRepository<Author,string> repository, AuthorByBookTitleQuery query, AllAuthorsQuery allAuthorsQuery)
         {
             this.repository = repository;
             this.query = query;
+            this.allAuthorsQuery = allAuthorsQuery;
         }
+
         public async Task Create(CreateAuthorDTO author)
         {
-            await repository.CreateAsync(new Author(author.Id, author.Name, author.Surname));
+            var authorEntity = Author.Create(author.Name, author.Name);
+            await repository.SaveAsync(authorEntity);
         }
 
         public async Task Delete(string id)
@@ -32,28 +36,24 @@ namespace Library.ApplicationLayer
 
         public async Task<List<AuthorDetailDTO>> GetAuthors()
         {
-            var authors = await repository.GetAsync();
-            var authorDetails = new List<AuthorDetailDTO>();
-            foreach (var author in authors)
-            {
-                authorDetails.Add(new AuthorDetailDTO(author.Id.Value, author.Name,author.Surname,author.BookTitles));
-            }
-            return authorDetails;
+            var list = await allAuthorsQuery.GetResultsAsync();
+            return list.ToList();
         }
 
-        public List<AuthorDetailDTO> GetAuthorsByBookId(string bookTitle)
+        public async Task<List<AuthorDetailDTO>> GetAuthorsByBookAsync(string title)
         {
-            query.BookTitle = bookTitle;
-            return query.GetResults().ToList();
+            query.BookTitle = title;
+            var list = await query.GetResultsAsync();
+            return list.ToList();
         }
 
         public async Task<Dictionary<string, string>> GetAuthorSelectorAsync()
         {
-            var authors = await repository.GetAsync();
+            var authors = await allAuthorsQuery.GetResultsAsync();
             var authorsSelector = new Dictionary<string, string>();
             foreach (var author in authors)
             {
-                authorsSelector.Add(author.Id.Value, $"{author.Name} {author.Surname}");
+                authorsSelector.Add(author.Id, $"{author.Name} {author.Surname}");
             }
             return authorsSelector;
         }
@@ -66,12 +66,23 @@ namespace Library.ApplicationLayer
 
         public async Task Update(AuthorDetailDTO author)
         {
-            await repository.GetAndModify(author.Id, (a) => { return new Author(Guid.Parse(author.Id), author.BookTitles, author.Name, author.Surname); });
+            var authorEntity = await repository.GetByIdAsync(author.Id);
+            if (authorEntity.Name != author.Name)
+            {
+                authorEntity.ChangeName(author.Name);
+            }
+            if (authorEntity.Surname != author.Surname)
+            {
+                authorEntity.ChangeSurname(author.Surname);
+            }
+            await repository.SaveAsync(authorEntity);
         }
 
         public async Task UpdateAuthorBooksAsync(string id, IList<string> bookTitles)
         {
-            await repository.GetAndModify(id, (a) => { return new Author(Guid.Parse(a.Id.Value), bookTitles, a.Name, a.Surname); });
+            var authorEntity = await repository.GetByIdAsync(id);
+            authorEntity.UpdateBooks(bookTitles);
+            await repository.SaveAsync(authorEntity);
         }
     }
 }

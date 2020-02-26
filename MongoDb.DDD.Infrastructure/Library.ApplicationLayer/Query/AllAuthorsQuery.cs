@@ -8,25 +8,23 @@ using System.Threading.Tasks;
 
 namespace Library.ApplicationLayer.Query
 {
-    public class AuthorByBookTitleQuery : Query<AuthorDetailDTO>
+    public class AllAuthorsQuery : Query<AuthorDetailDTO>
     {
-        public AuthorByBookTitleQuery(IMongoDbContext dbContext) :  base(dbContext)
+        public AllAuthorsQuery(IMongoDbContext dbContext) : base(dbContext)
         {
         }
-
-        public string BookTitle { get; set; }
 
         public override async Task<IList<AuthorDetailDTO>> GetResultsAsync()
         {
-            var mongoCollection = dbContext.GetCollection<Author>();
-            var authors = await mongoCollection.FindAsync(a => a.BookTitles.Contains(BookTitle));
+            var authors = dbContext.GetCollection<Author>().AsQueryable();
+
             var authorDetails = new List<AuthorDetailDTO>();
-            foreach (var author in authors.ToEnumerable())
+            foreach (var author in authors)
             {
                 authorDetails.Add(new AuthorDetailDTO(author.Id.Value, author.Name, author.Surname, author.BookTitles));
             }
+
             return authorDetails;
         }
-
     }
 }

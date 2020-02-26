@@ -1,31 +1,43 @@
-﻿using Infrastructure.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Library.Domain
 {
-    public class Author : Entity
+    public class Author : DomainAggregate
     {
         public string Name { get; set; }
         public string Surname { get; set; }
 
-        public IList<string> BookTitles { get; set; }
+        public IList<string> BookTitles { get; private set; }
 
-        public Author(Guid id, IList<string> bookTitles, string name, string surname)
+        public static Author Create(IList<string> bookTitles, string name, string surname)
         {
-            Id = new AuthorId(id.ToString());
+            var author = new Author((AuthorId)TypedId.GetNewId<Author>(),bookTitles,name,surname);
+            return author;
+        }
+
+        public static Author Create(string name, string surname)
+        {
+            var author = new Author((AuthorId)TypedId.GetNewId<Author>(), name, surname);
+            return author;
+        }
+
+        private Author(AuthorId id, IList<string> bookTitles, string name, string surname)
+        {
+            Id = id;
             BookTitles = bookTitles;
             Name = name;
             Surname = surname;
         }
 
-        public Author(Guid id, string name, string surname)
+        private Author(AuthorId id, string name, string surname)
         {
-            Id = new AuthorId(id.ToString());
+            Id = id;
             Name = name;
             Surname = surname;
         }
+
 
         public override void CheckState()
         {
@@ -34,15 +46,21 @@ namespace Library.Domain
                 throw new InvalidEntityStateException();
             }
         }
-    }
 
-    public class AuthorId : IId<string>
-    {
-        public string Value { get; set; }
-
-        public AuthorId(string id)
+        public void UpdateBooks(IList<string> bookTitles)
         {
-            Value = id;
+            this.BookTitles = bookTitles;
+            CheckState();
+        }
+
+        public void ChangeName(string name)
+        {
+            this.Name = name;
+        }
+
+        public void ChangeSurname(string surname)
+        {
+            this.Surname = surname;
         }
     }
 }

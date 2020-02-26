@@ -1,7 +1,9 @@
 ﻿using Infrastructure.Core;
+using Library.ApplicationLayer.Query;
 using Library.Domain;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,14 +12,17 @@ namespace Library.ApplicationLayer
     public class UserFacade : IUserFacade
     {
         private readonly IRepository<User, string> repository;
+        private readonly AllUsersQuery allUsersQuery;
 
-        public UserFacade(IRepository<User, string> repository)
+        public UserFacade(IRepository<User, string> repository, AllUsersQuery allUsersQuery)
         {
             this.repository = repository;
+            this.allUsersQuery = allUsersQuery;
         }
         public async Task Create(CreateUserDTO user)
         {
-          await repository.CreateAsync(new User(user.Id, false, user.Name, user.Surname, user.Email));
+            var userEntity = User.Create(user.Name, user.Surname, user.Email);
+            await repository.SaveAsync(userEntity);
         }
 
         public async Task Delete(string id)
@@ -33,18 +38,15 @@ namespace Library.ApplicationLayer
 
         public async Task<List<UserDetailDTO>> GetUsers()
         {
-            var users = await repository.GetAsync();
-            var userdetails = new List<UserDetailDTO>();
-            foreach (var user in users)
-            {
-                userdetails.Add(new UserDetailDTO() { Id = user.Id.Value, Email = user.Email, IsBanned = user.IsBanned, Name = user.Name, Surname = user.Surname });
-            }
-            return userdetails;
+            var users = await allUsersQuery.GetResultsAsync();
+            return users.ToList();
         }
 
         public async Task Update(UserDetailDTO userDto)
         {
-           await repository.GetAndModify(userDto.Id, (a) => { return new User(Guid.Parse(userDto.Id), userDto.IsBanned, userDto.Name, userDto.Surname, userDto.Email); });
+            var user = await repository.GetByIdAsync(userDto.Id);
+
+            
         }
 
     }

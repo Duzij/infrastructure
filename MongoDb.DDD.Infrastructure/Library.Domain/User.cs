@@ -1,11 +1,10 @@
-﻿using Infrastructure.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Library.Domain
 {
-    public class User : Entity
+    public class User : DomainAggregate
     {
         public bool IsNotBanned => !IsBanned;
         public bool IsBanned { get; set; }
@@ -13,13 +12,24 @@ namespace Library.Domain
         public string Surname { get; set; }
         public string Email { get; set; }
 
-        public User(Guid id, bool isBanned, string name, string surname, string email)
+        public static User Create(string name, string surname, string email)
         {
-            Id = new UserId(id.ToString());
-            IsBanned = isBanned;
+            return new User((UserId)TypedId.GetNewId<User>(), name, surname, email);
+        }
+
+        private User(UserId id, string name, string surname, string email)
+        {
+            Id = id;
+            IsBanned = false;
             Name = name;
             Surname = surname;
             Email = email;
+        }
+
+        public void SetAsBanned()
+        {
+            this.IsBanned = true;
+            AddEvent(new UserSetAsBanned(this.Id.Value, this.Email));
         }
 
         public override void CheckState()
@@ -33,13 +43,15 @@ namespace Library.Domain
         }
     }
 
-    public class UserId : IId<string>
+    public  class UserSetAsBanned
     {
         public string Value { get; set; }
+        public string Email { get; set; }
 
-        public UserId(string id)
+        public UserSetAsBanned(string value, string email)
         {
-            this.Value = id;
+            this.Value = value;
+            this.Email = email;
         }
     }
 }

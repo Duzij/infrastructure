@@ -5,10 +5,7 @@ using System.Text;
 
 namespace Library.Domain
 {
-    public class BookId : EntityId<Book>
+    public abstract class DomainAggregate : Entity<string>
     {
-        public BookId(string value) : base(value)
-        {
-        }
     }
 }

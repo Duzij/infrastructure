@@ -17,5 +17,8 @@ namespace Infrastructure.MongoDb
         }
 
         public IMongoDatabase Database { get; }
+
+        public IMongoCollection<T> GetCollection<T>() => Database.GetCollection<T>(MongoUtils.GetCollectionName<T>());
+      
     }
 }

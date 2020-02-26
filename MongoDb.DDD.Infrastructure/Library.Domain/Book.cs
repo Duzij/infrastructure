@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Library.Domain
 {
-    public class Book : Entity
+    public class Book : DomainAggregate
     {
         public BookAmount Amount { get; private set; }
         public BookTitle Title { get; private set; }
@@ -14,16 +14,23 @@ namespace Library.Domain
         public string AuthorName { get; private set; }
         public BookState State { get; private set; }
 
-        public Book(Guid id, string title, string description, AuthorId authorId, string authorName)
+        public static Book Create(string title, string description, AuthorId authorId, string authorName)
         {
-            Id = new BookId(id.ToString());
+            var book = new Book(
+                (BookId)TypedId.GetNewId<Book>(), title, description, authorId, authorName);
+            book.AddEvent(new BookCreated(book.Id.Value, title, description, authorId.Value.ToString()));
+            return book;
+        }
+
+        private Book(BookId id, string title, string description, AuthorId authorId, string authorName)
+        {
+            Id = id;
             Title = new BookTitle(title);
             Description = description;
             AuthorId = authorId;
             AuthorName = authorName;
             State = BookState.InDatabase;
             Amount = new BookAmount(0);
-            AddEvent(new BookCreated(Id.Value, title, description, authorId.Value.ToString()));
         }
 
         public void ChangeAuthor(AuthorId authorId, string newAuthorName)
@@ -40,6 +47,7 @@ namespace Library.Domain
         public void AddStock(BookAmount amount)
         {
             this.Amount = amount;
+            this.State = BookState.InStock;
             AddEvent(new BookAddedToStock(amount));
         }
 

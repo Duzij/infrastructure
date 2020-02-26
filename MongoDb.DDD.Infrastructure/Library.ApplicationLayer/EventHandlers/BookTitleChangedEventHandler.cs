@@ -15,9 +15,10 @@ namespace Library.ApplicationLayer
         {
             this.authorFacade = authorFacade;
         }
+
         public async Task Handle(BookTitleChanged @event)
         {
-            List<AuthorDetailDTO> affectedAuthors = authorFacade.GetAuthorsByBookId(@event.OldTitle);
+            List<AuthorDetailDTO> affectedAuthors = await authorFacade.GetAuthorsByBookAsync(@event.OldTitle);
             foreach (var author in affectedAuthors)
             {
                 author.BookTitles.Remove(@event.OldTitle);

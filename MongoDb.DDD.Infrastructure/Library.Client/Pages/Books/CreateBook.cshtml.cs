@@ -21,7 +21,7 @@ namespace Library.Client.Pages.Books
 
         public CreateBook(ILogger<CreateBook> logger, IBookFacade bookFacade, IAuthorFacade authorFacade)
         {
-            BookDto = new BookCreateDTO(Guid.NewGuid());
+            BookDto = new BookCreateDTO();
             this.logger = logger;
             this.bookFacade = bookFacade;
             Authors = authorFacade.GetAuthorSelectorAsync().GetAwaiter().GetResult().Select(a =>

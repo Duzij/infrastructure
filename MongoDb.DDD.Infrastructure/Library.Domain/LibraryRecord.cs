@@ -1,18 +1,22 @@
-﻿using Infrastructure.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Library.Domain
 {
-    public class LibraryRecord : Entity
+    public class LibraryRecord : DomainAggregate
     {
         public User User { get; set; }
         public ICollection<string> BookIsbns { get; set; }
 
-        public LibraryRecord(Guid id, User user)
+        public static LibraryRecord Create(User user)
         {
-            Id = new LibraryRecordId(id);
+            var record = new LibraryRecord((LibraryRecordId)TypedId.GetNewId<LibraryRecord>(), user);
+            return record;
+        }
+        private LibraryRecord(LibraryRecordId id, User user)
+        {
+            Id = id;
             if (user.IsNotBanned)
             {
                 User = user;
@@ -41,16 +45,6 @@ namespace Library.Domain
             {
                 throw new InvalidEntityStateException();
             }
-        }
-    }
-
-    public class LibraryRecordId : IId<string>
-    {
-        public string Value { get; set; }
-
-        public LibraryRecordId(Guid id)
-        {
-            this.Value = id.ToString();
         }
     }
 

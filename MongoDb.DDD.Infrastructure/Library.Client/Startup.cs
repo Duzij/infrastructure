@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Infrastructure.ApplicationLayer;
 using Infrastructure.Core;
-using Infrastructure.MongoDb;
 using Library.ApplicationLayer;
 using Library.ApplicationLayer.Query;
 using Library.Domain;
@@ -29,23 +29,7 @@ namespace Library.Client
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-            services.AddTransient<IBookFacade,BookFacade>();
-            services.AddTransient<IAuthorFacade, AuthorFacade>();
-            services.AddTransient<IUserFacade, UserFacade>();
-
-
-            services.AddTransient<IEventHandler<BookCreated>, BookCreatedEventHandler>();
-            services.AddTransient<IEventHandler<BookAuthorIdChanged>, BookAuthorIdChangedEventHandler>();
-            services.AddTransient<IEventHandler<BookTitleChanged>, BookTitleChangedEventHandler>();
-
-            services.AddTransient<IAuthorByBookTitleQuery, AuthorByBookTitleQuery>();
-
-            BsonClassMap.RegisterClassMap<UserId>();
-            BsonClassMap.RegisterClassMap<AuthorId>();
-            BsonClassMap.RegisterClassMap<BookId>();
-            BsonClassMap.RegisterClassMap<LibraryRecordId>();
-
-            services.AddMongoDbInfrastructure();
+            services.AddApplicationLayerServices("LibraryDatabase");
             services.AddLogging();
         }
 

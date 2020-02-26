@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Library.Domain
+namespace Infrastructure.Core
 {
-    public class EntityId<T> : IId<Guid>
+    public class EntityId<T> : IId<string>
     {
-        public Guid Value { get; set; }
+        public string Value { get; set; }
 
-        public EntityId(Guid value)
+        public EntityId(string value)
         {
             Value = value;
         }

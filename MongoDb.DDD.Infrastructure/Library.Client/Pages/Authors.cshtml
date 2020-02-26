@@ -27,25 +27,25 @@
     <tbody>
         @foreach (var item in Model.Authors)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Surname)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BookCount)
-                </td>
-                <td>
-                    <a asp-page="./Authors/EditAuthor" class="btn" asp-route-id="@item.Id">Edit</a>
-                </td>
-                @*<td>
-                    <form asp-page-handler="delete" asp-route-id="@item.Id" method="post">
-                        <button class="btn">Delete</button>
-                    </form>
-                </td>*@
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Surname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BookCount)
+            </td>
+            <td>
+                <a asp-page="./Authors/EditAuthor" class="btn" asp-route-id="@item.Id">Edit</a>
+            </td>
+            @*<td>
+            <form asp-page-handler="delete" asp-route-id="@item.Id" method="post">
+                <button class="btn">Delete</button>
+            </form>
+        </td>*@
+        </tr>
         }
     </tbody>
 </table>

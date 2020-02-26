@@ -4,16 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Library.Domain
+namespace Infrastructure.Core
 {
-    public abstract class Entity : IEntity<string>
+    public abstract class Entity<TKey> : IEntity<TKey>
     {
         private IList<object> Events { get; set; } 
-        public IId<string> Id { get; set; }
+        public IId<TKey> Id { get;  set; }
 
         public IList<object> GetEvents() => Events.ToList<object>();
 
-        protected Entity()
+        public Entity()
         {
             Events = new List<object>();
         }
