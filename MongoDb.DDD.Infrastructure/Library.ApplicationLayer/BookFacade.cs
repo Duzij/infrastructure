@@ -60,8 +60,7 @@ namespace Library.ApplicationLayer
                 book.ChangeTitle(new BookTitle(bookDetail.Title));
             }
 
-            await repository.Update(bookDetail.Id,
-                 (a) => { return book; });
+            await repository.SaveAsync(book);
         }
     }
 }

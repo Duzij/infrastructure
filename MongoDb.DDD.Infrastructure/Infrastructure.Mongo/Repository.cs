@@ -44,7 +44,16 @@ namespace Infrastructure.MongoDb
         {
             try
             {
-                await collection.InsertOneAsync(entity);
+                var foundEntity = await GetByIdAsync(entity.Id.Value);
+                if (foundEntity == null)
+                {
+                    await collection.InsertOneAsync(entity);
+                }
+                else
+                {
+                    var filter = Builders<T>.Filter.Eq("_id.Value", entity.Id.Value);
+                    await collection.FindOneAndReplaceAsync(filter, entity);
+                }
                 SaveEntityEvents(entity.GetEvents(), entity.Id.Value.ToString());
             }
             catch (Exception e)
@@ -52,16 +61,6 @@ namespace Infrastructure.MongoDb
                 Console.WriteLine(e);
                 throw;
             }
-        }
-
-        public async Task Update(string id, Func<T, T> modifyFunc)
-        {
-            var filter = Builders<T>.Filter.Eq("_id.Value", id);
-            var entity = await GetByIdAsync(id);
-            entity = modifyFunc(entity);
-            //atomic Mongo update
-            SaveEntityEvents(entity.GetEvents(), id);
-            await collection.FindOneAndReplaceAsync(filter, entity);
         }
     }
 }

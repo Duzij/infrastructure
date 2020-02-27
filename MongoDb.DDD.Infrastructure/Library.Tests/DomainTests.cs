@@ -17,5 +17,14 @@ namespace Infrastucture.Tests
             var p1 = new Price(3);
             Assert.AreEqual(p, p1);
         }
+
+
+        [Test]
+        public void TestTypedId()
+        {
+            var generatedId = TypedId.GetNewId<BookId>();
+        }
+
+
     }
 }

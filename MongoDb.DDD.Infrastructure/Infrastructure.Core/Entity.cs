@@ -8,10 +8,16 @@ namespace Infrastructure.Core
 {
     public abstract class Entity<TKey> : IEntity<TKey>
     {
-        private IList<object> Events { get; set; } 
-        public IId<TKey> Id { get;  set; }
+        private IList<object> Events { get; set; }
+        public IId<TKey> Id { get; set; }
 
-        public IList<object> GetEvents() => Events.ToList<object>();
+        public IList<object> GetEvents(){
+            if (Events == null)
+            {
+                return new List<object>();
+            }
+            return Events;
+        }
 
         public Entity()
         {

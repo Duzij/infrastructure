@@ -11,7 +11,7 @@ namespace Library.Domain
 
         public static LibraryRecord Create(User user)
         {
-            var record = new LibraryRecord((LibraryRecordId)TypedId.GetNewId<LibraryRecord>(), user);
+            var record = new LibraryRecord(TypedId.GetNewId<LibraryRecordId>(), user);
             return record;
         }
         private LibraryRecord(LibraryRecordId id, User user)

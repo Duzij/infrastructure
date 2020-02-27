@@ -1,5 +1,4 @@
 ﻿using Infrastructure.Core;
-using Library.Domain;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson.Serialization;
 using System;
@@ -36,28 +35,14 @@ namespace Infrastructure.MongoDb
         {
             services.AddTransient<EventWriter>();
             services.AddTransient<IMongoDbContext, MongoDbContext>();
+            services.AddHostedService<EventHandlerBackgroundService>();
+
             services.AddTransient(typeof(IRepository<,>), typeof(Repository<,>));
 
-            services = services.Scan(scan => scan.FromCallingAssembly()
-            .AddClasses(classes => classes.AssignableTo(typeof(IEventHandler<>)).Where(_ => !_.IsGenericType))
-            .AsImplementedInterfaces().WithTransientLifetime());
-
-
-            IEnumerable<Type> types =
-            from type in AppDomain.CurrentDomain.GetAssemblies().SelectMany(s => s.GetTypes())
-            where
-            type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IId<>)) &&
-            type.IsClass
-            select type;
-
-            //foreach (var v in types)
-            //{
-            //    BsonClassMap.RegisterClassMap(new BsonClassMap(v));
-            //}
-
-            BsonClassMap.RegisterClassMap<BookId>();
-
-            services.AddHostedService<EventHandlerBackgroundService>();
+            services.Scan(scan => scan.FromApplicationDependencies()
+            .AddClasses(classes => classes.AssignableTo(typeof(IEventHandler<>)))
+            .AsImplementedInterfaces()
+            .WithTransientLifetime());
         }
     }
 }

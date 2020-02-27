@@ -9,6 +9,5 @@ namespace Infrastructure.Core
         Task SaveAsync(T entity);
         Task<T> GetByIdAsync(TKey id);
         Task RemoveAsync(TKey id);
-        Task Update(TKey id, Func<T, T> modifyFunc);
     }
 }

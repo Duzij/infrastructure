@@ -7,11 +7,9 @@ namespace Library.Domain
 {
     public static class TypedId
     {
-        public static EntityId<T> GetNewId<T>()
+        public static T GetNewId<T>()
         {
-            var id = Activator.CreateInstance<EntityId<T>>();
-            id.Value = Guid.NewGuid().ToString();
-            return id;
+            return (T)Activator.CreateInstance(typeof(T), Guid.NewGuid().ToString());
         }
     }
 }

@@ -13,13 +13,13 @@ namespace Library.Domain
 
         public static Author Create(IList<string> bookTitles, string name, string surname)
         {
-            var author = new Author((AuthorId)TypedId.GetNewId<Author>(),bookTitles,name,surname);
+            var author = new Author(TypedId.GetNewId<AuthorId>(),bookTitles,name,surname);
             return author;
         }
 
         public static Author Create(string name, string surname)
         {
-            var author = new Author((AuthorId)TypedId.GetNewId<Author>(), name, surname);
+            var author = new Author(TypedId.GetNewId<AuthorId>(), name, surname);
             return author;
         }
 

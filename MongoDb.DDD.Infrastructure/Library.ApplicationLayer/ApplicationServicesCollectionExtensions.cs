@@ -21,7 +21,6 @@ namespace Infrastructure.ApplicationLayer
             services.AddTransient<IAuthorFacade, AuthorFacade>();
             services.AddTransient<IUserFacade, UserFacade>();
 
-
             services.AddTransient<AllAuthorsQuery>();
             services.AddTransient<AllBooksQuery>();
             services.AddTransient<AllUsersQuery>();
@@ -30,6 +29,11 @@ namespace Infrastructure.ApplicationLayer
             services.AddMongoDbInfrastructure(settings);
 
             services.AddTransient<AuthorByBookTitleQuery>();
+
+            BsonClassMap.RegisterClassMap(new BsonClassMap(typeof(AuthorId)));
+            BsonClassMap.RegisterClassMap(new BsonClassMap(typeof(BookId)));
+            BsonClassMap.RegisterClassMap(new BsonClassMap(typeof(LibraryRecordId)));
+            BsonClassMap.RegisterClassMap(new BsonClassMap(typeof(UserId)));
 
             return services;
         }

@@ -14,7 +14,7 @@ namespace Library.Domain
 
         public static User Create(string name, string surname, string email)
         {
-            return new User((UserId)TypedId.GetNewId<User>(), name, surname, email);
+            return new User(TypedId.GetNewId<UserId>(), name, surname, email);
         }
 
         private User(UserId id, string name, string surname, string email)

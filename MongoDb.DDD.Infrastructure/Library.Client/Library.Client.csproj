@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Library.ApplicationLayer\Library.ApplicationLayer.csproj" />
-    <ProjectReference Include="..\Library.Domain\Library.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
