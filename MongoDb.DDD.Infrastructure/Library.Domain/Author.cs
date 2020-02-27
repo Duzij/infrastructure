@@ -9,11 +9,11 @@ namespace Library.Domain
         public string Name { get; set; }
         public string Surname { get; set; }
 
-        public IList<string> BookTitles { get; private set; }
+        public IList<BookId> Books { get; private set; }
 
-        public static Author Create(IList<string> bookTitles, string name, string surname)
+        public static Author Create(IList<BookId> books, string name, string surname)
         {
-            var author = new Author(TypedId.GetNewId<AuthorId>(),bookTitles,name,surname);
+            var author = new Author(TypedId.GetNewId<AuthorId>(), books, name,surname);
             return author;
         }
 
@@ -23,10 +23,10 @@ namespace Library.Domain
             return author;
         }
 
-        private Author(AuthorId id, IList<string> bookTitles, string name, string surname)
+        private Author(AuthorId id, IList<BookId> books, string name, string surname)
         {
             Id = id;
-            BookTitles = bookTitles;
+            Books = books;
             Name = name;
             Surname = surname;
         }
@@ -41,15 +41,15 @@ namespace Library.Domain
 
         public override void CheckState()
         {
-            if (Id == null || string.IsNullOrWhiteSpace(Id.Value) || string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Surname) || BookTitles == null)
+            if (Id == null || string.IsNullOrWhiteSpace(Id.Value) || string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Surname) || Books == null)
             {
                 throw new InvalidEntityStateException();
             }
         }
 
-        public void UpdateBooks(IList<string> bookTitles)
+        public void UpdateBooks(IList<BookId> books)
         {
-            this.BookTitles = bookTitles;
+            this.Books = books;
             CheckState();
         }
 

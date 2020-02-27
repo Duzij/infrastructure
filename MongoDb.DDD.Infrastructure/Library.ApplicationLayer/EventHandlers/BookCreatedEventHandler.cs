@@ -12,22 +12,23 @@ namespace Library.ApplicationLayer
     public class BookCreatedEventHandler : IEventHandler<BookCreated>
     {
         private readonly ILogger<BookCreatedEventHandler> logger;
-        private readonly IAuthorFacade authorFacade;
+        private readonly IRepository<Author, string> authorRepository;
 
-        public BookCreatedEventHandler(ILogger<BookCreatedEventHandler> logger, IAuthorFacade authorFacade)
+        public BookCreatedEventHandler(ILogger<BookCreatedEventHandler> logger, IRepository<Author, string> authorRepository)
         {
             this.logger = logger;
-            this.authorFacade = authorFacade;
+            this.authorRepository = authorRepository;
         }
+        
         public async Task Handle(BookCreated @event)
         {
-            var author = await authorFacade.GetById(@event.AuthorId);
-            if (author.BookTitles == null)
-                author.BookTitles = new List<string>();
+            var author = await authorRepository.GetByIdAsync(@event.AuthorId);
 
-            author.BookTitles.Add(@event.Title);
+            var bookList = author.Books;
+            bookList.Add(new BookId(@event.BookId));
+            author.UpdateBooks(bookList);
 
-            await authorFacade.UpdateAuthorBooksAsync(author.Id, author.BookTitles);
+            await authorRepository.SaveAsync(author);
             logger.LogInformation("Author books were updated");
         }
     }

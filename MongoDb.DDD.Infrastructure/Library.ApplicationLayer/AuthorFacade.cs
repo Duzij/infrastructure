@@ -13,12 +13,14 @@ namespace Library.ApplicationLayer
     public class AuthorFacade : IAuthorFacade
     {
         private readonly IRepository<Author, string> repository;
+        private readonly IRepository<Book, string> bookRepository;
         private readonly AuthorByBookTitleQuery query;
         private readonly AllAuthorsQuery allAuthorsQuery;
 
-        public AuthorFacade(IRepository<Author,string> repository, AuthorByBookTitleQuery query, AllAuthorsQuery allAuthorsQuery)
+        public AuthorFacade(IRepository<Author,string> repository, IRepository<Book, string> bookRepository, AuthorByBookTitleQuery query, AllAuthorsQuery allAuthorsQuery)
         {
             this.repository = repository;
+            this.bookRepository = bookRepository;
             this.query = query;
             this.allAuthorsQuery = allAuthorsQuery;
         }
@@ -40,9 +42,9 @@ namespace Library.ApplicationLayer
             return list.ToList();
         }
 
-        public async Task<List<AuthorDetailDTO>> GetAuthorsByBookAsync(string title)
+        public async Task<List<AuthorDetailDTO>> GetAuthorsByBookAsync(string BookId)
         {
-            query.BookTitle = title;
+            query.BookId = new BookId(BookId);
             var list = await query.GetResultsAsync();
             return list.ToList();
         }
@@ -61,7 +63,16 @@ namespace Library.ApplicationLayer
         public async Task<AuthorDetailDTO> GetById(string v)
         {
             var author = await repository.GetByIdAsync(v);
-            return new AuthorDetailDTO(author.Id.Value, author.Name, author.Surname, author.BookTitles);
+
+            var books = new List<string>();
+
+            foreach (var bookId in author.Books)
+            {
+                var book = await bookRepository.GetByIdAsync(bookId.Value);
+                books.Add(book.Title.Value);
+            }
+
+            return new AuthorDetailDTO(author.Id.Value, author.Name, author.Surname, books);
         }
 
         public async Task Update(AuthorDetailDTO author)
@@ -78,7 +89,7 @@ namespace Library.ApplicationLayer
             await repository.SaveAsync(authorEntity);
         }
 
-        public async Task UpdateAuthorBooksAsync(string id, IList<string> bookTitles)
+        public async Task UpdateAuthorBooksAsync(string id, IList<BookId> bookTitles)
         {
             var authorEntity = await repository.GetByIdAsync(id);
             authorEntity.UpdateBooks(bookTitles);

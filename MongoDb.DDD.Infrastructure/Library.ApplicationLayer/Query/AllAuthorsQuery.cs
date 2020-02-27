@@ -21,7 +21,7 @@ namespace Library.ApplicationLayer.Query
             var authorDetails = new List<AuthorDetailDTO>();
             foreach (var author in authors)
             {
-                authorDetails.Add(new AuthorDetailDTO(author.Id.Value, author.Name, author.Surname, author.BookTitles));
+                authorDetails.Add(new AuthorDetailDTO(author.Id.Value, author.Name, author.Surname, author.Books));
             }
 
             return authorDetails;
