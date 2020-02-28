@@ -62,5 +62,12 @@ namespace Library.ApplicationLayer
 
             await repository.SaveAsync(book);
         }
+
+        public async Task UpdateAmount(string bookId, int amountValue)
+        {
+            var book = await repository.GetByIdAsync(bookId);
+            book.AddStock(new BookAmount(amountValue));
+            await repository.SaveAsync(book);
+        }
     }
 }

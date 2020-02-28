@@ -17,8 +17,6 @@ namespace Library.Client.Pages.Authors
         [BindProperty]
         public AuthorDetailDTO AuthorDto { get; set; }
 
-        public bool IsBanned { get; set; }
-
         public EditAuthor(ILogger<EditAuthor> logger, IAuthorFacade authorFacade)
         {
             this.logger = logger;
@@ -32,6 +30,9 @@ namespace Library.Client.Pages.Authors
 
         public async Task<IActionResult> OnPost()
         {
+            AuthorDto.Name = Request.Form["name"];
+            AuthorDto.Surname = Request.Form["surname"];
+
             await authorFacade.Update(AuthorDto);
             logger.LogInformation("Author updated");
             return RedirectToPage("/Authors");

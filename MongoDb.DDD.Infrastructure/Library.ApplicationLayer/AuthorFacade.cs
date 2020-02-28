@@ -27,7 +27,7 @@ namespace Library.ApplicationLayer
 
         public async Task Create(CreateAuthorDTO author)
         {
-            var authorEntity = Author.Create(author.Name, author.Name);
+            var authorEntity = Author.Create(author.Name, author.Surname);
             await repository.SaveAsync(authorEntity);
         }
 

@@ -3,6 +3,7 @@ using Library.Domain;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,7 +22,12 @@ namespace Library.ApplicationLayer.Query
             var authorDetails = new List<AuthorDetailDTO>();
             foreach (var author in authors)
             {
-                authorDetails.Add(new AuthorDetailDTO(author.Id.Value, author.Name, author.Surname, author.Books));
+                var bookTitles = dbContext.GetCollection<Book>().AsQueryable()
+                    .Where(a => a.AuthorId == author.Id)
+                    .Select(b => b.Title.Value)
+                    .ToList();
+
+                authorDetails.Add(new AuthorDetailDTO(author.Id.Value, author.Name, author.Surname, bookTitles));
             }
 
             return authorDetails;

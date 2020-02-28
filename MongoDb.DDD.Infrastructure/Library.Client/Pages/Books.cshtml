@@ -51,11 +51,14 @@
             <td>
                 <a asp-page="./Books/EditBook" class="btn" asp-route-id="@item.Id">Edit</a>
             </td>
+            <td>
+                <a asp-page="./Books/DetailBook" class="btn" asp-route-id="@item.Id">Detail</a>
+            </td>
             @*<td>
-                <form asp-page-handler="delete" asp-route-id="@item.Id" method="post">
-                    <button class="btn">Delete</button>
-                </form>
-            </td>*@
+            <form asp-page-handler="delete" asp-route-id="@item.Id" method="post">
+                <button class="btn">Delete</button>
+            </form>
+        </td>*@
         </tr>
         }
     </tbody>

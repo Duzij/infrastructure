@@ -21,7 +21,6 @@ namespace Library.Client.Pages.Books
 
         public List<SelectListItem> Authors { get; set; } = new List<SelectListItem>();
 
-
         public EditBook(ILogger<EditBook> logger, IBookFacade bookFacade, IAuthorFacade authorFacade)
         {
             this.logger = logger;
@@ -42,7 +41,7 @@ namespace Library.Client.Pages.Books
                                   }).ToList();
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAddAmount()
         {
             await bookFacade.Update(BookDetail);
             logger.LogInformation("Book updated");

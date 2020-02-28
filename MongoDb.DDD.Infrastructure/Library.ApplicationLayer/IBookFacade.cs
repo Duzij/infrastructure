@@ -12,5 +12,6 @@ namespace Library.ApplicationLayer
         Task Delete(string v);
         Task Update(BookDetailDTO bookDetail);
         Task<BookDetailDTO> GetUserById(string value);
+        Task UpdateAmount(string bookId, int amountValue);
     }
 }

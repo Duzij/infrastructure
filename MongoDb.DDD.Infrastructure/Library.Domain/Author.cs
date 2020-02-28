@@ -36,6 +36,7 @@ namespace Library.Domain
             Id = id;
             Name = name;
             Surname = surname;
+            this.Books = new List<BookId>();
         }
 
 

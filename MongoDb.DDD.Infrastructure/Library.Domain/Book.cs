@@ -46,9 +46,19 @@ namespace Library.Domain
 
         public void AddStock(BookAmount amount)
         {
-            this.Amount = amount;
+            this.Amount = new BookAmount(this.Amount.Amount + amount.Amount);
             this.State = BookState.InStock;
-            AddEvent(new BookAddedToStock(amount));
+            AddEvent(new BookStockChanged(Amount));
+        }
+
+        public void RemoveStock(BookAmount amount)
+        {
+            this.Amount = new BookAmount(this.Amount.Amount - amount.Amount);
+            if (this.Amount.Amount == 0)
+            {
+                this.State = BookState.InDatabase;
+            }
+            AddEvent(new BookStockChanged(Amount));
         }
 
         public override void CheckState()
@@ -115,11 +125,11 @@ namespace Library.Domain
 
     }
 
-    public class BookAddedToStock
+    public class BookStockChanged
     {
         public int booksAdded;
 
-        public BookAddedToStock(BookAmount amount)
+        public BookStockChanged(BookAmount amount)
         {
             this.booksAdded = amount.Amount;
         }
