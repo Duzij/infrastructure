@@ -11,7 +11,7 @@ namespace Library.Domain
         {
             if (amount < 0)
             {
-                throw new ArgumentException(nameof(Price) + "cannot be less than 0");
+                throw new ArgumentException(nameof(BookAmount) + "cannot be less than 0");
             }
             this.Amount = amount;
         }

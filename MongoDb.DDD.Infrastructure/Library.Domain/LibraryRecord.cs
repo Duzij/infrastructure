@@ -7,7 +7,12 @@ namespace Library.Domain
     public class LibraryRecord : DomainAggregate
     {
         public User User { get; set; }
-        public ICollection<string> BookIsbns { get; set; }
+        public IList<BookId> BookIds { get; private set; }
+
+        public DateTime CreatedDate { get; private set; }
+        public DateTime ReturnDate => CreatedDate.AddDays(7);
+
+        public ReturnFine ReturnFine { get; set; }
 
         public static LibraryRecord Create(User user)
         {
@@ -21,26 +26,41 @@ namespace Library.Domain
             {
                 User = user;
             }
-            throw new InvalidEntityStateException();
+            else
+            {
+                throw new InvalidEntityStateException();
+            }
+            this.CreatedDate = DateTime.UtcNow;
+            this.ReturnFine = new ReturnFine(0);
         }
 
-        public void AddBook(string ISBN)
+        public void AddBook(BookId bookId)
         {
-            BookIsbns.Add(ISBN);
-            AddEvent(new BookAddedToLibraryRecord(ISBN, Id.Value));
+            BookIds.Add(bookId);
+            AddEvent(new BookAddedToLibraryRecord(bookId.Value, Id.Value));
         }
 
-        public void RemveBook(string ISBN)
+        public void ReturnBook(BookId bookId)
         {
-            BookIsbns.Remove(ISBN);
-            AddEvent(new BookRemovedFromLibraryRecord(ISBN, Id.Value));
+            if (ReturnDate > DateTime.UtcNow)
+            {
+                BookIds.Remove(bookId);
+                AddEvent(new BookRemovedFromLibraryRecord(bookId.Value, Id.Value));
+            }
+            else
+            {
+                var oldFineValue = ReturnFine.Value;
+                var daysBetweenTodayAndReturnDate = ((TimeSpan)(DateTime.UtcNow - ReturnDate)).Days;
+                var newFineValue = daysBetweenTodayAndReturnDate * 10;
+                ReturnFine = new ReturnFine(oldFineValue + newFineValue);
+            }
         }
 
         public override void CheckState()
         {
-            if (BookIsbns != null &&
-                BookIsbns.Count > 0 && 
-                User != null && 
+            if (BookIds != null &&
+                BookIds.Count > 0 &&
+                User != null &&
                 User.IsNotBanned)
             {
                 throw new InvalidEntityStateException();
@@ -50,24 +70,24 @@ namespace Library.Domain
 
     public class BookRemovedFromLibraryRecord
     {
-        private string iSBN;
-        private string BookId;
+        public string LibraryRecordId { get; set; }
+        public string BookId { get; set; }
 
-        public BookRemovedFromLibraryRecord(string iSBN, string bookId)
+        public BookRemovedFromLibraryRecord(string bookId, string libraryRecordId)
         {
-            this.iSBN = iSBN;
+            this.LibraryRecordId = libraryRecordId;
             this.BookId = bookId;
         }
     }
 
     public class BookAddedToLibraryRecord
     {
-        private string iSBN;
-        private string BookId;
+        public string LibraryRecordId { get; set; }
+        public string BookId { get; set; }
 
-        public BookAddedToLibraryRecord(string iSBN, string bookId)
+        public BookAddedToLibraryRecord(string bookId, string libraryRecordId)
         {
-            this.iSBN = iSBN;
+            this.LibraryRecordId = libraryRecordId;
             this.BookId = bookId;
         }
     }

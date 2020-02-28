@@ -39,6 +39,17 @@ namespace Library.ApplicationLayer
             return list.ToList();
         }
 
+        public async Task<Dictionary<string, string>> GetBooksSelectorAsync()
+        {
+            var books = await bookQuery.GetResultsAsync();
+            var booksSelector = new Dictionary<string, string>();
+            foreach (var book in books)
+            {
+                booksSelector.Add(book.Id, $"{book.Title}");
+            }
+            return booksSelector;
+        }
+
         public async Task<BookDetailDTO> GetUserById(string id)
         {
             var book = await repository.GetByIdAsync(id);

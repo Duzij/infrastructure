@@ -20,6 +20,7 @@ namespace Infrastructure.ApplicationLayer
             services.AddTransient<IBookFacade, BookFacade>();
             services.AddTransient<IAuthorFacade, AuthorFacade>();
             services.AddTransient<IUserFacade, UserFacade>();
+            services.AddTransient<ILibraryRecordFacade, LibraryRecordFacade>();
 
             services.AddTransient<AllAuthorsQuery>();
             services.AddTransient<AllBooksQuery>();

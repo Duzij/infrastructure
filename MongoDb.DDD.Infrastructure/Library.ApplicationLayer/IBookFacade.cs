@@ -11,6 +11,7 @@ namespace Library.ApplicationLayer
         Task<List<BookDetailDTO>> GetBooks();
         Task Delete(string v);
         Task Update(BookDetailDTO bookDetail);
+        Task<Dictionary<string, string>> GetBooksSelectorAsync();
         Task<BookDetailDTO> GetUserById(string value);
         Task UpdateAmount(string bookId, int amountValue);
     }

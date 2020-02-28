@@ -8,8 +8,4 @@
     <ProjectReference Include="..\Library.ApplicationLayer\Library.ApplicationLayer.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Pages\LibraryRecords\" />
-  </ItemGroup>
-
 </Project>
