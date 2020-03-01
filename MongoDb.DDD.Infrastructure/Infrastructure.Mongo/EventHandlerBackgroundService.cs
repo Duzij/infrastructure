@@ -27,7 +27,7 @@ namespace Infrastructure.MongoDb
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var collection = dbContext.Database.GetCollection<Event>(MongoDefaultSettings.EventsDocument);
+            var collection = dbContext.Database.GetCollection<Event>(MongoDefaultSettings.EventsDocumentName);
             var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<Event>>()
            .Match(x => x.OperationType == ChangeStreamOperationType.Insert);
             using (var cursor = await collection.WatchAsync(pipeline))

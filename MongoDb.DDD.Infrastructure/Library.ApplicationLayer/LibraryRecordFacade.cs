@@ -24,7 +24,7 @@ namespace Library.ApplicationLayer
 
             var libraryRecord = LibraryRecord.Create(user);
 
-            await libraryRecordRepository.SaveAsync(libraryRecord);
+            await libraryRecordRepository.InsertNewAsync(libraryRecord);
         }
     }
 }

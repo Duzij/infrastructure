@@ -22,7 +22,7 @@ namespace Library.ApplicationLayer
         public async Task Create(CreateUserDTO user)
         {
             var userEntity = User.Create(user.Name, user.Surname, user.Email);
-            await repository.SaveAsync(userEntity);
+            await repository.InsertNewAsync(userEntity);
         }
 
         public async Task Delete(string id)

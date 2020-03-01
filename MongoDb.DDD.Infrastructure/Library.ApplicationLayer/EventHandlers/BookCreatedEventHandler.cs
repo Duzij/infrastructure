@@ -22,13 +22,11 @@ namespace Library.ApplicationLayer
         
         public async Task Handle(BookCreated @event)
         {
-            var author = await authorRepository.GetByIdAsync(@event.AuthorId);
-
-            var bookList = author.Books;
-            bookList.Add(new BookId(@event.BookId));
-            author.UpdateBooks(bookList);
-
-            await authorRepository.SaveAsync(author);
+            await authorRepository.ModifyAsync(author => {
+                var bookList = author.Books;
+                bookList.Add(new BookId(@event.BookId));
+                author.UpdateBooks(bookList);
+            }, @event.AuthorId);
             logger.LogInformation("Author books were updated");
         }
     }

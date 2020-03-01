@@ -12,7 +12,7 @@ namespace Infrastructure.MongoDb
 
         public EventWriter(IMongoDbContext dbContext)
         {
-            collection = dbContext.Database.GetCollection<Event>(MongoDefaultSettings.EventsDocument);
+            collection = dbContext.Database.GetCollection<Event>(MongoDefaultSettings.EventsDocumentName);
         }
         public void Write(Event @event)
         {

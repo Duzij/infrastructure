@@ -41,7 +41,7 @@ namespace Library.Client.Pages.Books
                                   }).ToList();
         }
 
-        public async Task<IActionResult> OnPostAddAmount()
+        public async Task<IActionResult> OnPost()
         {
             await bookFacade.Update(BookDetail);
             logger.LogInformation("Book updated");

@@ -28,7 +28,7 @@ namespace Library.ApplicationLayer
         public async Task Create(CreateAuthorDTO author)
         {
             var authorEntity = Author.Create(author.Name, author.Surname);
-            await repository.SaveAsync(authorEntity);
+            await repository.InsertNewAsync(authorEntity);
         }
 
         public async Task Delete(string id)
@@ -77,23 +77,21 @@ namespace Library.ApplicationLayer
 
         public async Task Update(AuthorDetailDTO author)
         {
-            var authorEntity = await repository.GetByIdAsync(author.Id);
-            if (authorEntity.Name != author.Name)
-            {
-                authorEntity.ChangeName(author.Name);
-            }
-            if (authorEntity.Surname != author.Surname)
-            {
-                authorEntity.ChangeSurname(author.Surname);
-            }
-            await repository.SaveAsync(authorEntity);
+            await repository.ModifyAsync(authorEntity => {
+                if (authorEntity.Name != author.Name)
+                {
+                    authorEntity.ChangeName(author.Name);
+                }
+                if (authorEntity.Surname != author.Surname)
+                {
+                    authorEntity.ChangeSurname(author.Surname);
+                }
+            }, author.Id);
         }
 
         public async Task UpdateAuthorBooksAsync(string id, IList<BookId> bookTitles)
         {
-            var authorEntity = await repository.GetByIdAsync(id);
-            authorEntity.UpdateBooks(bookTitles);
-            await repository.SaveAsync(authorEntity);
+            await repository.ModifyAsync(authorEntity => authorEntity.UpdateBooks(bookTitles), id);
         }
     }
 }

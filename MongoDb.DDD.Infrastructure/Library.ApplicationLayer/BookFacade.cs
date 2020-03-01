@@ -25,7 +25,7 @@ namespace Library.ApplicationLayer
         public async Task Create(BookCreateDTO bookCreateDTO)
         {
            var book = Book.Create(bookCreateDTO.Title, bookCreateDTO.Description, new AuthorId(bookCreateDTO.AuthorId), bookCreateDTO.AuthorName);
-           await repository.SaveAsync(book);
+           await repository.InsertNewAsync(book);
         }
 
         public async Task Delete(string id)
@@ -58,27 +58,23 @@ namespace Library.ApplicationLayer
 
         public async Task Update(BookDetailDTO bookDetail)
         {
-            var book = await repository.GetByIdAsync(bookDetail.Id);
-            var newAuthor = await authorRepository.GetByIdAsync(bookDetail.AuthorId);
-            var newAuthorName = $"{newAuthor.Name} {newAuthor.Surname}";
-
-            if (bookDetail.AuthorId != book.AuthorId.Value)
-            {
-                book.ChangeAuthor(new AuthorId(bookDetail.AuthorId), newAuthorName);
-            }
-            if (bookDetail.Title != book.Title.Value)
-            {
-                book.ChangeTitle(new BookTitle(bookDetail.Title));
-            }
-
-            await repository.SaveAsync(book);
+             await repository.ModifyAsync(async book =>  {
+                if (bookDetail.AuthorId != book.AuthorId.Value)
+                {
+                     var newAuthor = await authorRepository.GetByIdAsync(bookDetail.AuthorId);
+                     var newAuthorName = $"{newAuthor.Name} {newAuthor.Surname}";
+                     book.ChangeAuthor(new AuthorId(bookDetail.AuthorId), newAuthorName);
+                }
+                if (bookDetail.Title != book.Title.Value)
+                {
+                    book.ChangeTitle(new BookTitle(bookDetail.Title));
+                }
+            }, bookDetail.Id);
         }
 
         public async Task UpdateAmount(string bookId, int amountValue)
         {
-            var book = await repository.GetByIdAsync(bookId);
-            book.AddStock(new BookAmount(amountValue));
-            await repository.SaveAsync(book);
+            await repository.ModifyAsync(book=> book.AddStock(new BookAmount(amountValue)), bookId);
         }
     }
 }
