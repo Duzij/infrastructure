@@ -69,6 +69,10 @@ namespace Library.ApplicationLayer
                 {
                     book.ChangeTitle(new BookTitle(bookDetail.Title));
                 }
+                 if (bookDetail.Description != book.Description)
+                 {
+                     book.ChangeDescription(book.Description);
+                 }
             }, bookDetail.Id);
         }
 

@@ -8,5 +8,7 @@ namespace Infrastructure.MongoDb
     {
         public static string ConnectionString= "mongodb://localhost:27017?connect=replicaSet";
         public static string EventsDocumentName = "__events";
+        public static string TransientTransactionError = "TransientTransactionError";
+        public static string UnknownTransactionCommitResult = "UnknownTransactionCommitResult";
     }
 }

@@ -10,6 +10,7 @@ namespace Infrastructure.Core
     {
         private IList<object> Events { get; set; }
         public IId<TKey> Id { get; set; }
+        public string Etag { get; set; }
 
         public IList<object> GetEvents(){
             if (Events == null)

@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Core;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -11,28 +12,21 @@ namespace Infrastructure.MongoDb
     public class Repository<T, TKey> : IRepository<T, string> where T : IEntity<string>
     {
         private readonly IMongoCollection<T> collection;
-        private readonly EventWriter eventWriter;
         private readonly IMongoDbContext dbContext;
         private readonly IMongoDbSettings mongoDbSettings;
+        private readonly ILogger<Repository<T, TKey>> logger;
 
-        public Repository(EventWriter eventWriter, IMongoDbContext dbContext, IMongoDbSettings mongoDbSettings)
+        public Repository(IMongoDbContext dbContext, IMongoDbSettings mongoDbSettings, ILogger<Repository<T, TKey>> logger)
         {
-            this.eventWriter = eventWriter;
             this.dbContext = dbContext;
             this.mongoDbSettings = mongoDbSettings;
+            this.logger = logger;
             collection = dbContext.Database.GetCollection<T>(MongoUtils.GetCollectionName<T>());
-        }
-
-        private void SaveEntityEvents(IList<object> events, string entityId)
-        {
-           
         }
 
         public async Task<T> GetByIdAsync(string id)
         {
-            var filter = Builders<T>.Filter.Eq("_id.Value", id);
-            var entity = await collection.FindAsync(filter);
-            return await entity.FirstOrDefaultAsync();
+            return await GetByTypedIdAsync(collection, id);
         }
 
         public async Task RemoveAsync(string id)
@@ -43,6 +37,7 @@ namespace Infrastructure.MongoDb
 
         public async Task InsertNewAsync(T entity)
         {
+            entity.Etag = Guid.NewGuid().ToString();
             await collection.InsertOneAsync(entity);
         }
 
@@ -52,17 +47,16 @@ namespace Infrastructure.MongoDb
             {
                 try
                 {
-                    RunTransactionWithRetry(id, modifyLogic, session);
+                  await RunTransactionWithRetry(id, modifyLogic, session, false);
                 }
                 catch (Exception exception)
                 {
-                    // do something with error
-                    Console.WriteLine($"Non transient exception caught during transaction: ${exception.Message}.");
+                    logger.LogError($"{Messages.NonTransientExceptionCaught} ${exception.Message}.", exception);
                 }
             }
         }
 
-        public void RunTransactionWithRetry(string id, Action<T> modifyLogic, IClientSessionHandle session)
+        public async Task RunTransactionWithRetry(string id, Action<T> modifyLogic, IClientSessionHandle session, bool optimisticConcurrencyCheck)
         {
             while (true)
             {
@@ -78,10 +72,24 @@ namespace Infrastructure.MongoDb
                         var entityCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<T>(MongoUtils.GetCollectionName<T>());
                         var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<Event>(MongoDefaultSettings.EventsDocumentName);
 
-                        var filter = Builders<T>.Filter.Eq("_id.Value", id);
-                        var foundEntity = entityCollection.FindAsync(filter).GetAwaiter().GetResult().FirstOrDefault();
+
+                        var foundEntity = await GetByTypedIdAsync(entityCollection, id);
+
                         modifyLogic(foundEntity);
-                        entityCollection.FindOneAndReplace(filter, foundEntity);
+
+                        if (optimisticConcurrencyCheck)
+                        {
+                            var newFoundEntity = await GetByTypedIdAsync(entityCollection, id);
+                            if (newFoundEntity.Etag != foundEntity.Etag)
+                            {
+                                throw new EtagNotEqualException(typeof(T));
+                            }
+                        }
+
+                        foundEntity.Etag = Guid.NewGuid().ToString();
+
+                        var filter = Builders<T>.Filter.Eq("_id.Value", id);
+                        await entityCollection.FindOneAndReplaceAsync(filter, foundEntity);
 
                         foreach (var @event in foundEntity.GetEvents())
                         {
@@ -91,7 +99,7 @@ namespace Infrastructure.MongoDb
                     }
                     catch (Exception exception)
                     {
-                        Console.WriteLine($"Caught exception during transaction, aborting: {exception.Message}.");
+                        logger.LogError($"{Messages.DuringTransactionError}: {exception.Message}.", exception);
                         session.AbortTransaction();
                         throw;
                     }
@@ -103,9 +111,9 @@ namespace Infrastructure.MongoDb
                 catch (MongoException exception)
                 {
                     // if transient error, retry the whole transaction
-                    if (exception.HasErrorLabel("TransientTransactionError"))
+                    if (exception.HasErrorLabel(MongoDefaultSettings.TransientTransactionError))
                     {
-                        Console.WriteLine("TransientTransactionError, retrying transaction.");
+                        logger.LogWarning(Messages.TransientTransactionError);
                         continue;
                     }
                     else
@@ -116,6 +124,12 @@ namespace Infrastructure.MongoDb
             }
         }
 
+        private async Task<Type> GetByTypedIdAsync<Type>(IMongoCollection<Type> entityCollection, string id)
+        {
+            var filter = Builders<Type>.Filter.Eq("_id.Value", id);
+            var entity = await entityCollection.FindAsync(filter);
+            return entity.FirstOrDefault();
+        }
 
         private void CommitWithRetry(IClientSessionHandle session)
         {
@@ -124,26 +138,29 @@ namespace Infrastructure.MongoDb
                 try
                 {
                     session.CommitTransaction();
-                    Console.WriteLine("Transaction committed.");
+                    logger.LogWarning(Messages.TransactionCommitted);
                     break;
                 }
                 catch (MongoException exception)
                 {
                     // can retry commit
-                    if (exception.HasErrorLabel("UnknownTransactionCommitResult"))
+                    if (exception.HasErrorLabel(MongoDefaultSettings.UnknownTransactionCommitResult))
                     {
-                        Console.WriteLine("UnknownTransactionCommitResult, retrying commit operation");
+                        logger.LogWarning(Messages.UnknownTransactionCommitResult);
                         continue;
                     }
                     else
                     {
-                        Console.WriteLine($"Error during commit: {exception.Message}.");
+                        logger.LogError($"{Messages.CommitError}: {exception.Message}.", exception);
                         throw;
                     }
                 }
             }
         }
 
-
+        public Task ModifyWithOptimisticConcurrencyAsync(Action<T> modifyLogic, string id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

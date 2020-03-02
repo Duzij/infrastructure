@@ -8,6 +8,7 @@ namespace Infrastructure.Core
     {
         Task InsertNewAsync(T entity);
         Task ModifyAsync(Action<T> modifyLogic, TKey id);
+        Task ModifyWithOptimisticConcurrencyAsync(Action<T> modifyLogic, TKey id);
         Task<T> GetByIdAsync(TKey id);
         Task RemoveAsync(TKey id);
     }

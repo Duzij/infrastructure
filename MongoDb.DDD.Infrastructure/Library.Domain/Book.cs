@@ -78,6 +78,11 @@ namespace Library.Domain
             AddEvent(new BookTitleChanged(Id.Value, this.Title.Value, bookTitle.Value));
             this.Title = bookTitle;
         }
+
+        public void ChangeDescription(string description)
+        {
+            this.Description = description;
+        }
     }
 
     public class BookTitleChanged
@@ -92,20 +97,6 @@ namespace Library.Domain
         public string BookId { get; }
         public string OldTitle { get; }
         public string NewTitle { get; }
-    }
-
-    public class BookTitle
-    {
-        public string Value;
-
-        public BookTitle(string title)
-        {
-            if (String.IsNullOrWhiteSpace(title))
-            {
-                throw new ArgumentException("Book title cannot be null of white space");
-            }
-            this.Value = title;
-        }
     }
 
     public class BookAuthorIdChanged

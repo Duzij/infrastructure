@@ -11,12 +11,12 @@ namespace Infrastructure.MongoDb
 
         public EntityNotFoundException()
         {
-            Message = "Entity was not found.";
+            Message = Messages.EntityWasNotFoundMessage;
         }
 
         public EntityNotFoundException(Type entityType, string id)
         {
-            Message = string.Format("{0} was not found with id {1}.", entityType, id);
+            Message = string.Format(Messages.EntityWithTypeAndIdNotFound, entityType, id);
         }
 
         public EntityNotFoundException(string message) : base(message)
@@ -26,7 +26,7 @@ namespace Infrastructure.MongoDb
 
         public EntityNotFoundException(Type entityType)
         {
-            Message = string.Format("Entity of type {0} was not found.", entityType);
+            Message = string.Format(Messages.EntityWithTypeNotFound, entityType);
         }
     }
 }

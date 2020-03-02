@@ -5,6 +5,7 @@ namespace Infrastructure.Core
     public interface IEntity<TKey> 
     {
         public IId<TKey> Id { get; set; }
+        public string Etag { get; set; }
         bool Equals(object other);
         int GetHashCode();
         void CheckState();
