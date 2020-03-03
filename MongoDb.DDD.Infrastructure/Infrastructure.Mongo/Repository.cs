@@ -26,7 +26,8 @@ namespace Infrastructure.MongoDb
 
         public async Task<T> GetByIdAsync(string id)
         {
-            return await GetByTypedIdAsync(collection, id);
+            var filter = Builders<T>.Filter.Eq("_id.Value", id);
+            return await GetByTypedIdAsync(collection, id, filter);
         }
 
         public async Task RemoveAsync(string id)
@@ -47,7 +48,7 @@ namespace Infrastructure.MongoDb
             {
                 try
                 {
-                  await RunTransactionWithRetry(id, modifyLogic, session, false);
+                    await RunTransactionWithRetry(id, modifyLogic, session, false);
                 }
                 catch (Exception exception)
                 {
@@ -72,24 +73,31 @@ namespace Infrastructure.MongoDb
                         var entityCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<T>(MongoUtils.GetCollectionName<T>());
                         var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<Event>(MongoDefaultSettings.EventsDocumentName);
 
+                        var filter = Builders<T>.Filter.Eq("_id.Value", id);
+                        var foundEntity = await GetByTypedIdAsync(entityCollection, id, filter);
 
-                        var foundEntity = await GetByTypedIdAsync(entityCollection, id);
-
-                        modifyLogic(foundEntity);
-
-                        if (optimisticConcurrencyCheck)
+                        if (!optimisticConcurrencyCheck)
                         {
-                            var newFoundEntity = await GetByTypedIdAsync(entityCollection, id);
-                            if (newFoundEntity.Etag != foundEntity.Etag)
+                            modifyLogic(foundEntity);
+                            foundEntity.Etag = Guid.NewGuid().ToString();
+                            await entityCollection.FindOneAndReplaceAsync(filter, foundEntity);
+                        }
+                        else
+                        {
+                            //also check Etag
+                            filter = Builders<T>.Filter.Eq("_id.Value", id) & Builders<T>.Filter.Eq("Etag", foundEntity.Etag);
+                            foundEntity = await GetByTypedIdAsync(entityCollection, id, filter);
+                            if (foundEntity != null)
                             {
-                                throw new EtagNotEqualException(typeof(T));
+                                modifyLogic(foundEntity);
+                                foundEntity.Etag = Guid.NewGuid().ToString();
+                                await entityCollection.FindOneAndReplaceAsync(filter, foundEntity);
+                            }
+                            else
+                            {
+                                await  RunTransactionWithRetry(id, modifyLogic, session, true);
                             }
                         }
-
-                        foundEntity.Etag = Guid.NewGuid().ToString();
-
-                        var filter = Builders<T>.Filter.Eq("_id.Value", id);
-                        await entityCollection.FindOneAndReplaceAsync(filter, foundEntity);
 
                         foreach (var @event in foundEntity.GetEvents())
                         {
@@ -124,9 +132,8 @@ namespace Infrastructure.MongoDb
             }
         }
 
-        private async Task<Type> GetByTypedIdAsync<Type>(IMongoCollection<Type> entityCollection, string id)
+        private async Task<Type> GetByTypedIdAsync<Type>(IMongoCollection<Type> entityCollection, string id, FilterDefinition<Type> filter)
         {
-            var filter = Builders<Type>.Filter.Eq("_id.Value", id);
             var entity = await entityCollection.FindAsync(filter);
             return entity.FirstOrDefault();
         }
@@ -158,9 +165,19 @@ namespace Infrastructure.MongoDb
             }
         }
 
-        public Task ModifyWithOptimisticConcurrencyAsync(Action<T> modifyLogic, string id)
+        public async Task ModifyWithOptimisticConcurrencyAsync(Action<T> modifyLogic, string id)
         {
-            throw new NotImplementedException();
+            using (var session = dbContext.Database.Client.StartSession())
+            {
+                try
+                {
+                    await RunTransactionWithRetry(id, modifyLogic, session, true);
+                }
+                catch (Exception exception)
+                {
+                    logger.LogError($"{Messages.NonTransientExceptionCaught} ${exception.Message}.", exception);
+                }
+            }
         }
     }
 }
