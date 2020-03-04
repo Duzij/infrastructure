@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -59,77 +60,62 @@ namespace Infrastructure.MongoDb
 
         public async Task RunTransactionWithRetry(string id, Action<T> modifyLogic, IClientSessionHandle session, bool optimisticConcurrencyCheck)
         {
-            while (true)
+
+            var entityCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<T>(MongoUtils.GetCollectionName<T>());
+            var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<Event>(MongoDefaultSettings.EventsDocumentName);
+
+            var filter = Builders<T>.Filter.Eq("_id.Value", id);
+            var foundEntity = await GetByTypedIdAsync(entityCollection, id, filter);
+
+            if (!optimisticConcurrencyCheck)
+            {
+                modifyLogic(foundEntity);
+                foundEntity.Etag = Guid.NewGuid().ToString();
+                await entityCollection.ReplaceOneAsync(
+                      c => c.Id.Value == id, foundEntity,
+                      new ReplaceOptions { IsUpsert = false });
+            }
+            else
             {
                 try
                 {
-                    session.StartTransaction(new TransactionOptions(
-                        readConcern: ReadConcern.Snapshot,
-                        writeConcern: WriteConcern.WMajority,
-                        readPreference: ReadPreference.Primary));
+                    ReplaceOneResult result;
 
-                    try
+                    do
                     {
-                        var entityCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<T>(MongoUtils.GetCollectionName<T>());
-                        var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<Event>(MongoDefaultSettings.EventsDocumentName);
+                        var IdFilter = Builders<T>.Filter.Eq("_id.Value", id);
+                        foundEntity = await GetByTypedIdAsync(entityCollection, id, IdFilter);
 
-                        var filter = Builders<T>.Filter.Eq("_id.Value", id);
-                        var foundEntity = await GetByTypedIdAsync(entityCollection, id, filter);
+                        var version = foundEntity.Etag;
+                        foundEntity.Etag = Guid.NewGuid().ToString();
 
-                        if (!optimisticConcurrencyCheck)
-                        {
-                            modifyLogic(foundEntity);
-                            foundEntity.Etag = Guid.NewGuid().ToString();
-                            await entityCollection.FindOneAndReplaceAsync(filter, foundEntity);
-                        }
-                        else
-                        {
-                            //also check Etag
-                            filter = Builders<T>.Filter.Eq("_id.Value", id) & Builders<T>.Filter.Eq("Etag", foundEntity.Etag);
-                            foundEntity = await GetByTypedIdAsync(entityCollection, id, filter);
-                            if (foundEntity != null)
-                            {
-                                modifyLogic(foundEntity);
-                                foundEntity.Etag = Guid.NewGuid().ToString();
-                                await entityCollection.FindOneAndReplaceAsync(filter, foundEntity);
-                            }
-                            else
-                            {
-                                await  RunTransactionWithRetry(id, modifyLogic, session, true);
-                            }
-                        }
+                        modifyLogic(foundEntity);
+                        filter = Builders<T>.Filter.Eq("_id.Value", id) & Builders<T>.Filter.Eq("Etag", version);
 
                         foreach (var @event in foundEntity.GetEvents())
                         {
                             var mongoEvent = new Event(Guid.NewGuid().ToString(), @event.GetType(), @event, foundEntity.Id.Value.ToString());
                             eventsCollection.InsertOne(mongoEvent);
                         }
-                    }
-                    catch (Exception exception)
-                    {
-                        logger.LogError($"{Messages.DuringTransactionError}: {exception.Message}.", exception);
-                        session.AbortTransaction();
-                        throw;
-                    }
 
-                    CommitWithRetry(session);
+                        result = await entityCollection.ReplaceOneAsync(
+                            filter, foundEntity,
+                            new ReplaceOptions { IsUpsert = false });
+                        logger.LogDebug($"Etag is: {version}");
+                        logger.LogDebug($"Result ModifiedCount: {result.ModifiedCount}");
+                        logger.LogDebug($"Result MatchedCount: {result.MatchedCount}");
 
-                    break;
+                    } while (result.ModifiedCount != 1);
                 }
-                catch (MongoException exception)
+                catch (Exception ex)
                 {
-                    // if transient error, retry the whole transaction
-                    if (exception.HasErrorLabel(MongoDefaultSettings.TransientTransactionError))
-                    {
-                        logger.LogWarning(Messages.TransientTransactionError);
-                        continue;
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    logger.LogError("Error", ex);
+                    throw;
                 }
             }
+
+
+
         }
 
         private async Task<Type> GetByTypedIdAsync<Type>(IMongoCollection<Type> entityCollection, string id, FilterDefinition<Type> filter)
