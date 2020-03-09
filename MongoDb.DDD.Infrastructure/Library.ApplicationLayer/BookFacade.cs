@@ -58,7 +58,7 @@ namespace Library.ApplicationLayer
 
         public async Task Update(BookDetailDTO bookDetail)
         {
-             await repository.ModifyAsync(async book =>  {
+             await repository.ReplaceAsync(async book =>  {
                 if (bookDetail.AuthorId != book.AuthorId.Value)
                 {
                      var newAuthor = await authorRepository.GetByIdAsync(bookDetail.AuthorId);
@@ -78,7 +78,7 @@ namespace Library.ApplicationLayer
 
         public async Task UpdateAmount(string bookId, int amountValue)
         {
-            await repository.ModifyAsync(book=> book.AddStock(new BookAmount(amountValue)), bookId);
+            await repository.ReplaceAsync(book=> book.AddStock(new BookAmount(amountValue)), bookId);
         }
     }
 }

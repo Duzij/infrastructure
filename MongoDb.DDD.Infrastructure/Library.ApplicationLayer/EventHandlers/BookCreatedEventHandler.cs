@@ -22,7 +22,7 @@ namespace Library.ApplicationLayer
         
         public async Task Handle(BookCreated @event)
         {
-            await authorRepository.ModifyAsync(author => {
+            await authorRepository.ReplaceAsync(author => {
                 var bookList = author.Books;
                 bookList.Add(new BookId(@event.BookId));
                 author.UpdateBooks(bookList);

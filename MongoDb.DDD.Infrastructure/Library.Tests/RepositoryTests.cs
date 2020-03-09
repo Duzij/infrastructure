@@ -1,5 +1,4 @@
-﻿using Infrastructure.Core;
-using Infrastructure.MongoDb;
+﻿using Infrastructure.MongoDb;
 using Library.Domain;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -15,7 +14,7 @@ namespace Library.Tests
     public class RepositoryTests
     {
         private MongoDbContext context;
-        private Repository<Counter, string> repository;
+        private Repository<TestCounter, string> repository;
         private string id;
 
         [SetUp]
@@ -25,12 +24,35 @@ namespace Library.Tests
                 .AddLogging()
                 .BuildServiceProvider();
 
-            var logger = serviceProvider.GetService<ILogger<Repository<Counter, string>>>();
+            var logger = serviceProvider.GetService<ILogger<Repository<TestCounter, string>>>();
             var settings = new MongoDbSettings(MongoDefaultSettings.ConnectionString, "Tests");
             context = new MongoDbContext(settings);
-            repository = new Repository<Counter, string>(context, settings, logger);
+            repository = new Repository<TestCounter, string>(context, settings, logger);
             id = Guid.NewGuid().ToString();
-            repository.InsertNewAsync(Counter.Create(id,1)).GetAwaiter().GetResult();
+            repository.InsertNewAsync(TestCounter.Create(id,0)).GetAwaiter().GetResult();
+        }
+
+        [Test]
+        public async Task ReplaceAsync()
+        {
+            int value = 0;
+
+            var tasks = Enumerable.Range(0, 100).Select(async i =>
+            {
+                await repository.ReplaceAsync(counter => {
+                    counter.UpdateCounterWithValue(value++);
+                }, id);
+            }).ToList();
+
+
+            tasks.ForEach(a => a.Wait());
+
+            await repository.ReplaceAsync(counter => {
+                counter.UpdateCounterWithValue(100);
+            }, id);
+
+
+            Assert.IsTrue(tasks.All(t => t.IsCompletedSuccessfully));
         }
 
         [Test]
@@ -48,12 +70,12 @@ namespace Library.Tests
         }
 
         [Test]
-        public async Task ModifyWithOptimisticConcurrencyAsync()
+        public async Task ModifyWithEventAsync()
         {
             var tasks = Enumerable.Range(0, 100).Select(async i =>
             {
-                await repository.ModifyWithOptimisticConcurrencyAsync(counter => {
-                    counter.IncrementValue();
+                await repository.ModifyAsync(counter => {
+                    counter.IncrementValueWithEvent();
                 }, id);
             }).ToList();
 
@@ -61,39 +83,5 @@ namespace Library.Tests
             Assert.IsTrue(tasks.All(t => t.IsCompletedSuccessfully));
         }
 
-    }
-
-    public class Counter : Entity<string>
-    {
-        public int CounterValue { get; private set; }
-
-        public static Counter Create(string idValue, int value)
-        {
-            return new Counter(new CounterId(idValue), value);
-        }
-
-        public void IncrementValue()
-        {
-            this.CounterValue++;
-        }
-
-        public Counter(CounterId counterId, int value)
-        {
-            this.Id = counterId;
-            this.CounterValue = value;
-        }
-
-        public override void CheckState()
-        {
-            throw new NotImplementedException();
-        }
-
-    }
-
-    public class CounterId : EntityId<string>
-    {
-        public CounterId(string value) : base(value)
-        {
-        }
     }
 }

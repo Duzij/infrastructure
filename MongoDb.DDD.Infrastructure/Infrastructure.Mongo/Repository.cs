@@ -25,10 +25,17 @@ namespace Infrastructure.MongoDb
             collection = dbContext.Database.GetCollection<T>(MongoUtils.GetCollectionName<T>());
         }
 
+        private async Task<Type> GetFirstFromCollectionAsync<Type>(IMongoCollection<Type> entityCollection, FilterDefinition<Type> filter)
+        {
+            var entity = await entityCollection.FindAsync(filter);
+            return entity.FirstOrDefault();
+        }
+
+
         public async Task<T> GetByIdAsync(string id)
         {
             var filter = Builders<T>.Filter.Eq("_id.Value", id);
-            return await GetByTypedIdAsync(collection, id, filter);
+            return await GetFirstFromCollectionAsync(collection, filter);
         }
 
         public async Task RemoveAsync(string id)
@@ -43,13 +50,27 @@ namespace Infrastructure.MongoDb
             await collection.InsertOneAsync(entity);
         }
 
-        public async Task ModifyAsync(Action<T> modifyLogic, string id)
+        public async Task ReplaceAsync(Action<T> modifyLogic, string id)
         {
             using (var session = dbContext.Database.Client.StartSession())
             {
                 try
                 {
-                    await RunTransactionWithRetry(id, modifyLogic, session, false);
+                    var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<Event>(MongoDefaultSettings.EventsDocumentName);
+
+                    var filter = Builders<T>.Filter.Eq("_id.Value", id);
+                    var foundEntity = await GetFirstFromCollectionAsync(collection, filter);
+
+                    modifyLogic(foundEntity);
+
+                    await collection.ReplaceOneAsync(filter, foundEntity, new ReplaceOptions { IsUpsert = false });
+
+                    foreach (var @event in foundEntity.GetEvents())
+                    {
+                        var mongoEvent = new Event(Guid.NewGuid().ToString(), @event.GetType(), @event, foundEntity.Id.Value.ToString());
+                        eventsCollection.InsertOne(mongoEvent);
+                    }
+
                 }
                 catch (Exception exception)
                 {
@@ -58,106 +79,41 @@ namespace Infrastructure.MongoDb
             }
         }
 
-        public async Task RunTransactionWithRetry(string id, Action<T> modifyLogic, IClientSessionHandle session, bool optimisticConcurrencyCheck)
-        {
-
-            var entityCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<T>(MongoUtils.GetCollectionName<T>());
-            var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<Event>(MongoDefaultSettings.EventsDocumentName);
-
-            var filter = Builders<T>.Filter.Eq("_id.Value", id);
-            var foundEntity = await GetByTypedIdAsync(entityCollection, id, filter);
-
-            if (!optimisticConcurrencyCheck)
-            {
-                modifyLogic(foundEntity);
-                foundEntity.Etag = Guid.NewGuid().ToString();
-                await entityCollection.ReplaceOneAsync(
-                      c => c.Id.Value == id, foundEntity,
-                      new ReplaceOptions { IsUpsert = false });
-            }
-            else
-            {
-                try
-                {
-                    ReplaceOneResult result;
-
-                    do
-                    {
-                        var IdFilter = Builders<T>.Filter.Eq("_id.Value", id);
-                        foundEntity = await GetByTypedIdAsync(entityCollection, id, IdFilter);
-
-                        var version = foundEntity.Etag;
-                        foundEntity.Etag = Guid.NewGuid().ToString();
-
-                        modifyLogic(foundEntity);
-                        filter = Builders<T>.Filter.Eq("_id.Value", id) & Builders<T>.Filter.Eq("Etag", version);
-
-                        foreach (var @event in foundEntity.GetEvents())
-                        {
-                            var mongoEvent = new Event(Guid.NewGuid().ToString(), @event.GetType(), @event, foundEntity.Id.Value.ToString());
-                            eventsCollection.InsertOne(mongoEvent);
-                        }
-
-                        result = await entityCollection.ReplaceOneAsync(
-                            filter, foundEntity,
-                            new ReplaceOptions { IsUpsert = false });
-                        logger.LogDebug($"Etag is: {version}");
-                        logger.LogDebug($"Result ModifiedCount: {result.ModifiedCount}");
-                        logger.LogDebug($"Result MatchedCount: {result.MatchedCount}");
-
-                    } while (result.ModifiedCount != 1);
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError("Error", ex);
-                    throw;
-                }
-            }
-
-
-
-        }
-
-        private async Task<Type> GetByTypedIdAsync<Type>(IMongoCollection<Type> entityCollection, string id, FilterDefinition<Type> filter)
-        {
-            var entity = await entityCollection.FindAsync(filter);
-            return entity.FirstOrDefault();
-        }
-
-        private void CommitWithRetry(IClientSessionHandle session)
-        {
-            while (true)
-            {
-                try
-                {
-                    session.CommitTransaction();
-                    logger.LogWarning(Messages.TransactionCommitted);
-                    break;
-                }
-                catch (MongoException exception)
-                {
-                    // can retry commit
-                    if (exception.HasErrorLabel(MongoDefaultSettings.UnknownTransactionCommitResult))
-                    {
-                        logger.LogWarning(Messages.UnknownTransactionCommitResult);
-                        continue;
-                    }
-                    else
-                    {
-                        logger.LogError($"{Messages.CommitError}: {exception.Message}.", exception);
-                        throw;
-                    }
-                }
-            }
-        }
-
-        public async Task ModifyWithOptimisticConcurrencyAsync(Action<T> modifyLogic, string id)
+        public async Task ModifyAsync(Action<T> modifyAction, string id)
         {
             using (var session = dbContext.Database.Client.StartSession())
             {
                 try
                 {
-                    await RunTransactionWithRetry(id, modifyLogic, session, true);
+                    var entityCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<T>(MongoUtils.GetCollectionName<T>());
+                    var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<Event>(MongoDefaultSettings.EventsDocumentName);
+
+                    ReplaceOneResult result;
+                    T foundEntity;
+
+                    do
+                    {
+                        var filter = Builders<T>.Filter.Eq("_id.Value", id);
+                        foundEntity = await GetFirstFromCollectionAsync(entityCollection, filter);
+                        var version = foundEntity.Etag;
+                        foundEntity.Etag = Guid.NewGuid().ToString();
+
+                        modifyAction(foundEntity);
+                        filter = filter & Builders<T>.Filter.Eq("Etag", version);
+
+                        result = await entityCollection.ReplaceOneAsync(filter, foundEntity, new ReplaceOptions { IsUpsert = false });
+
+                    } while (result.ModifiedCount != 1);
+
+                    //events are saved after sucessfull transformation
+                    if (result.ModifiedCount == 1)
+                    {
+                        foreach (var @event in foundEntity.GetEvents())
+                        {
+                            var mongoEvent = new Event(Guid.NewGuid().ToString(), @event.GetType(), @event, foundEntity.Id.Value.ToString());
+                            eventsCollection.InsertOne(mongoEvent);
+                        }
+                    }
                 }
                 catch (Exception exception)
                 {

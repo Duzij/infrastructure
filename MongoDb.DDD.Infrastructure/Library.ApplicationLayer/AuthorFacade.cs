@@ -77,7 +77,7 @@ namespace Library.ApplicationLayer
 
         public async Task Update(AuthorDetailDTO author)
         {
-            await repository.ModifyAsync(authorEntity => {
+            await repository.ReplaceAsync(authorEntity => {
                 if (authorEntity.Name != author.Name)
                 {
                     authorEntity.ChangeName(author.Name);
@@ -91,7 +91,7 @@ namespace Library.ApplicationLayer
 
         public async Task UpdateAuthorBooksAsync(string id, IList<BookId> bookTitles)
         {
-            await repository.ModifyAsync(authorEntity => authorEntity.UpdateBooks(bookTitles), id);
+            await repository.ReplaceAsync(authorEntity => authorEntity.UpdateBooks(bookTitles), id);
         }
     }
 }
