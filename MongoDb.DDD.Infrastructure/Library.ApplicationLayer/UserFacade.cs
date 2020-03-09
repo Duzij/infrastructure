@@ -27,7 +27,7 @@ namespace Library.ApplicationLayer
 
         public async Task Delete(string id)
         {
-           await repository.RemoveAsync(id);
+            await repository.RemoveAsync(id);
         }
 
         public async Task<UserDetailDTO> GetUserById(string v)
@@ -42,11 +42,26 @@ namespace Library.ApplicationLayer
             return users.ToList();
         }
 
+        public async Task<Dictionary<string, string>> GetUsersSelectorAsync()
+        {
+            var users = await allUsersQuery.GetResultsAsync();
+            var userSelector = new Dictionary<string, string>();
+            foreach (var user in users)
+            {
+                userSelector.Add(user.Id, $"{user.Name} {user.Surname}");
+            }
+            return userSelector;
+        }
+
         public async Task Update(UserDetailDTO userDto)
         {
-            var user = await repository.GetByIdAsync(userDto.Id);
-
-            
+            await repository.ModifyAsync(user =>
+            {
+                if (userDto.IsBanned != user.IsBanned)
+                {
+                    user.SetAsBanned();
+                }
+            }, userDto.Id);
         }
 
     }

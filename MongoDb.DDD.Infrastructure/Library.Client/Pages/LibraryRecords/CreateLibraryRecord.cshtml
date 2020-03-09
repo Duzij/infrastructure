@@ -2,31 +2,101 @@
 @model CreateLibraryRecord
 @{
     ViewData["Title"] = "Create library record";
+
+    @functions{
+        public void GetBooks()
+        {
+
+        }
+    }
 }
 <h1>@ViewData["Title"]</h1>
 
-<div class="form-group">
-    <label for="title">Book</label>
-    @foreach (var item in Model.Books)
-    {
-        <select name="bookId" asp-items="@Model.BookSelector"></select>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
 
-        <div class="form-group row">
-            <label for="amountValue" class="col-2 col-form-label">Number of books</label>
-            <div class="col-10">
-                <input class="form-control" type="number" id="amountValue" asp-for="@item.Amount">
-            </div>
-        </div>
+<div class="form-group">
+
+    <div class="form-group">
+        <label for="title">User</label>
+        <select id="userId" asp-items="@Model.Users"></select>
+    </div>
+
+    <div id="bookDropdowns">
+    </div>
+
+    <button class="btn" id="addBook">Add book</button>
+
+</div>
+
+<button class="btn btn-primary" id="createBookRecord">Create book record</button>
+
+<script>
+
+    generateDropdown("1", []);
+
+    $("#addBook").click(function addBook() {
+        var selectorsCount = $("select[class*='bookDropdown']").length;
+
+        var booksToIgnore = [];
+
+        document.querySelectorAll('.dropdownBook').forEach(function (item) {
+            var selectedValue = item.options[item.selectedIndex].value;
+            booksToIgnore.push(selectedValue);
+        });
+
+        generateDropdown(selectorsCount, booksToIgnore);
+    });
+
+    function generateDropdown(index, bookToIgnore) {
+        $.getJSON(`http://localhost:50821/api/books`, (data) => {
+            var optionsAppend = "";
+
+            $.each(data, function (a, item) {
+                if (!bookToIgnore.includes(item.value)) {
+                    optionsAppend += `<option value="${item.value}">${item.text}</option>`;
+                }
+                else {
+                    $("#addBook").prop('disabled', true);
+                }
+            });
+
+            if (bookToIgnore.length !== data.length) {
+                $("#bookDropdowns").append("<select class='dropdownBook' id='" + index + "'>" + optionsAppend + "</select>");
+                $("#bookDropdowns").append("<input type='number' value='1' id='bookValue" + index + "'>");
+                $("#bookDropdowns").append("</br>");
+            }
+
+        });
     }
-    <form asp-page-handler="addBook" method="post">
-        <button class="btn">Add book</button>
-    </form>
-</div>
-<div class="form-group">
-    <label for="title">User</label>
-    <select name="userId" asp-items="@Model.Users"></select>
-</div>
 
-<form method="post">
-    <button class="btn btn-primary" type="submit">Create book record</button>
-</form>
+    $("#createBookRecord").click(function () {
+        var form = {};
+        form.books = {};
+        document.querySelectorAll('.dropdownBook').forEach(function (item) {
+            var selectedValue = item.options[item.selectedIndex].value;
+            form.books.id = selectedValue;
+            var bookAmount = $("input[id*='bookValue" + item.id + "' ]").val();
+            form.books.amount = bookAmount;
+        });
+
+        form.userId = $("#userId").val();
+
+        $.ajax({
+            type: "POST",
+            url: "/api/bookLibrary",
+            data:  JSON.stringify(form),
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response, textStatus, jqXHR) {
+                alert("Yay!");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert(textStatus, errorThrown);
+            }
+        });
+    })
+
+
+</script>
