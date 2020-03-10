@@ -29,8 +29,9 @@
     <button class="btn" id="addBook">Add book</button>
 
 </div>
-
-<button class="btn btn-primary" id="createBookRecord">Create book record</button>
+@*<form method="post">*@
+    <button class="btn btn-primary" id="createBookRecord">Create book record</button>
+@*</form>*@
 
 <script>
 
@@ -57,9 +58,6 @@
                 if (!bookToIgnore.includes(item.value)) {
                     optionsAppend += `<option value="${item.value}">${item.text}</option>`;
                 }
-                else {
-                    $("#addBook").prop('disabled', true);
-                }
             });
 
             if (bookToIgnore.length !== data.length) {
@@ -67,33 +65,41 @@
                 $("#bookDropdowns").append("<input type='number' value='1' id='bookValue" + index + "'>");
                 $("#bookDropdowns").append("</br>");
             }
-
+            else {
+                    $("#addBook").prop('disabled', true);
+                }
         });
     }
 
     $("#createBookRecord").click(function () {
         var form = {};
-        form.books = {};
-        document.querySelectorAll('.dropdownBook').forEach(function (item) {
+        form.userId = $("#userId").val();
+
+        form.books = [];
+        document.querySelectorAll('.dropdownBook').forEach(function (item, index) {
+            form.books[index] = {};
             var selectedValue = item.options[item.selectedIndex].value;
-            form.books.id = selectedValue;
+            form.books[index].id = selectedValue;
             var bookAmount = $("input[id*='bookValue" + item.id + "' ]").val();
-            form.books.amount = bookAmount;
+            form.books[index].amount = bookAmount;
+            var bookTitle = item.options[item.selectedIndex].text;
+            form.books[index].title = bookTitle;
         });
 
-        form.userId = $("#userId").val();
+
+        var formJson = JSON.stringify(form)
 
         $.ajax({
             type: "POST",
-            url: "/api/bookLibrary",
-            data:  JSON.stringify(form),
+            url: "http://localhost:50821/api/bookLibrary",
+            data:  formJson,
             contentType: "application/json",
             dataType: "json",
             success: function (response, textStatus, jqXHR) {
-                alert("Yay!");
+                window.location.replace("http://localhost:50821/");
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                alert(textStatus, errorThrown);
+                window.location.replace("http://localhost:50821/");
             }
         });
     })

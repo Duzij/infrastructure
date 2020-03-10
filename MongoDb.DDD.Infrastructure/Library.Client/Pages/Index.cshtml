@@ -8,3 +8,53 @@
 
 <a asp-page="./LibraryRecords/CreateLibraryRecord" class="btn btn-primary">Create new library record</a>
 
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Username
+            </th>
+            <th>
+                Books
+            </th>
+            <th>
+                ReturnDate
+            </th>
+            <th>
+                IsExpired
+            </th>
+            <th>ReturnFine</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Records)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Username)
+            </td>
+            <td>
+                @foreach (var book in item.Books)
+                { 
+                <p><b>@book.Key</b> : @book.Value</p>
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReturnDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsExpired)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReturnFine)
+            </td>
+            <td>
+                <form asp-page-handler="delete" asp-route-id="@item.Id" method="post">
+                    <button class="btn ">Return books</button>
+                </form>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

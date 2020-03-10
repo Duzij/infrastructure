@@ -10,5 +10,7 @@ namespace Infrastructure.MongoDb
         public static string EventsDocumentName = "__events";
         public static string TransientTransactionError = "TransientTransactionError";
         public static string UnknownTransactionCommitResult = "UnknownTransactionCommitResult";
+        public static string IdName = "_id.Value";
+        public static string EtagName = "Etag";
     }
 }

@@ -3,6 +3,7 @@ using Library.ApplicationLayer.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +15,13 @@ namespace Library.Client
     public class LibraryController : Controller
     {
         private readonly IBookFacade bookFacade;
+        private readonly ILibraryRecordFacade libraryRecordFacade;
         private readonly ILogger<LibraryController> logger;
 
-        public LibraryController(IBookFacade bookFacade, ILogger<LibraryController> logger)
+        public LibraryController(IBookFacade bookFacade, ILibraryRecordFacade libraryRecordFacade, ILogger<LibraryController> logger)
         {
             this.bookFacade = bookFacade;
+            this.libraryRecordFacade = libraryRecordFacade;
             this.logger = logger;
         }
 
@@ -34,22 +37,12 @@ namespace Library.Client
         }
 
         [HttpPost("bookLibrary")]
-        public void AddBookLibrary(CreateLibraryForm form)
+        public IActionResult AddBookLibrary([FromBody] LibraryRecordCreateDTO form)
         {
-            logger.LogInformation(form.ToString());
+            libraryRecordFacade.Create(form);
+            return Ok();
         }
     }
 
-    public class CreateLibraryForm
-    {
-        public string userId { get; set; }
-        public List<BookRecordDTO> books { get; set; }
 
-    }
-
-    public class BookRecordDTO
-    {
-        public string id { get; set; }
-        public string amount { get; set; }
-    }
 }

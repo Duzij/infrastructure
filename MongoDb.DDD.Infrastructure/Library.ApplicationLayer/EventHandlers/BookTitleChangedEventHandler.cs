@@ -10,10 +10,12 @@ namespace Library.ApplicationLayer
     public class BookTitleChangedEventHandler : IEventHandler<BookTitleChanged>
     {
         private readonly IAuthorFacade authorFacade;
+        private readonly ILibraryRecordFacade libraryRecordFacade;
 
-        public BookTitleChangedEventHandler(IAuthorFacade authorFacade)
+        public BookTitleChangedEventHandler(IAuthorFacade authorFacade, ILibraryRecordFacade libraryRecordFacade)
         {
             this.authorFacade = authorFacade;
+            this.libraryRecordFacade = libraryRecordFacade;
         }
 
         public async Task Handle(BookTitleChanged @event)
@@ -25,6 +27,8 @@ namespace Library.ApplicationLayer
                 author.BookTitles.Add(@event.NewTitle);
                 await authorFacade.Update(author);
             }
+
+            await libraryRecordFacade.UpdateLibraryRecordsWithNewBookTitleAsync(@event.BookId, @event.NewTitle);
         }
     }
 }

@@ -25,9 +25,9 @@ namespace Library.Client.Pages.LibraryRecords
                                   }).ToList();
         }
 
-        public IActionResult OnPostRedirect()
+        public IActionResult OnPost()
         {
-            return RedirectToPage("/Books");
+            return RedirectToPage("/Index");
         }
     }
 

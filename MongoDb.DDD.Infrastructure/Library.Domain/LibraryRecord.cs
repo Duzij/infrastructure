@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Library.Domain
@@ -7,19 +8,19 @@ namespace Library.Domain
     public class LibraryRecord : DomainAggregate
     {
         public User User { get; set; }
-        public IList<BookId> BookIds { get; private set; }
+        public List<BookRecord> Books { get; private set; }
 
         public DateTime CreatedDate { get; private set; }
         public DateTime ReturnDate => CreatedDate.AddDays(7);
 
         public ReturnFine ReturnFine { get; set; }
 
-        public static LibraryRecord Create(User user)
+        public static LibraryRecord Create(User user, List<BookRecord> books)
         {
-            var record = new LibraryRecord(TypedId.GetNewId<LibraryRecordId>(), user);
+            var record = new LibraryRecord(TypedId.GetNewId<LibraryRecordId>(), user, books);
             return record;
         }
-        private LibraryRecord(LibraryRecordId id, User user)
+        private LibraryRecord(LibraryRecordId id, User user, List<BookRecord> books)
         {
             Id = id;
             if (user.IsNotBanned)
@@ -32,11 +33,12 @@ namespace Library.Domain
             }
             this.CreatedDate = DateTime.UtcNow;
             this.ReturnFine = new ReturnFine(0);
+            Books = books;
         }
 
-        public void AddBook(BookId bookId)
+        public void AddBook(BookId bookId, BookAmount amount, BookTitle title)
         {
-            BookIds.Add(bookId);
+            Books.Add(new BookRecord(bookId, amount, title));
             AddEvent(new BookAddedToLibraryRecord(bookId.Value, Id.Value));
         }
 
@@ -44,7 +46,7 @@ namespace Library.Domain
         {
             if (ReturnDate > DateTime.UtcNow)
             {
-                BookIds.Remove(bookId);
+                Books.RemoveAll(a => a.BookId == bookId);
                 AddEvent(new BookRemovedFromLibraryRecord(bookId.Value, Id.Value));
             }
             else
@@ -58,13 +60,34 @@ namespace Library.Domain
 
         public override void CheckState()
         {
-            if (BookIds != null &&
-                BookIds.Count > 0 &&
-                User != null &&
-                User.IsNotBanned)
+            if (Books == null ||
+                Books.Count == 0 ||
+                User == null ||
+                User.IsBanned)
             {
                 throw new InvalidEntityStateException();
             }
+        }
+
+        public void UpdateBookTitle(string bookId, string newTitle)
+        {
+            var book = Books.Single(a => a.BookId.Value == bookId);
+            Books.Add(new BookRecord(book.BookId, book.BookAmount, new BookTitle(newTitle)));
+            Books.Remove(book);
+        }
+    }
+
+    public class BookRecord
+    {
+        public BookId BookId { get; }
+        public BookAmount BookAmount { get; }
+        public BookTitle Title { get; }
+
+        public BookRecord(BookId bookId, BookAmount bookAmount, BookTitle title)
+        {
+            BookId = bookId;
+            BookAmount = bookAmount;
+            Title = title;
         }
     }
 

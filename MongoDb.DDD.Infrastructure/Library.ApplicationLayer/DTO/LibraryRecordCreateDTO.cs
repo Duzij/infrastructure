@@ -7,13 +7,14 @@ namespace Library.ApplicationLayer.DTO
 {
     public class LibraryRecordCreateDTO
     {
-        public List<BookRecord> Books { get; set; }
-        public string UserId { get; set; }
+        public string userId { get; set; }
+        public List<BookRecordDTO> books { get; set; }
     }
 
-    public class BookRecord
+    public class BookRecordDTO
     {
-        public BookId BookId { get; set; }
-        public int Amount { get; set; }
+        public string title { get; set; }
+        public string id { get; set; }
+        public string amount { get; set; }
     }
 }

@@ -25,6 +25,8 @@ namespace Infrastructure.ApplicationLayer
             services.AddTransient<AllAuthorsQuery>();
             services.AddTransient<AllBooksQuery>();
             services.AddTransient<AllUsersQuery>();
+            services.AddTransient<AllLibraryRecordDetailsQuery>();
+            services.AddTransient<AllLibraryRecordsQuery>();
 
             var settings = new MongoDbSettings("mongodb://localhost:27017?connect=replicaSet", databaseName);
             services.AddMongoDbInfrastructure(settings);
