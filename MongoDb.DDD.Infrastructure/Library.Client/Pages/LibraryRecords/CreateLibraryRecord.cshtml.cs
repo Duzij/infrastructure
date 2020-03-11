@@ -15,19 +15,14 @@ namespace Library.Client.Pages.LibraryRecords
     {
         public List<SelectListItem> Users { get; set; } = new List<SelectListItem>();
 
-        public CreateLibraryRecord(ILogger<CreateLibraryRecord> logger, IBookFacade bookFacade, ILibraryRecordFacade libraryRecordFacade, IUserFacade userFacade)
+        public CreateLibraryRecord(IUserFacade userFacade)
         {
-            Users = userFacade.GetUsersSelectorAsync().GetAwaiter().GetResult().Select(a =>
+            Users = userFacade.GetActiveUsersSelectorAsync().GetAwaiter().GetResult().Select(a =>
                                   new SelectListItem
                                   {
                                       Value = a.Key.ToString(),
                                       Text = a.Value
                                   }).ToList();
-        }
-
-        public IActionResult OnPost()
-        {
-            return RedirectToPage("/Index");
         }
     }
 

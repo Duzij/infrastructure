@@ -57,27 +57,14 @@ namespace Infrastructure.MongoDb
             }
         }
 
-        public async Task ReplaceAsync(Action<T> modifyLogic, string id)
+        public async Task ReplaceAsync(T entity)
         {
             using (var session = dbContext.Database.Client.StartSession())
             {
                 try
                 {
-                    var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<Event>(MongoDefaultSettings.EventsDocumentName);
-
-                    var filter = Builders<T>.Filter.Eq(MongoDefaultSettings.IdName, id);
-                    var foundEntity = await GetFirstFromCollectionAsync(collection, filter);
-
-                    modifyLogic(foundEntity);
-
-                    await collection.ReplaceOneAsync(filter, foundEntity, new ReplaceOptions { IsUpsert = false });
-
-                    foreach (var @event in foundEntity.GetEvents())
-                    {
-                        var mongoEvent = new Event(Guid.NewGuid().ToString(), @event.GetType(), @event, foundEntity.Id.Value);
-                        eventsCollection.InsertOne(mongoEvent);
-                    }
-
+                    var filter = Builders<T>.Filter.Eq(MongoDefaultSettings.IdName, entity.Id.Value);
+                    await collection.ReplaceOneAsync(filter, entity, new ReplaceOptions { IsUpsert = false });
                 }
                 catch (Exception exception)
                 {

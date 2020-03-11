@@ -19,7 +19,7 @@ namespace Infrastructure.Core
         /// <param name="modifyLogic"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task ReplaceAsync(Action<T> modifyLogic, TKey id);
+        Task ReplaceAsync(T entity);
 
         /// <summary>
         /// Entity is modified with optimistic concurrency 

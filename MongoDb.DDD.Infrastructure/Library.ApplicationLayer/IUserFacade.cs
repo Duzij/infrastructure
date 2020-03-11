@@ -12,6 +12,6 @@ namespace Library.ApplicationLayer
         Task Delete(string id);
         Task<UserDetailDTO> GetUserById(string v);
         Task Update(UserDetailDTO userDto);
-        Task<Dictionary<string,string>> GetUsersSelectorAsync();
+        Task<Dictionary<string,string>> GetActiveUsersSelectorAsync();
     }
 }

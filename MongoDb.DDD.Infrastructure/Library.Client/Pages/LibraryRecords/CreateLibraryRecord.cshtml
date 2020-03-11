@@ -29,9 +29,8 @@
     <button class="btn" id="addBook">Add book</button>
 
 </div>
-@*<form method="post">*@
+
     <button class="btn btn-primary" id="createBookRecord">Create book record</button>
-@*</form>*@
 
 <script>
 
@@ -99,7 +98,7 @@
                 window.location.replace("http://localhost:50821/");
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                window.location.replace("http://localhost:50821/");
+                alert(jqXHR.responseText);
             }
         });
     })

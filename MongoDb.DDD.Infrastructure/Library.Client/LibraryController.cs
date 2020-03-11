@@ -1,12 +1,14 @@
 ﻿using Library.ApplicationLayer;
 using Library.ApplicationLayer.DTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Library.Client
@@ -36,11 +38,21 @@ namespace Library.Client
                                  }).ToList());
         }
 
+
         [HttpPost("bookLibrary")]
-        public IActionResult AddBookLibrary([FromBody] LibraryRecordCreateDTO form)
+        public async Task<IActionResult> AddBookLibrary([FromBody] LibraryRecordCreateDTO form)
         {
-            libraryRecordFacade.Create(form);
-            return Ok();
+            try
+            {
+               await libraryRecordFacade.Create(form);
+                Response.StatusCode = (int)HttpStatusCode.OK;
+                return Json(new { responseText = "Your form successfuly sent!" });
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { responseText = ex.Message });
+            }
         }
     }
 

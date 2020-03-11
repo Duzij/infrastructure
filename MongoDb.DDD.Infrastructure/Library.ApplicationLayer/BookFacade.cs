@@ -45,7 +45,10 @@ namespace Library.ApplicationLayer
             var booksSelector = new Dictionary<string, string>();
             foreach (var book in books)
             {
-                booksSelector.Add(book.Id, $"{book.Title}");
+                if (book.Amount > 0)
+                {
+                    booksSelector.Add(book.Id, $"{book.Title}");
+                }
             }
             return booksSelector;
         }
@@ -58,7 +61,7 @@ namespace Library.ApplicationLayer
 
         public async Task Update(BookDetailDTO bookDetail)
         {
-             await repository.ReplaceAsync(async book =>  {
+             await repository.ModifyAsync(async book =>  {
                 if (bookDetail.AuthorId != book.AuthorId.Value)
                 {
                      var newAuthor = await authorRepository.GetByIdAsync(bookDetail.AuthorId);
@@ -78,7 +81,7 @@ namespace Library.ApplicationLayer
 
         public async Task UpdateAmount(string bookId, int amountValue)
         {
-            await repository.ReplaceAsync(book=> book.AddStock(new BookAmount(amountValue)), bookId);
+            await repository.ModifyAsync(book=> book.AddStock(new BookAmount(amountValue)), bookId);
         }
     }
 }

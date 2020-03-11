@@ -42,13 +42,16 @@ namespace Library.ApplicationLayer
             return users.ToList();
         }
 
-        public async Task<Dictionary<string, string>> GetUsersSelectorAsync()
+        public async Task<Dictionary<string, string>> GetActiveUsersSelectorAsync()
         {
             var users = await allUsersQuery.GetResultsAsync();
             var userSelector = new Dictionary<string, string>();
             foreach (var user in users)
             {
-                userSelector.Add(user.Id, $"{user.Name} {user.Surname}");
+                if (!user.IsBanned)
+                {
+                    userSelector.Add(user.Id, $"{user.Name} {user.Surname}");
+                }
             }
             return userSelector;
         }

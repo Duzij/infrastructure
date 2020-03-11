@@ -24,11 +24,15 @@ namespace Library.ApplicationLayer.Query
 
             foreach (var item in records)
             {
-                var books = new Dictionary<string, int>();
+                var books = new List<BookRecordDTO>();
 
                 foreach (var book in item.Books)
                 {
-                    books.Add(book.Title.Value, book.BookAmount.Amount);
+                    books.Add(new BookRecordDTO() { 
+                        id = book.BookId.Value,
+                        amount = book.BookAmount.Amount.ToString(),
+                        title = book.Title.Value
+                    });
                 }
 
                 recordDetails.Add(new LibraryRecordDetailDTO()

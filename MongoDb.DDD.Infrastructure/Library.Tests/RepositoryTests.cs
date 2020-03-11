@@ -39,18 +39,17 @@ namespace Library.Tests
 
             var tasks = Enumerable.Range(0, 100).Select(async i =>
             {
-                await repository.ReplaceAsync(counter => {
-                    counter.UpdateCounterWithValue(value++);
-                }, id);
+                var counter =  await repository.GetByIdAsync(id);
+                counter.UpdateCounterWithValue(value++);
+                await repository.ReplaceAsync(counter);
             }).ToList();
 
 
             tasks.ForEach(a => a.Wait());
 
-            await repository.ReplaceAsync(counter => {
-                counter.UpdateCounterWithValue(100);
-            }, id);
-
+            var counter = await repository.GetByIdAsync(id);
+            counter.UpdateCounterWithValue(value++);
+            await repository.ReplaceAsync(counter);
 
             Assert.IsTrue(tasks.All(t => t.IsCompletedSuccessfully));
         }
