@@ -24,26 +24,7 @@ namespace Library.ApplicationLayer.Query
 
             foreach (var item in records)
             {
-                var books = new List<BookRecordDTO>();
-
-                foreach (var book in item.Books)
-                {
-                    books.Add(new BookRecordDTO() { 
-                        id = book.BookId.Value,
-                        amount = book.BookAmount.Amount.ToString(),
-                        title = book.Title.Value
-                    });
-                }
-
-                recordDetails.Add(new LibraryRecordDetailDTO()
-                {
-                    Id = item.Id.Value,
-                    Books = books,
-                    CreatedDate = item.CreatedDate,
-                    IsExpired = DateTime.UtcNow > item.ReturnDate,
-                    ReturnDate = item.ReturnDate,
-                    Username = item.User.Name + " " + item.User.Surname
-                });
+                recordDetails.Add(LibraryRecordConverter.Convert(item));
             }
 
             return recordDetails;

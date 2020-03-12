@@ -23,6 +23,11 @@ namespace Library.Client.Pages
             this.libraryRecordFacade = libraryRecordFacade;
         }
 
+        public async Task OnPostReturnBooks()
+        {
+
+        }
+
         public async Task OnGet()
         {
             Records = await libraryRecordFacade.GetLibraryRecords();

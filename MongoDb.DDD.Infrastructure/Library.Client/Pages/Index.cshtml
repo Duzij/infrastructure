@@ -36,8 +36,8 @@
             </td>
             <td>
                 @foreach (var book in item.Books)
-                { 
-                <p><b>@book.title</b> : @book.amount</p>
+                {
+                    <p><b>@book.title</b> : @book.amount</p>
                 }
             </td>
             <td>
@@ -50,9 +50,8 @@
                 @Html.DisplayFor(modelItem => item.ReturnFine)
             </td>
             <td>
-                <form asp-page-handler="delete" asp-route-id="@item.Id" method="post">
-                    <button class="btn ">Return books</button>
-                </form>
+            <td>
+                <a asp-page="./LibraryRecords/ReturnBooks" class="btn" asp-route-id="@item.Id">Return books</a>
             </td>
         </tr>
         }

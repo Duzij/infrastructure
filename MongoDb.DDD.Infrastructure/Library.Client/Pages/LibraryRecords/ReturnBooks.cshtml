@@ -1,0 +1,25 @@
+﻿@page
+@model ReturnBooks
+@{
+    ViewData["Title"] = "Return books";
+}
+<h1>@ViewData["Title"]</h1>
+
+
+@Html.DisplayFor(modelItem => Model.libraryRecordDetail.Username)
+@Html.DisplayFor(modelItem => Model.libraryRecordDetail.ReturnDate)
+@Html.DisplayFor(modelItem => Model.libraryRecordDetail.IsExpired)
+@Html.DisplayFor(modelItem => Model.libraryRecordDetail.ReturnFine)
+@foreach (var book in Model.libraryRecordDetail.Books)
+{
+    <p><b>@book.title</b> : @book.amount</p>
+}
+
+@foreach (var item in Model.libraryRecordDetail.Books)
+{
+    <p>@item.title</p>
+    <form  method="post">
+        <input class="form-control" type="number" id="amountValue" asp-for="@item.amount">
+        <button class="btn" asp-route-id="@item.id" asp-route-amount="@item.amount" asp-route-recordId="@Model.libraryRecordDetail.Id">Return book</button>
+    </form>
+}

@@ -73,5 +73,15 @@ namespace Library.ApplicationLayer
             }
         }
 
+
+        public async Task<LibraryRecordDetailDTO> GetLibraryRecordById(string id)
+        {
+            return LibraryRecordConverter.Convert(await libraryRecordRepository.GetByIdAsync(id));
+        }
+
+        public Task ReturnBookAsync(string recordId, string bookId, int amountValue)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

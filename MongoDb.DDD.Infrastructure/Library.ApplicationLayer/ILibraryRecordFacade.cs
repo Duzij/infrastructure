@@ -12,5 +12,7 @@ namespace Library.ApplicationLayer
 
         Task<List<LibraryRecordDetailDTO>> GetLibraryRecords();
         Task UpdateLibraryRecordsWithNewBookTitleAsync(string bookId, string newTitle);
+        Task<LibraryRecordDetailDTO> GetLibraryRecordById(string id);
+        Task ReturnBookAsync(string recordId, string bookId, int amountValue);
     }
 }
