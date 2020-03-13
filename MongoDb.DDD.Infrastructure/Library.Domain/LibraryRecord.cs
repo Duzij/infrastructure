@@ -42,12 +42,24 @@ namespace Library.Domain
             AddEvent(new BookAddedToLibraryRecord(bookId.Value, Id.Value));
         }
 
-        public void ReturnBook(BookId bookId)
+        public void ReturnBook(BookId bookId, BookAmount amount)
         {
             if (ReturnDate > DateTime.UtcNow)
             {
-                Books.RemoveAll(a => a.BookId == bookId);
-                AddEvent(new BookRemovedFromLibraryRecord(bookId.Value, Id.Value));
+                var book = Books.First(a => a.BookId == bookId);
+                if (book.BookAmount == amount)
+                {
+                    Books.RemoveAll(a => a.BookId == bookId);
+                }
+                else if(book.BookAmount > amount)
+                {
+                    Books.RemoveAll(a => a.BookId == bookId);
+                    Books.Add(new BookRecord(book.BookId, book.BookAmount - amount, book.Title));
+                }
+                else
+                {
+                    throw new ArgumentException($"Cannot return book with title {book.Title.Value}. Amount to return is higher than {book.BookAmount.Amount}");
+                }
             }
             else
             {

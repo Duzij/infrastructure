@@ -79,9 +79,9 @@ namespace Library.ApplicationLayer
             return LibraryRecordConverter.Convert(await libraryRecordRepository.GetByIdAsync(id));
         }
 
-        public Task ReturnBookAsync(string recordId, string bookId, int amountValue)
+        public async Task ReturnBookAsync(string recordId, string bookId, int amountValue)
         {
-            throw new NotImplementedException();
+            await libraryRecordRepository.ModifyAsync(record => { record.ReturnBook(new BookId(bookId), new BookAmount(amountValue)); }, recordId);
         }
     }
 }

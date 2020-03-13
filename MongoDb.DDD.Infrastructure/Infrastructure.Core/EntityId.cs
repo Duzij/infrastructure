@@ -6,24 +6,23 @@ using System.Text;
 
 namespace Infrastructure.Core
 {
-    public class EntityId<T> : IId<string>, IEquatable<EntityId<T>>
+    public class EntityId<T> : Value<EntityId<T>>, IId<string>
     {
+        public override bool Equals(object other)
+        {
+            return base.Equals(other);
+        }
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
         public string Value { get; set; }
+        public static bool operator == (EntityId<T> left, EntityId<T> right) => left.Value == right.Value;
+        public static bool operator != (EntityId<T> left, EntityId<T> right) => left.Value != right.Value;
 
         public EntityId(string value)
         {
             Value = value;
-        }
-
-        public bool Equals([AllowNull] EntityId<T> other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            if (other.Value == this.Value)
-            {
-                return true;
-            }
-            return false;
         }
     }
 }

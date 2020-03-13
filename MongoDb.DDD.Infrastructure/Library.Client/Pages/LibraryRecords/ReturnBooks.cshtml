@@ -18,7 +18,7 @@
 @foreach (var item in Model.libraryRecordDetail.Books)
 {
     <p>@item.title</p>
-    <form  method="post">
+    <form  method="post" class="">
         <input class="form-control" type="number" id="amountValue" asp-for="@item.amount">
         <button class="btn" asp-route-id="@item.id" asp-route-amount="@item.amount" asp-route-recordId="@Model.libraryRecordDetail.Id">Return book</button>
     </form>

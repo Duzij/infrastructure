@@ -15,5 +15,11 @@ namespace Library.Domain
             }
             this.Amount = amount;
         }
+
+        public static bool operator > (BookAmount left, BookAmount right) => left.Amount > right.Amount;
+        public static bool operator < (BookAmount left, BookAmount right) => left.Amount < right.Amount;
+        public static BookAmount operator - (BookAmount left, BookAmount right) => new BookAmount(left.Amount - right.Amount);
+        public static BookAmount operator + (BookAmount left, BookAmount right) => new BookAmount(left.Amount + right.Amount);
+
     }
 }
