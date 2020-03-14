@@ -78,12 +78,11 @@
             form.books[index].title = bookTitle;
         });
 
-
         var formJson = JSON.stringify(form)
 
         $.ajax({
             type: "POST",
-            url: "http://localhost:50821/api/bookLibrary",
+            url: "http://localhost:50821/api/addBookLibrary",
             data:  formJson,
             contentType: "application/json",
             dataType: "json",

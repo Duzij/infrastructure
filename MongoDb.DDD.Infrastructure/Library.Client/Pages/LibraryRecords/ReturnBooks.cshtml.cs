@@ -30,12 +30,6 @@ namespace Library.Client.Pages.LibraryRecords
             libraryRecordDetail = await libraryRecordFacade.GetLibraryRecordById(Request.Query.FirstOrDefault(a => a.Key == "id").Value.ToString());
         }
 
-        public async Task<IActionResult> OnPost(string id, string amount, string recordId)
-        {
-            await libraryRecordFacade.ReturnBookAsync(recordId, id, Convert.ToInt32(amount));
-            return RedirectToPage("/Index");
-        }
-
     }
 
 }

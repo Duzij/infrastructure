@@ -14,11 +14,11 @@ namespace Library.ApplicationLayer
     {
         private readonly IRepository<LibraryRecord, string> libraryRecordRepository;
         private readonly AllLibraryRecordsQuery allLibraryRecordsQuery;
-        private readonly AllLibraryRecordDetailsQuery allLibraryRecordDetailsQuery;
+        private readonly ValidLibraryRecordDetailsQuery allLibraryRecordDetailsQuery;
         private readonly IRepository<User, string> userRepository;
         private readonly IRepository<Book, string> bookRepository;
 
-        public LibraryRecordFacade(IRepository<LibraryRecord, string> libraryRecordRepository, AllLibraryRecordDetailsQuery allLibraryRecordDetailsQuery, AllLibraryRecordsQuery allLibraryRecordsQuery, IRepository<User, string> userRepository, IRepository<Book, string> bookRepository)
+        public LibraryRecordFacade(IRepository<LibraryRecord, string> libraryRecordRepository, ValidLibraryRecordDetailsQuery allLibraryRecordDetailsQuery, AllLibraryRecordsQuery allLibraryRecordsQuery, IRepository<User, string> userRepository, IRepository<Book, string> bookRepository)
         {
             this.libraryRecordRepository = libraryRecordRepository;
             this.allLibraryRecordsQuery = allLibraryRecordsQuery;
@@ -79,9 +79,9 @@ namespace Library.ApplicationLayer
             return LibraryRecordConverter.Convert(await libraryRecordRepository.GetByIdAsync(id));
         }
 
-        public async Task ReturnBookAsync(string recordId, string bookId, int amountValue)
+        public async Task ReturnBookAsync(ReturnBookDTO returnBookDTO)
         {
-            await libraryRecordRepository.ModifyAsync(record => { record.ReturnBook(new BookId(bookId), new BookAmount(amountValue)); }, recordId);
+            await libraryRecordRepository.ModifyAsync(record => { record.ReturnBook(new BookId(returnBookDTO.bookId), new BookAmount(Convert.ToInt32(returnBookDTO.bookAmount))); }, returnBookDTO.libraryRecordId);
         }
     }
 }

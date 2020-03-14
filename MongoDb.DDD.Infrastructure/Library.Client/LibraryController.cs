@@ -39,7 +39,7 @@ namespace Library.Client
         }
 
 
-        [HttpPost("bookLibrary")]
+        [HttpPost("addBookLibrary")]
         public async Task<IActionResult> AddBookLibrary([FromBody] LibraryRecordCreateDTO form)
         {
             try
@@ -54,6 +54,30 @@ namespace Library.Client
                 return Json(new { responseText = ex.Message });
             }
         }
+
+        [HttpGet("booksToReturn")]
+        public JsonResult GetBooksToReturn(string id)
+        {
+            return new JsonResult(libraryRecordFacade.GetLibraryRecordById(id).GetAwaiter().GetResult().Books);
+        }
+
+        [HttpPost("returnBook")]
+        public async Task<IActionResult> ReturnBook([FromBody] ReturnBookDTO form)
+        {
+            try
+            {
+                await libraryRecordFacade.ReturnBookAsync(form);
+                Response.StatusCode = (int)HttpStatusCode.OK;
+                return Json(new { responseText = "Your form successfuly sent!" });
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { responseText = ex.Message });
+            }
+        }
+
+
     }
 
 

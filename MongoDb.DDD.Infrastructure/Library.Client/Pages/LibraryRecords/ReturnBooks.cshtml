@@ -5,21 +5,74 @@
 }
 <h1>@ViewData["Title"]</h1>
 
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
 
-@Html.DisplayFor(modelItem => Model.libraryRecordDetail.Username)
-@Html.DisplayFor(modelItem => Model.libraryRecordDetail.ReturnDate)
-@Html.DisplayFor(modelItem => Model.libraryRecordDetail.IsExpired)
-@Html.DisplayFor(modelItem => Model.libraryRecordDetail.ReturnFine)
+Id: @Html.DisplayFor(modelItem => Model.libraryRecordDetail.Id)</br>
+Username: @Html.DisplayFor(modelItem => Model.libraryRecordDetail.Username)</br>
+ReturnDate: @Html.DisplayFor(modelItem => Model.libraryRecordDetail.ReturnDate)</br>
+IsExpired: @Html.DisplayFor(modelItem => Model.libraryRecordDetail.IsExpired)</br>
+ReturnFine: @Html.DisplayFor(modelItem => Model.libraryRecordDetail.ReturnFine)</br>
+Books:
 @foreach (var book in Model.libraryRecordDetail.Books)
 {
     <p><b>@book.title</b> : @book.amount</p>
 }
 
-@foreach (var item in Model.libraryRecordDetail.Books)
-{
-    <p>@item.title</p>
-    <form  method="post" class="">
-        <input class="form-control" type="number" id="amountValue" asp-for="@item.amount">
-        <button class="btn" asp-route-id="@item.id" asp-route-amount="@item.amount" asp-route-recordId="@Model.libraryRecordDetail.Id">Return book</button>
-    </form>
-}
+<div id="booksToReturn"></div>
+
+<script>
+
+    function sendReturnBookRequest(bookId) {
+        var form = {};
+        form.bookId = bookId;
+        var bookAmount = $("input[id*='" + bookId + "' ]").val();
+        form.bookAmount = bookAmount;
+        form.libraryRecordId = GetParameterValues('id');
+
+        var formJson = JSON.stringify(form)
+
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:50821/api/returnBook",
+            data: formJson,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response, textStatus, jqXHR) {
+                window.location.replace("http://localhost:50821/");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert(jqXHR.responseText);
+            }
+        });
+    };
+
+
+    function generateReturnBookForm(libraryRecordId) {
+        var route = "http://localhost:50821/api/booksToReturn?id=" + libraryRecordId;
+        $.getJSON(route, (data) => {
+            $.each(data, function (a, item) {
+                $("#booksToReturn").append("<p>" + item.title + "</p>");
+                $("#booksToReturn").append("<input type='number' value='" + item.amount + "' id='bookValue" + item.id + "'>");
+                $("#booksToReturn").append('<input type="button" value="Return book" onClick="sendReturnBookRequest(\'' + item.id + '\')" />');
+                $("#booksToReturn").append("</br>");
+            });
+        });
+    }
+
+    var id = GetParameterValues('id');
+    function GetParameterValues(param) {
+        var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for (var i = 0; i < url.length; i++) {
+            var urlparam = url[i].split('=');
+            if (urlparam[0] == param) {
+                return urlparam[1];
+            }
+        }
+    }
+
+    generateReturnBookForm(id);
+
+
+</script>
