@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Library.Domain
 {
-    public class Author : DomainAggregate
+    public class Author : DomainEntity
     {
         public string Name { get; set; }
         public string Surname { get; set; }

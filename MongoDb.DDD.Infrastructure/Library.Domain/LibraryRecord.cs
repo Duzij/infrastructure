@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Library.Domain
 {
-    public class LibraryRecord : DomainAggregate
+    public class LibraryRecord : DomainEntity
     {
         public User User { get; set; }
         public List<BookRecord> Books { get; private set; }

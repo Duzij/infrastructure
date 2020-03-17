@@ -46,14 +46,29 @@ namespace Infrastructure.MongoDb
 
         public async Task InsertNewAsync(T entity)
         {
-            entity.Etag = Guid.NewGuid().ToString();
-            try
+            using (var session = dbContext.Database.Client.StartSession())
             {
-                await collection.InsertOneAsync(entity);
-            }
-            catch (Exception exception)
-            {
-                logger.LogError($"{Messages.NonTransientExceptionCaught} ${exception.Message}.", exception);
+                try
+                {
+                    await session.WithTransaction(
+                    async (s, ct) =>
+                    {
+                        entity.Etag = Guid.NewGuid().ToString();
+                        await collection.InsertOneAsync(entity);
+
+                        foreach (var @event in entity.GetEvents())
+                        {
+                            var mongoEvent = new Event(Guid.NewGuid().ToString(), @event.GetType(), @event, entity.Id.Value);
+                            var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<Event>(MongoDefaultSettings.EventsDocumentName);
+                            await eventsCollection.InsertOneAsync(mongoEvent);
+                        }
+                    });
+                }
+                catch (Exception exception)
+                {
+                    logger.LogError($"{Messages.NonTransientExceptionCaught} ${exception.Message}.", exception);
+                }
+
             }
         }
 
@@ -63,8 +78,19 @@ namespace Infrastructure.MongoDb
             {
                 try
                 {
-                    var filter = Builders<T>.Filter.Eq(MongoDefaultSettings.IdName, entity.Id.Value);
-                    await collection.ReplaceOneAsync(filter, entity, new ReplaceOptions { IsUpsert = false });
+                  await session.WithTransaction(
+                      async (s, ct) =>
+                      {
+                          var filter = Builders<T>.Filter.Eq(MongoDefaultSettings.IdName, entity.Id.Value);
+                          await collection.ReplaceOneAsync(filter, entity, new ReplaceOptions { IsUpsert = false });
+
+                          foreach (var @event in entity.GetEvents())
+                          {
+                              var mongoEvent = new Event(Guid.NewGuid().ToString(), @event.GetType(), @event, entity.Id.Value);
+                              var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<Event>(MongoDefaultSettings.EventsDocumentName);
+                              await eventsCollection.InsertOneAsync(mongoEvent);
+                          }
+                      });
                 }
                 catch (Exception exception)
                 {
@@ -79,35 +105,39 @@ namespace Infrastructure.MongoDb
             {
                 try
                 {
-                    var entityCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<T>(MongoUtils.GetCollectionName<T>());
-                    var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<Event>(MongoDefaultSettings.EventsDocumentName);
+                    await session.WithTransaction(
+                     async (s, ct) =>
+                     {
+                         var entityCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<T>(MongoUtils.GetCollectionName<T>());
+                         var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<Event>(MongoDefaultSettings.EventsDocumentName);
 
-                    ReplaceOneResult result;
-                    T foundEntity;
+                         ReplaceOneResult result;
+                         T foundEntity;
 
-                    do
-                    {
-                        var filter = Builders<T>.Filter.Eq(MongoDefaultSettings.IdName, id);
-                        foundEntity = await GetFirstFromCollectionAsync(entityCollection, filter);
-                        var version = foundEntity.Etag;
-                        foundEntity.Etag = Guid.NewGuid().ToString();
+                         do
+                         {
+                             var filter = Builders<T>.Filter.Eq(MongoDefaultSettings.IdName, id);
+                             foundEntity = await GetFirstFromCollectionAsync(entityCollection, filter);
+                             var version = foundEntity.Etag;
+                             foundEntity.Etag = Guid.NewGuid().ToString();
 
-                        modifyAction(foundEntity);
-                        filter = filter & Builders<T>.Filter.Eq(MongoDefaultSettings.EtagName, version);
+                             modifyAction(foundEntity);
+                             filter = filter & Builders<T>.Filter.Eq(MongoDefaultSettings.EtagName, version);
 
-                        result = await entityCollection.ReplaceOneAsync(filter, foundEntity, new ReplaceOptions { IsUpsert = false });
+                             result = await entityCollection.ReplaceOneAsync(filter, foundEntity, new ReplaceOptions { IsUpsert = false });
 
-                    } while (result.ModifiedCount != 1);
+                         } while (result.ModifiedCount != 1);
 
-                    //events are saved after sucessfull transformation
-                    if (result.ModifiedCount == 1)
-                    {
-                        foreach (var @event in foundEntity.GetEvents())
-                        {
-                            var mongoEvent = new Event(Guid.NewGuid().ToString(), @event.GetType(), @event, foundEntity.Id.Value);
-                            eventsCollection.InsertOne(mongoEvent);
-                        }
-                    }
+                         //events are saved after sucessfull transformation
+                         if (result.ModifiedCount == 1)
+                         {
+                             foreach (var @event in foundEntity.GetEvents())
+                             {
+                                 var mongoEvent = new Event(Guid.NewGuid().ToString(), @event.GetType(), @event, foundEntity.Id.Value);
+                                 eventsCollection.InsertOne(mongoEvent);
+                             }
+                         }
+                     });
                 }
                 catch (Exception exception)
                 {

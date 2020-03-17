@@ -29,6 +29,7 @@ namespace Library.Tests
         {
             this.Id = counterId;
             this.CounterValue = value;
+            AddEvent(new CounterCreatedEvent(counterId, value));
         }
 
         public override void CheckState()
@@ -39,6 +40,22 @@ namespace Library.Tests
         {
             this.CounterValue = i;
             AddEvent(new ValueUpdated(this.Id.Value, CounterValue));
+        }
+    }
+
+    internal class CounterCreatedEvent
+    {
+        private CounterId counterId;
+        private int value;
+
+        public CounterCreatedEvent()
+        {
+        }
+
+        public CounterCreatedEvent(CounterId counterId, int value)
+        {
+            this.counterId = counterId;
+            this.value = value;
         }
     }
 
