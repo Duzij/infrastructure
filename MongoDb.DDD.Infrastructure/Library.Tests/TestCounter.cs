@@ -3,7 +3,7 @@ using System;
 
 namespace Library.Tests
 {
-    public class TestCounter : Entity<string>
+    public class TestCounter : DomainAggregate<string>
     {
         public int CounterValue { get; private set; }
 
