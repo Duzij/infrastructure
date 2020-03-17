@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Library.Domain
 {
-    public class LibraryRecord : DomainEntity
+    public class LibraryRecord : DomainAggregate
     {
         public User User { get; set; }
         public List<BookRecord> Books { get; private set; }
@@ -86,44 +86,6 @@ namespace Library.Domain
             var book = Books.Single(a => a.BookId.Value == bookId);
             Books.Add(new BookRecord(book.BookId, book.BookAmount, new BookTitle(newTitle)));
             Books.Remove(book);
-        }
-    }
-
-    public class BookRecord
-    {
-        public BookId BookId { get; }
-        public BookAmount BookAmount { get; }
-        public BookTitle Title { get; }
-
-        public BookRecord(BookId bookId, BookAmount bookAmount, BookTitle title)
-        {
-            BookId = bookId;
-            BookAmount = bookAmount;
-            Title = title;
-        }
-    }
-
-    public class BookRemovedFromLibraryRecord
-    {
-        public string LibraryRecordId { get; set; }
-        public string BookId { get; set; }
-
-        public BookRemovedFromLibraryRecord(string bookId, string libraryRecordId)
-        {
-            this.LibraryRecordId = libraryRecordId;
-            this.BookId = bookId;
-        }
-    }
-
-    public class BookAddedToLibraryRecord
-    {
-        public string LibraryRecordId { get; set; }
-        public string BookId { get; set; }
-
-        public BookAddedToLibraryRecord(string bookId, string libraryRecordId)
-        {
-            this.LibraryRecordId = libraryRecordId;
-            this.BookId = bookId;
         }
     }
 }

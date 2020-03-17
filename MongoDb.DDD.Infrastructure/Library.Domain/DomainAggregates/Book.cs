@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Library.Domain
 {
-    public class Book : DomainEntity
+    public class Book : DomainAggregate
     {
         public BookAmount Amount { get; private set; }
         public BookTitle Title { get; private set; }
@@ -83,63 +83,5 @@ namespace Library.Domain
         {
             this.Description = description;
         }
-    }
-
-    public class BookTitleChanged
-    {
-        public BookTitleChanged(string bookId, string oldTitle, string newTitle)
-        {
-            BookId = bookId;
-            OldTitle = oldTitle;
-            NewTitle = newTitle;
-        }
-
-        public string BookId { get; }
-        public string OldTitle { get; }
-        public string NewTitle { get; }
-    }
-
-    public class BookAuthorIdChanged
-    {
-        public string BookId { get; }
-        public string BookTitle { get; }
-        public string NewAuthorId { get; }
-        public string OldAuthorId { get; }
-
-        public BookAuthorIdChanged(string bookId, string bookTitle, string newAuthorId, string oldAuthorId)
-        {
-            BookId = bookId;
-            BookTitle = bookTitle;
-            NewAuthorId = newAuthorId;
-            OldAuthorId = oldAuthorId;
-        }
-
-    }
-
-    public class BookStockChanged
-    {
-        public int booksAdded;
-
-        public BookStockChanged(BookAmount amount)
-        {
-            this.booksAdded = amount.Amount;
-        }
-    }
-
-    public class BookCreated
-    {
-        public string BookId { get; private set; }
-        public string Title { get; private set; }
-        public string Description { get; private set; }
-        public string AuthorId { get; private set; }
-
-        public BookCreated(string bookId, string title, string description, string author)
-        {
-            BookId = bookId;
-            Title = title;
-            Description = description;
-            AuthorId = author;
-        }
-
     }
 }
