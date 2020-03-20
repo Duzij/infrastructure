@@ -20,7 +20,11 @@ namespace Library.ApplicationLayer.Query
 
         public override async Task<IList<LibraryRecordDetailDTO>> GetResultsAsync()
         {
-            var records = base.dbContext.GetCollection<LibraryRecord>().AsQueryable().Where(a => a.Books.Count > 0);
+            var records = base.dbContext.GetCollection<LibraryRecord>()
+                .AsQueryable()
+                .Where(a => !a.IsClosed)
+                .OrderByDescending(a => a.CreatedDate);
+
             var recordDetails = new List<LibraryRecordDetailDTO>();
 
             foreach (var item in records)

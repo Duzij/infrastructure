@@ -33,7 +33,7 @@ namespace Library.ApplicationLayer.Query
 
                 foreach (var bookId in author.Books)
                 {
-                    var book = await bookRepository.GetByIdAsync(bookId.Value);
+                    var book = await bookRepository.GetByIdAsync(bookId);
                     books.Add(book.Title.Value);
                 }
 

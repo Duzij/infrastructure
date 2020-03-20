@@ -30,7 +30,7 @@ namespace Library.ApplicationLayer
 
         public async Task Delete(string id)
         {
-            await repository.RemoveAsync(id);
+            await repository.RemoveAsync(new BookId(id));
         }
 
         public async Task<List<BookDetailDTO>> GetBooks()
@@ -55,7 +55,7 @@ namespace Library.ApplicationLayer
 
         public async Task<BookDetailDTO> GetUserById(string id)
         {
-            var book = await repository.GetByIdAsync(id);
+            var book = await repository.GetByIdAsync(new BookId(id));
             return new BookDetailDTO(id, book.Title.Value, book.Description, book.AuthorName, book.Amount.Amount, book.AuthorId.Value);
         }
 
@@ -64,7 +64,7 @@ namespace Library.ApplicationLayer
              await repository.ModifyAsync(async book =>  {
                 if (bookDetail.AuthorId != book.AuthorId.Value)
                 {
-                     var newAuthor = await authorRepository.GetByIdAsync(bookDetail.AuthorId);
+                     var newAuthor = await authorRepository.GetByIdAsync(new AuthorId(bookDetail.AuthorId));
                      var newAuthorName = $"{newAuthor.Name} {newAuthor.Surname}";
                      book.ChangeAuthor(new AuthorId(bookDetail.AuthorId), newAuthorName);
                 }
@@ -76,12 +76,12 @@ namespace Library.ApplicationLayer
                  {
                      book.ChangeDescription(book.Description);
                  }
-            }, bookDetail.Id);
+            }, new BookId(bookDetail.Id));
         }
 
         public async Task UpdateAmount(string bookId, int amountValue)
         {
-            await repository.ModifyAsync(book=> book.AddStock(new BookAmount(amountValue)), bookId);
+            await repository.ModifyAsync(book=> book.AddStock(new BookAmount(amountValue)), new BookId(bookId));
         }
     }
 }

@@ -10,28 +10,22 @@ using Microsoft.Extensions.Logging;
 
 namespace Library.Client.Pages
 {
-    public class IndexModel : PageModel
+    public class LibraryRecordsModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
+        private readonly ILogger<LibraryRecordsModel> _logger;
         private readonly ILibraryRecordFacade libraryRecordFacade;
 
         public List<LibraryRecordDetailDTO> Records { get; set; }
 
-        public IndexModel(ILogger<IndexModel> logger, ILibraryRecordFacade libraryRecordFacade)
+        public LibraryRecordsModel(ILogger<LibraryRecordsModel> logger, ILibraryRecordFacade libraryRecordFacade)
         {
             _logger = logger;
             this.libraryRecordFacade = libraryRecordFacade;
         }
 
-        public async Task OnPostPay(string id)
-        {
-            await libraryRecordFacade.PayLibraryRecord(id);
-            Records = await libraryRecordFacade.GetLibraryRecords();
-        }
-
         public async Task OnGet()
         {
-            Records = await libraryRecordFacade.GetLibraryRecords();
+            Records = await libraryRecordFacade.GetAllLibraryRecords();
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Library.Domain
         {
             var book = new Book(
                 TypedId.GetNewId<BookId>(), title, description, authorId, authorName);
-            book.AddEvent(new BookCreated(book.Id.Value, title, description, authorId.Value.ToString()));
+            book.AddEvent(new BookCreated((BookId)book.Id, title, description, authorId));
             return book;
         }
 

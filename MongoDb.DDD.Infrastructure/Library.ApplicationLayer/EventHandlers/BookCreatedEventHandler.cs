@@ -24,7 +24,7 @@ namespace Library.ApplicationLayer
         {
             await authorRepository.ModifyAsync(author => {
                 var bookList = author.Books;
-                bookList.Add(new BookId(@event.BookId));
+                bookList.Add(@event.BookId);
                 author.UpdateBooks(bookList);
             }, @event.AuthorId);
             logger.LogInformation("Author books were updated");

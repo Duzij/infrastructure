@@ -2,13 +2,16 @@
 {
     public class BookRemovedFromLibraryRecord
     {
-        public string LibraryRecordId { get; set; }
-        public string BookId { get; set; }
+        public LibraryRecordId LibraryRecordId { get; set; }
+        public BookId BookId { get; set; }
 
-        public BookRemovedFromLibraryRecord(string bookId, string libraryRecordId)
+        public int BookStock { get; set; }
+
+        public BookRemovedFromLibraryRecord(BookId bookId, int bookStock, LibraryRecordId libraryRecordId)
         {
             this.LibraryRecordId = libraryRecordId;
             this.BookId = bookId;
+            BookStock = bookStock;
         }
     }
 }

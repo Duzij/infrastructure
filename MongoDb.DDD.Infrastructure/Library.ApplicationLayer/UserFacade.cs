@@ -13,11 +13,13 @@ namespace Library.ApplicationLayer
     {
         private readonly IRepository<User, string> repository;
         private readonly AllUsersQuery allUsersQuery;
+        private readonly AllLibraryRecordsQuery allLibraryRecordsQuery;
 
-        public UserFacade(IRepository<User, string> repository, AllUsersQuery allUsersQuery)
+        public UserFacade(IRepository<User, string> repository, AllUsersQuery allUsersQuery, AllLibraryRecordsQuery allLibraryRecordsQuery)
         {
             this.repository = repository;
             this.allUsersQuery = allUsersQuery;
+            this.allLibraryRecordsQuery = allLibraryRecordsQuery;
         }
         public async Task Create(CreateUserDTO user)
         {
@@ -27,12 +29,12 @@ namespace Library.ApplicationLayer
 
         public async Task Delete(string id)
         {
-            await repository.RemoveAsync(id);
+            await repository.RemoveAsync(new UserId(id));
         }
 
-        public async Task<UserDetailDTO> GetUserById(string v)
+        public async Task<UserDetailDTO> GetUserById(string id)
         {
-            var user = await repository.GetByIdAsync(v);
+            var user = await repository.GetByIdAsync(new UserId(id));
             return new UserDetailDTO() { Id = user.Id.Value, Email = user.Email, IsBanned = user.IsBanned, Name = user.Name, Surname = user.Surname };
         }
 
@@ -58,13 +60,27 @@ namespace Library.ApplicationLayer
 
         public async Task Update(UserDetailDTO userDto)
         {
+            var allRecords = await allLibraryRecordsQuery.GetResultsAsync();
+            var userHasSomeRecords = allRecords.Any(a => a.User.Id.Value == userDto.Id && !a.IsClosed);
+
             await repository.ModifyAsync(user =>
             {
-                if (userDto.IsBanned != user.IsBanned)
+                if (userDto.IsBanned)
                 {
-                    user.SetAsBanned();
+                    if (userHasSomeRecords)
+                    {
+                        throw new InvalidOperationException(ErrorMessages.UserCannotBeBanned);
+                    }
+                    else
+                    {
+                        user.SetAsBanned();
+                    }
                 }
-            }, userDto.Id);
+                else
+                {
+                    user.Unban();
+                }
+            }, new UserId(userDto.Id));
         }
 
     }

@@ -2,11 +2,11 @@
 {
     public class BookAddedToLibraryRecord
     {
-        public string LibraryRecordId { get; set; }
+        public LibraryRecordId LibraryRecordId { get; set; }
         public int BookStock { get; set; }
-        public string BookId { get; set; }
+        public BookId BookId { get; set; }
 
-        public BookAddedToLibraryRecord(string bookId, string libraryRecordId, int bookStock)
+        public BookAddedToLibraryRecord(BookId bookId, LibraryRecordId libraryRecordId, int bookStock)
         {
             this.LibraryRecordId = libraryRecordId;
             BookStock = bookStock;

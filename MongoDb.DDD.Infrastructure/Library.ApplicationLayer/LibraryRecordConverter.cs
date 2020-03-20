@@ -28,6 +28,7 @@ namespace Library.ApplicationLayer
                 Books = books,
                 CreatedDate = record.CreatedDate,
                 IsExpired = DateTime.UtcNow > record.ReturnDate,
+                ReturnFine = record.ReturnFine.Value,
                 ReturnDate = record.ReturnDate,
                 Username = record.User.Name + " " + record.User.Surname
             };

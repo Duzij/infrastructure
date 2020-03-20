@@ -33,7 +33,7 @@ namespace Library.ApplicationLayer
 
         public async Task Delete(string id)
         {
-            await repository.RemoveAsync(id);
+            await repository.RemoveAsync(new AuthorId(id));
         }
 
         public async Task<List<AuthorDetailDTO>> GetAuthors()
@@ -62,13 +62,13 @@ namespace Library.ApplicationLayer
 
         public async Task<AuthorDetailDTO> GetById(string v)
         {
-            var author = await repository.GetByIdAsync(v);
+            var author = await repository.GetByIdAsync(new AuthorId(v));
 
             var books = new List<string>();
 
             foreach (var bookId in author.Books)
             {
-                var book = await bookRepository.GetByIdAsync(bookId.Value);
+                var book = await bookRepository.GetByIdAsync(bookId);
                 books.Add(book.Title.Value);
             }
 
@@ -86,12 +86,12 @@ namespace Library.ApplicationLayer
                 {
                     authorEntity.ChangeSurname(author.Surname);
                 }
-            }, author.Id);
+            }, new AuthorId(author.Id));
         }
 
         public async Task UpdateAuthorBooksAsync(string id, IList<BookId> bookTitles)
         {
-            await repository.ModifyAsync(authorEntity => authorEntity.UpdateBooks(bookTitles), id);
+            await repository.ModifyAsync(authorEntity => authorEntity.UpdateBooks(bookTitles), new AuthorId(id));
         }
     }
 }

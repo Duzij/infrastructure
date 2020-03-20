@@ -59,5 +59,14 @@ namespace Library.ApplicationLayer {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User cannot be banned. Some unclosed library records found..
+        /// </summary>
+        internal static string UserCannotBeBanned {
+            get {
+                return ResourceManager.GetString("UserCannotBeBanned", resourceCulture);
+            }
+        }
     }
 }

@@ -23,7 +23,7 @@ namespace Library.ApplicationLayer.Query
             foreach (var author in authors)
             {
                 var bookTitles = dbContext.GetCollection<Book>().AsQueryable()
-                    .Where(a => a.AuthorId == author.Id)
+                    .Where(a => a.AuthorId == (AuthorId)author.Id)
                     .Select(b => b.Title.Value)
                     .ToList();
 

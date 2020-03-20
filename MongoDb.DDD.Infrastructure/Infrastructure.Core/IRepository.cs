@@ -27,20 +27,20 @@ namespace Infrastructure.Core
         /// <param name="modifyLogic"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task ModifyAsync(Action<T> modifyLogic, TKey id);
+        Task ModifyAsync(Action<T> modifyLogic, IId<TKey> id);
 
         /// <summary>
         /// Return entity by it's id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<T> GetByIdAsync(TKey id);
+        Task<T> GetByIdAsync(IId<TKey> id);
 
         /// <summary>
         /// Entity is removed by it's id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task RemoveAsync(TKey id);
+        Task RemoveAsync(IId<TKey> id);
     }
 }

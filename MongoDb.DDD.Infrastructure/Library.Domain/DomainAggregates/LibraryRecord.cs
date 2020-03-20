@@ -7,6 +7,7 @@ namespace Library.Domain
 {
     public class LibraryRecord : DomainAggregate
     {
+        public bool IsClosed { get; set; }
         public User User { get; set; }
         public List<BookRecord> Books { get; private set; }
 
@@ -36,42 +37,46 @@ namespace Library.Domain
             Books = books;
             foreach (var book in books)
             {
-                AddEvent(new BookAddedToLibraryRecord(book.BookId.Value, Id.Value, book.BookAmount.Amount));
+                AddEvent(new BookAddedToLibraryRecord(book.BookId, id, book.BookAmount.Amount));
             }
         }
 
         public void ReturnBook(BookId bookId, BookAmount amount)
         {
-            if (ReturnDate > DateTime.UtcNow)
+            var book = Books.First(a => a.BookId == bookId);
+            if (book.BookAmount == amount)
             {
-                var book = Books.First(a => a.BookId == bookId);
-                if (book.BookAmount == amount)
-                {
-                    Books.RemoveAll(a => a.BookId == bookId);
-                }
-                else if(book.BookAmount > amount)
-                {
-                    Books.RemoveAll(a => a.BookId == bookId);
-                    Books.Add(new BookRecord(book.BookId, book.BookAmount - amount, book.Title));
-                }
-                else
-                {
-                    throw new ArgumentException($"Cannot return book with title {book.Title.Value}. Amount to return is higher than {book.BookAmount.Amount}");
-                }
+                Books.RemoveAll(a => a.BookId == bookId);
+            }
+            else if (book.BookAmount > amount)
+            {
+                Books.RemoveAll(a => a.BookId == bookId);
+                Books.Add(new BookRecord(book.BookId, book.BookAmount - amount, book.Title));
             }
             else
             {
+                throw new ArgumentException($"Cannot return book with title {book.Title.Value}. Amount to return is higher than {book.BookAmount.Amount}");
+            }
+
+            AddEvent(new BookRemovedFromLibraryRecord(bookId, amount.Amount, (LibraryRecordId)Id));
+
+            if (ReturnDate < DateTime.UtcNow)
+            {
                 var oldFineValue = ReturnFine.Value;
-                var daysBetweenTodayAndReturnDate = ((TimeSpan)(DateTime.UtcNow - ReturnDate)).Days;
+                var daysBetweenTodayAndReturnDate = ((DateTime.UtcNow - ReturnDate)).Days;
                 var newFineValue = daysBetweenTodayAndReturnDate * 10;
                 ReturnFine = new ReturnFine(oldFineValue + newFineValue);
             }
         }
 
+        public void PayFine()
+        {
+            this.IsClosed = true;
+        }
+
         public override void CheckState()
         {
             if (Books == null ||
-                Books.Count == 0 ||
                 User == null ||
                 User.IsBanned)
             {

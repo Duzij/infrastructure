@@ -2,12 +2,12 @@
 {
     public class BookCreated
     {
-        public string BookId { get; private set; }
+        public BookId BookId { get; private set; }
         public string Title { get; private set; }
         public string Description { get; private set; }
-        public string AuthorId { get; private set; }
+        public AuthorId AuthorId { get; private set; }
 
-        public BookCreated(string bookId, string title, string description, string author)
+        public BookCreated(BookId bookId, string title, string description, AuthorId author)
         {
             BookId = bookId;
             Title = title;

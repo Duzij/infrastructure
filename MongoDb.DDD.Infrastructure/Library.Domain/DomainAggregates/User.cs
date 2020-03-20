@@ -41,6 +41,11 @@ namespace Library.Domain
                 throw new InvalidEntityStateException();
             }
         }
+
+        public void Unban()
+        {
+            this.IsBanned = false;
+        }
     }
 
     public  class UserSetAsBanned

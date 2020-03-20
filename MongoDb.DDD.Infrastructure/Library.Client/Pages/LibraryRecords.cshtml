@@ -1,5 +1,5 @@
 ﻿@page
-@model IndexModel
+@model LibraryRecordsModel
 @{
     ViewData["Title"] = "Home page";
 }
@@ -15,16 +15,11 @@
 }
 </style>
 
-<a asp-page="./LibraryRecords/CreateLibraryRecord" class="btn btn-primary">Create new library record</a>
-
 <table class="table">
     <thead>
         <tr>
             <th>
                 Username
-            </th>
-            <th>
-                Books
             </th>
             <th>
                 ReturnDate
@@ -33,7 +28,6 @@
                 IsExpired
             </th>
             <th>ReturnFine</th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -44,12 +38,6 @@
                 @Html.DisplayFor(modelItem => item.Username)
             </td>
             <td>
-                @foreach (var book in item.Books)
-                {
-                    <p><b>@book.title</b> : @book.amount</p>
-                }
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.ReturnDate)
             </td>
             <td>
@@ -57,23 +45,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ReturnFine)
-            </td>
-            <td>
-            <td>
-
-                @if (item.ShowReturnBooksButton)
-                {
-                    <a asp-page="./LibraryRecords/ReturnBooks" class="btn" asp-route-id="@item.Id">Return books</a>
-                }
-                else
-                {
-                    <a class="btn isDisabled">Return books</a>
-                }
-            </td>
-            <td>
-                <form asp-page-handler="pay" asp-route-id="@item.Id" method="post">
-                    <button class="btn" disabled="@item.ShowReturnFineButton">Pay fine</button>
-                </form>
             </td>
         </tr>
         }

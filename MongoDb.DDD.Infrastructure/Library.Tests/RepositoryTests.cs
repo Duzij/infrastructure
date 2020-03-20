@@ -15,7 +15,7 @@ namespace Library.Tests
     {
         private MongoDbContext context;
         private Repository<TestCounter, string> repository;
-        private string id;
+        private CounterId id;
 
         [SetUp]
         public void Setup()
@@ -28,8 +28,8 @@ namespace Library.Tests
             var settings = new MongoDbSettings(MongoDefaultSettings.ConnectionString, "Tests");
             context = new MongoDbContext(settings);
             repository = new Repository<TestCounter, string>(context, settings, logger);
-            id = Guid.NewGuid().ToString();
-            repository.InsertNewAsync(TestCounter.Create(id,0)).GetAwaiter().GetResult();
+            id = TypedId.GetNewId<CounterId>();
+            repository.InsertNewAsync(TestCounter.Create(id.Value,0)).GetAwaiter().GetResult();
         }
 
         [Test]

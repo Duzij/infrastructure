@@ -28,20 +28,12 @@ namespace Infrastructure.MongoDb
         private async Task<Type> GetFirstFromCollectionAsync<Type>(IMongoCollection<Type> entityCollection, FilterDefinition<Type> filter)
         {
             var domainAggregate = await entityCollection.FindAsync(filter);
-            return domainAggregate.FirstOrDefault();
-        }
-
-
-        public async Task<T> GetByIdAsync(string id)
-        {
-            var filter = Builders<T>.Filter.Eq(MongoDefaultSettings.IdName, id);
-            return await GetFirstFromCollectionAsync(collection, filter);
-        }
-
-        public async Task RemoveAsync(string id)
-        {
-            var filter = Builders<T>.Filter.Eq(MongoDefaultSettings.IdName, id);
-            await collection.FindOneAndDeleteAsync(filter);
+            var d = domainAggregate.FirstOrDefault();
+            if (d == null)
+            {
+                throw new EntityNotFoundException(typeof(Type));
+            }
+            return d;
         }
 
         public async Task InsertNewAsync(T domainAggregate)
@@ -99,7 +91,7 @@ namespace Infrastructure.MongoDb
             }
         }
 
-        public async Task ModifyAsync(Action<T> modifyAction, string id)
+        public async Task ModifyAsync(Action<T> modifyLogic, IId<string> id)
         {
             using (var session = dbContext.Database.Client.StartSession())
             {
@@ -116,12 +108,12 @@ namespace Infrastructure.MongoDb
 
                          do
                          {
-                             var filter = Builders<T>.Filter.Eq(MongoDefaultSettings.IdName, id);
+                             var filter = Builders<T>.Filter.Eq(MongoDefaultSettings.IdName, id.Value);
                              foundDomainAggregate = await GetFirstFromCollectionAsync(entityCollection, filter);
                              var version = foundDomainAggregate.Etag;
                              foundDomainAggregate.Etag = Guid.NewGuid().ToString();
 
-                             modifyAction(foundDomainAggregate);
+                             modifyLogic(foundDomainAggregate);
                              filter = filter & Builders<T>.Filter.Eq(MongoDefaultSettings.EtagName, version);
 
                              result = await entityCollection.ReplaceOneAsync(filter, foundDomainAggregate, new ReplaceOptions { IsUpsert = false });
@@ -144,6 +136,18 @@ namespace Infrastructure.MongoDb
                     logger.LogError($"{Messages.NonTransientExceptionCaught} ${exception.Message}.", exception);
                 }
             }
+        }
+
+        public async Task<T> GetByIdAsync(IId<string> id)
+        {
+            var filter = Builders<T>.Filter.Eq(MongoDefaultSettings.IdName, id.Value);
+            return await GetFirstFromCollectionAsync(collection, filter);
+        }
+
+        public async Task RemoveAsync(IId<string> id)
+        {
+            var filter = Builders<T>.Filter.Eq(MongoDefaultSettings.IdName, id.Value);
+            await collection.FindOneAndDeleteAsync(filter);
         }
     }
 }

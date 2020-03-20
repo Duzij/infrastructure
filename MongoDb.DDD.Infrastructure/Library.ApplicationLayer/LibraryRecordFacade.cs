@@ -28,7 +28,7 @@ namespace Library.ApplicationLayer
         }
         public async Task Create(LibraryRecordCreateDTO libraryRecordDto)
         {
-            var user = await userRepository.GetByIdAsync(libraryRecordDto.userId);
+            var user = await userRepository.GetByIdAsync(new UserId(libraryRecordDto.userId));
 
             List<BookRecord> books = new List<BookRecord>();
             foreach (var book in libraryRecordDto.books)
@@ -48,7 +48,7 @@ namespace Library.ApplicationLayer
 
         private async Task CheckBookAvailibility(BookId bookId, string bookName, int amount)
         {
-            var book = await bookRepository.GetByIdAsync(bookId.Value);
+            var book = await bookRepository.GetByIdAsync(bookId);
             if (book.Amount.Amount < amount)
             {
                 throw new ArgumentException($"Book with title {bookName} is not in stock");
@@ -68,20 +68,35 @@ namespace Library.ApplicationLayer
             {
                 if (record.Books.Any(a => a.BookId.Value == bookId))
                 {
-                    await libraryRecordRepository.ModifyAsync(record => { record.UpdateBookTitle(bookId, newTitle); }, record.Id.Value);
+                    await libraryRecordRepository.ModifyAsync(record => { record.UpdateBookTitle(bookId, newTitle); }, record.Id);
                 }
             }
         }
 
-
         public async Task<LibraryRecordDetailDTO> GetLibraryRecordById(string id)
         {
-            return LibraryRecordConverter.Convert(await libraryRecordRepository.GetByIdAsync(id));
+            return LibraryRecordConverter.Convert(await libraryRecordRepository.GetByIdAsync(new LibraryRecordId(id)));
         }
 
         public async Task ReturnBookAsync(ReturnBookDTO returnBookDTO)
         {
-            await libraryRecordRepository.ModifyAsync(record => { record.ReturnBook(new BookId(returnBookDTO.bookId), new BookAmount(Convert.ToInt32(returnBookDTO.bookAmount))); }, returnBookDTO.libraryRecordId);
+            await libraryRecordRepository.ModifyAsync(record => { record.ReturnBook(new BookId(returnBookDTO.bookId), new BookAmount(Convert.ToInt32(returnBookDTO.bookAmount))); }, new LibraryRecordId(returnBookDTO.libraryRecordId));
+        }
+
+        public async Task PayLibraryRecord(string id)
+        {
+            await libraryRecordRepository.ModifyAsync(record => { record.PayFine(); }, new LibraryRecordId(id));
+        }
+
+        public async Task<List<LibraryRecordDetailDTO>> GetAllLibraryRecords()
+        {
+            var records = await allLibraryRecordsQuery.GetResultsAsync();
+            var returnRecords = new List<LibraryRecordDetailDTO>();
+            foreach (var item in records)
+            {
+                returnRecords.Add(LibraryRecordConverter.Convert(item));
+            }
+            return returnRecords;
         }
     }
 }
