@@ -48,7 +48,6 @@ namespace Library.Domain
         {
             this.Amount = new BookAmount(this.Amount.Amount + amount.Amount);
             this.State = BookState.InStock;
-            AddEvent(new BookStockChanged(Amount));
         }
 
         public void RemoveStock(BookAmount amount)
@@ -58,7 +57,6 @@ namespace Library.Domain
             {
                 this.State = BookState.InDatabase;
             }
-            AddEvent(new BookStockChanged(Amount));
         }
 
         public override void CheckState()

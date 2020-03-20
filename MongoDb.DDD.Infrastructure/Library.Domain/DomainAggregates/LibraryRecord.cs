@@ -34,12 +34,10 @@ namespace Library.Domain
             this.CreatedDate = DateTime.UtcNow;
             this.ReturnFine = new ReturnFine(0);
             Books = books;
-        }
-
-        public void AddBook(BookId bookId, BookAmount amount, BookTitle title)
-        {
-            Books.Add(new BookRecord(bookId, amount, title));
-            AddEvent(new BookAddedToLibraryRecord(bookId.Value, Id.Value));
+            foreach (var book in books)
+            {
+                AddEvent(new BookAddedToLibraryRecord(book.BookId.Value, Id.Value, book.BookAmount.Amount));
+            }
         }
 
         public void ReturnBook(BookId bookId, BookAmount amount)
