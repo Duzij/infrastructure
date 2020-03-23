@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Infrastructure.Core;
+using System;
+using System.Collections.Generic;
 
 namespace Library.Domain
 {
-    public class BookTitle
+    public class BookTitle : Value
     {
         public string Value;
 
@@ -13,6 +15,11 @@ namespace Library.Domain
                 throw new ArgumentException("Book title cannot be null of white space");
             }
             this.Value = title;
+        }
+
+        protected override IEnumerable<object> GetAtomicValues()
+        {
+            return new List<object>() { this.Value };
         }
     }
 }

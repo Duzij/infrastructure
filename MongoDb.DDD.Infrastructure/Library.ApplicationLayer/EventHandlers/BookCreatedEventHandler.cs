@@ -13,21 +13,25 @@ namespace Library.ApplicationLayer
     {
         private readonly ILogger<BookCreatedEventHandler> logger;
         private readonly IRepository<Author, string> authorRepository;
+        private readonly IRepository<Book, string> bookRepository;
 
-        public BookCreatedEventHandler(ILogger<BookCreatedEventHandler> logger, IRepository<Author, string> authorRepository)
+        public BookCreatedEventHandler(ILogger<BookCreatedEventHandler> logger, IRepository<Author, string> authorRepository, IRepository<Book, string> bookRepository)
         {
             this.logger = logger;
             this.authorRepository = authorRepository;
+            this.bookRepository = bookRepository;
         }
         
         public async Task Handle(BookCreated @event)
         {
+            var book = await bookRepository.GetByIdAsync(@event.BookId);
+
             await authorRepository.ModifyAsync(author => {
                 var bookList = author.Books;
-                bookList.Add(@event.BookId);
+                bookList.Add(new AuthorBookRecord(@event.BookId, book.Title));
                 author.UpdateBooks(bookList);
             }, @event.AuthorId);
-            logger.LogInformation("Author books were updated");
+            logger.LogInformation($"Books by author with id {@event.AuthorId} were updated");
         }
     }
 }

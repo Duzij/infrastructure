@@ -14,7 +14,7 @@ namespace Library.ApplicationLayer
         Task<AuthorDetailDTO> GetById(string v);
         Task Update(AuthorDetailDTO userDto);
         Task<Dictionary<string, string>> GetAuthorSelectorAsync();
-        Task UpdateAuthorBooksAsync(string id, IList<BookId> books);
+        Task UpdateAuthorBooksAsync(string id, IList<AuthorBookRecord> books);
         Task<List<AuthorDetailDTO>> GetAuthorsByBookAsync(string title);
     }
 }

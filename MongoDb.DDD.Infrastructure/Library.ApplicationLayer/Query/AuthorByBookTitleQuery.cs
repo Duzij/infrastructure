@@ -25,15 +25,15 @@ namespace Library.ApplicationLayer.Query
         {
             var authorCollection = dbContext.GetCollection<Author>();
 
-            var authors = await authorCollection.FindAsync(a => a.Books.Any(bId => bId.Value == BookId.Value));
+            var authors = await authorCollection.FindAsync(a => a.Books.Any(bId => bId.BookId == BookId));
             var authorDetails = new List<AuthorDetailDTO>();
             foreach (var author in authors.ToEnumerable())
             {
                 var books = new List<string>();
 
-                foreach (var bookId in author.Books)
+                foreach (var bookRecord in author.Books)
                 {
-                    var book = await bookRepository.GetByIdAsync(bookId);
+                    var book = await bookRepository.GetByIdAsync(bookRecord.BookId);
                     books.Add(book.Title.Value);
                 }
 

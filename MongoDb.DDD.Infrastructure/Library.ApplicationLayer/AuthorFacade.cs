@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Core;
+using Library.ApplicationLayer.Mappers;
 using Library.ApplicationLayer.Query;
 using Library.Domain;
 using MongoDB.Driver;
@@ -13,14 +14,12 @@ namespace Library.ApplicationLayer
     public class AuthorFacade : IAuthorFacade
     {
         private readonly IRepository<Author, string> repository;
-        private readonly IRepository<Book, string> bookRepository;
         private readonly AuthorByBookTitleQuery query;
         private readonly AllAuthorsQuery allAuthorsQuery;
 
-        public AuthorFacade(IRepository<Author,string> repository, IRepository<Book, string> bookRepository, AuthorByBookTitleQuery query, AllAuthorsQuery allAuthorsQuery)
+        public AuthorFacade(IRepository<Author,string> repository, AuthorByBookTitleQuery query, AllAuthorsQuery allAuthorsQuery)
         {
             this.repository = repository;
-            this.bookRepository = bookRepository;
             this.query = query;
             this.allAuthorsQuery = allAuthorsQuery;
         }
@@ -60,19 +59,10 @@ namespace Library.ApplicationLayer
             return authorsSelector;
         }
 
-        public async Task<AuthorDetailDTO> GetById(string v)
+        public async Task<AuthorDetailDTO> GetById(string id)
         {
-            var author = await repository.GetByIdAsync(new AuthorId(v));
-
-            var books = new List<string>();
-
-            foreach (var bookId in author.Books)
-            {
-                var book = await bookRepository.GetByIdAsync(bookId);
-                books.Add(book.Title.Value);
-            }
-
-            return new AuthorDetailDTO(author.Id.Value, author.Name, author.Surname, books);
+            var author = await repository.GetByIdAsync(new AuthorId(id));
+            return AuthorMapper.MapTo(author);
         }
 
         public async Task Update(AuthorDetailDTO author)
@@ -89,7 +79,7 @@ namespace Library.ApplicationLayer
             }, new AuthorId(author.Id));
         }
 
-        public async Task UpdateAuthorBooksAsync(string id, IList<BookId> bookTitles)
+        public async Task UpdateAuthorBooksAsync(string id, IList<AuthorBookRecord> bookTitles)
         {
             await repository.ModifyAsync(authorEntity => authorEntity.UpdateBooks(bookTitles), new AuthorId(id));
         }

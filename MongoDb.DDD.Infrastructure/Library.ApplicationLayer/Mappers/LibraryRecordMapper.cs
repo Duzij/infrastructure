@@ -6,9 +6,9 @@ using System.Text;
 
 namespace Library.ApplicationLayer
 {
-    public static class LibraryRecordConverter
+    public static class LibraryRecordMapper
     {
-        public static LibraryRecordDetailDTO Convert(LibraryRecord record)
+        public static LibraryRecordDetailDTO MapTo(LibraryRecord record)
         {
             var books = new List<BookRecordDTO>();
 

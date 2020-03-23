@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Library.Domain;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -30,6 +31,14 @@ namespace Library.Tests
 
             Id = null;
             Assert.IsTrue(Id == null);
+        }
+
+        [Test]
+        public void ComplareAmounts()
+        {
+            var bookAmount = new BookAmount(1);
+            var bookAmount2 = new BookAmount(1);
+            Assert.IsTrue(bookAmount == bookAmount2);
         }
     }
 }

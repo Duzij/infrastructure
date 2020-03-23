@@ -29,7 +29,7 @@ namespace Library.ApplicationLayer.Query
 
             foreach (var item in records)
             {
-                recordDetails.Add(LibraryRecordConverter.Convert(item));
+                recordDetails.Add(LibraryRecordMapper.MapTo(item));
             }
 
             return recordDetails;

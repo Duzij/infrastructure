@@ -4,14 +4,14 @@ using System.Text;
 
 namespace Library.Domain
 {
-    public class Author : DomainAggregate
+    public class Author : AppDomainAggregate
     {
-        public string Name { get; set; }
-        public string Surname { get; set; }
+        public string Name { get; private set; }
+        public string Surname { get; private set; }
 
-        public IList<BookId> Books { get; private set; }
+        public IList<AuthorBookRecord> Books { get; private set; }
 
-        public static Author Create(IList<BookId> books, string name, string surname)
+        public static Author Create(IList<AuthorBookRecord> books, string name, string surname)
         {
             var author = new Author(TypedId.GetNewId<AuthorId>(), books, name,surname);
             return author;
@@ -23,7 +23,7 @@ namespace Library.Domain
             return author;
         }
 
-        private Author(AuthorId id, IList<BookId> books, string name, string surname)
+        private Author(AuthorId id, IList<AuthorBookRecord> books, string name, string surname)
         {
             Id = id;
             Books = books;
@@ -36,7 +36,7 @@ namespace Library.Domain
             Id = id;
             Name = name;
             Surname = surname;
-            this.Books = new List<BookId>();
+            this.Books = new List<AuthorBookRecord>();
         }
 
 
@@ -48,7 +48,7 @@ namespace Library.Domain
             }
         }
 
-        public void UpdateBooks(IList<BookId> books)
+        public void UpdateBooks(IList<AuthorBookRecord> books)
         {
             this.Books = books;
             CheckState();

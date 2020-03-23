@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Library.Domain
 {
-    public class ReturnFine : Value<ReturnFine>
+    public class ReturnFine : Value
     {
         public decimal Value { get; private set; }
 
@@ -18,5 +18,9 @@ namespace Library.Domain
             this.Value = value;
         }
 
+        protected override IEnumerable<object> GetAtomicValues()
+        {
+            return new List<object>() { Value };
+        }
     }
 }

@@ -75,7 +75,7 @@ namespace Library.ApplicationLayer
 
         public async Task<LibraryRecordDetailDTO> GetLibraryRecordById(string id)
         {
-            return LibraryRecordConverter.Convert(await libraryRecordRepository.GetByIdAsync(new LibraryRecordId(id)));
+            return LibraryRecordMapper.MapTo(await libraryRecordRepository.GetByIdAsync(new LibraryRecordId(id)));
         }
 
         public async Task ReturnBookAsync(ReturnBookDTO returnBookDTO)
@@ -94,7 +94,7 @@ namespace Library.ApplicationLayer
             var returnRecords = new List<LibraryRecordDetailDTO>();
             foreach (var item in records)
             {
-                returnRecords.Add(LibraryRecordConverter.Convert(item));
+                returnRecords.Add(LibraryRecordMapper.MapTo(item));
             }
             return returnRecords;
         }

@@ -22,7 +22,6 @@ namespace Library.ApplicationLayer
         public string Id { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
-        [BindNever]
         public IList<string> BookTitles { get; set; } = new List<string>();
         public int BookCount { get { return GetBooksCount(); } }
 

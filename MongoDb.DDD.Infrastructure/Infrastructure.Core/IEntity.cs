@@ -3,7 +3,7 @@
 
     public interface IEntity<TKey>
     {
-        public IId<TKey> Id { get; set; }
+        public IId<TKey> Id { get; }
 
     }
 }

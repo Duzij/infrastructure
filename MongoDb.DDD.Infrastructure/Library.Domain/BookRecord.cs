@@ -1,6 +1,8 @@
-﻿namespace Library.Domain
+﻿using Infrastructure.Core;
+
+namespace Library.Domain
 {
-    public class BookRecord
+    public class BookRecord 
     {
         public BookId BookId { get; }
         public BookAmount BookAmount { get; }

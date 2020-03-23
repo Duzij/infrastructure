@@ -1,9 +1,10 @@
 ﻿using Infrastructure.Core;
 using System;
+using System.Collections.Generic;
 
 namespace Library.Domain
 {
-    public class BookAmount : Value<BookAmount>
+    public class BookAmount : Value
     {
         public int Amount { get; private set; }
 
@@ -21,5 +22,9 @@ namespace Library.Domain
         public static BookAmount operator - (BookAmount left, BookAmount right) => new BookAmount(left.Amount - right.Amount);
         public static BookAmount operator + (BookAmount left, BookAmount right) => new BookAmount(left.Amount + right.Amount);
 
+        protected override IEnumerable<object> GetAtomicValues()
+        {
+            return new List<object>() { this.Amount };
+        }
     }
 }

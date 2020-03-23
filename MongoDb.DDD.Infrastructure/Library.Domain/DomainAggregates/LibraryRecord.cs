@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Library.Domain
 {
-    public class LibraryRecord : DomainAggregate
+    public class LibraryRecord : AppDomainAggregate
     {
         public bool IsClosed { get; set; }
         public User User { get; set; }
@@ -67,11 +67,19 @@ namespace Library.Domain
                 var newFineValue = daysBetweenTodayAndReturnDate * 10;
                 ReturnFine = new ReturnFine(oldFineValue + newFineValue);
             }
+
+            if (ReturnFine.Value == 0)
+            {
+                IsClosed = true;
+            }
         }
 
         public void PayFine()
         {
-            this.IsClosed = true;
+            if (Books.Count == 0)
+            {
+                this.IsClosed = true;
+            }
         }
 
         public override void CheckState()

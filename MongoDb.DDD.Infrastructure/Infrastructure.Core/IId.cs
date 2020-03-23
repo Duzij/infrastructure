@@ -2,6 +2,6 @@
 {
     public interface IId<TKey>
     {
-        public TKey Value { get; set; }
+        public TKey Value { get; }
     }
 }
