@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Primitives;
+﻿using Library.Domain;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -14,5 +15,6 @@ namespace Library.ApplicationLayer
         Task<Dictionary<string, string>> GetBooksSelectorAsync();
         Task<BookDetailDTO> GetUserById(string value);
         Task UpdateAmount(string bookId, int amountValue);
+        Task<List<BookId>> GetBookIdsByAuthorFullNameAsync(AuthorFullName oldName);
     }
 }

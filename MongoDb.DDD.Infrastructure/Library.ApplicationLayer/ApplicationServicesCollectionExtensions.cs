@@ -23,10 +23,11 @@ namespace Infrastructure.ApplicationLayer
             services.AddTransient<ILibraryRecordFacade, LibraryRecordFacade>();
 
             services.AddTransient<AllAuthorsQuery>();
-            services.AddTransient<AllBooksQuery>();
+            services.AddTransient<AllBookDetailsQuery>();
             services.AddTransient<AllUsersQuery>();
             services.AddTransient<ValidLibraryRecordDetailsQuery>();
             services.AddTransient<AllLibraryRecordsQuery>();
+            services.AddTransient<AllBooksQuery>();
 
             var settings = new MongoDbSettings("mongodb://localhost:27017?connect=replicaSet", databaseName);
             services.AddMongoDbInfrastructure(settings);

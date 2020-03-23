@@ -1,13 +1,13 @@
 ﻿namespace Library.Domain
 {
-    public class BookAuthorIdChanged
+    public class BookAuthorNameChanged
     {
         public string BookId { get; }
         public string BookTitle { get; }
         public string NewAuthorId { get; }
         public string OldAuthorId { get; }
 
-        public BookAuthorIdChanged(string bookId, string bookTitle, string newAuthorId, string oldAuthorId)
+        public BookAuthorNameChanged(string bookId, string bookTitle, string newAuthorId, string oldAuthorId)
         {
             BookId = bookId;
             BookTitle = bookTitle;

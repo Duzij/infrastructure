@@ -11,7 +11,7 @@ namespace Library.ApplicationLayer
     /// <summary>
     /// In case book title changed all related authors should be notified and updated
     /// </summary>
-    public class BookAuthorIdChangedEventHandler : IEventHandler<BookAuthorIdChanged>
+    public class BookAuthorIdChangedEventHandler : IEventHandler<BookAuthorNameChanged>
     {
         private readonly IAuthorFacade authorFacade;
         private readonly ILogger<BookAuthorIdChangedEventHandler> logger;
@@ -21,7 +21,7 @@ namespace Library.ApplicationLayer
             this.authorFacade = authorFacade;
             this.logger = logger;
         }
-        public async Task Handle(BookAuthorIdChanged @event)
+        public async Task Handle(BookAuthorNameChanged @event)
         {
             var oldAuthor = await authorFacade.GetById(@event.OldAuthorId);
             oldAuthor.BookTitles.Remove(@event.BookTitle);

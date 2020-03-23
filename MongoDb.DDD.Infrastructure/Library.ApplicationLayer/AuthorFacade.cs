@@ -65,18 +65,11 @@ namespace Library.ApplicationLayer
             return AuthorMapper.MapTo(author);
         }
 
-        public async Task Update(AuthorDetailDTO author)
+        public async Task Update(AuthorDetailDTO authorDto)
         {
-            await repository.ModifyAsync(authorEntity => {
-                if (authorEntity.Name != author.Name)
-                {
-                    authorEntity.ChangeName(author.Name);
-                }
-                if (authorEntity.Surname != author.Surname)
-                {
-                    authorEntity.ChangeSurname(author.Surname);
-                }
-            }, new AuthorId(author.Id));
+            await repository.ModifyAsync(author => {
+                author.UpdateAuthor(authorDto.Name, authorDto.Surname);
+            }, new AuthorId(authorDto.Id));
         }
 
         public async Task UpdateAuthorBooksAsync(string id, IList<AuthorBookRecord> bookTitles)

@@ -11,10 +11,10 @@ namespace Library.Domain
         public BookTitle Title { get; private set; }
         public string Description { get; private set; }
         public AuthorId AuthorId { get; private set; }
-        public string AuthorName { get; private set; }
+        public AuthorFullName AuthorName { get; private set; }
         public BookState State { get; private set; }
 
-        public static Book Create(string title, string description, AuthorId authorId, string authorName)
+        public static Book Create(string title, string description, AuthorId authorId, AuthorFullName authorName)
         {
             var book = new Book(
                 TypedId.GetNewId<BookId>(), title, description, authorId, authorName);
@@ -22,7 +22,7 @@ namespace Library.Domain
             return book;
         }
 
-        private Book(BookId id, string title, string description, AuthorId authorId, string authorName)
+        private Book(BookId id, string title, string description, AuthorId authorId, AuthorFullName authorName)
         {
             Id = id;
             Title = new BookTitle(title);
@@ -33,15 +33,15 @@ namespace Library.Domain
             Amount = new BookAmount(0);
         }
 
-        public void ChangeAuthor(AuthorId authorId, string newAuthorName)
+        public void ChangeAuthor(AuthorFullName author, AuthorId authorId)
         {
-            if (authorId.Value == this.AuthorId.Value)
+            if (this.AuthorName == author)
             {
-                throw new ArgumentException("New author id is same as old author id");
+                throw new InvalidOperationException("Author name was already changed");
             }
-            AddEvent(new BookAuthorIdChanged(Id.Value, this.Title.Value, authorId.Value, AuthorId.Value));
+            AddEvent(new BookAuthorNameChanged(Id.Value, this.Title.Value, authorId.Value, AuthorId.Value));
             this.AuthorId = authorId;
-            this.AuthorName = newAuthorName;
+            this.AuthorName = author;
         }
 
         public void AddStock(BookAmount amount)
@@ -64,8 +64,7 @@ namespace Library.Domain
             if (Id == null || Amount == null ||
                 AuthorId == null ||
                 Title == null ||
-                String.IsNullOrWhiteSpace(AuthorName) ||
-                String.IsNullOrWhiteSpace(Description))
+                AuthorName == null)
             {
                 throw new InvalidEntityStateException();
             }

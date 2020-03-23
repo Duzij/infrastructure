@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Infrastructure.Core;
 using Library.ApplicationLayer.DTO;
+using Library.ApplicationLayer.Mappers;
 using Library.ApplicationLayer.Query;
 using Library.Domain;
 
@@ -14,18 +15,29 @@ namespace Library.ApplicationLayer
     {
         private readonly IRepository<LibraryRecord, string> libraryRecordRepository;
         private readonly AllLibraryRecordsQuery allLibraryRecordsQuery;
-        private readonly ValidLibraryRecordDetailsQuery allLibraryRecordDetailsQuery;
+        private readonly ValidLibraryRecordDetailsQuery validLibraryRecordDetailsQuery;
         private readonly IRepository<User, string> userRepository;
         private readonly IRepository<Book, string> bookRepository;
 
-        public LibraryRecordFacade(IRepository<LibraryRecord, string> libraryRecordRepository, ValidLibraryRecordDetailsQuery allLibraryRecordDetailsQuery, AllLibraryRecordsQuery allLibraryRecordsQuery, IRepository<User, string> userRepository, IRepository<Book, string> bookRepository)
+        public LibraryRecordFacade(IRepository<LibraryRecord, string> libraryRecordRepository, ValidLibraryRecordDetailsQuery validRecordDetailsQuery, AllLibraryRecordsQuery allLibraryRecordsQuery, IRepository<User, string> userRepository, IRepository<Book, string> bookRepository)
         {
             this.libraryRecordRepository = libraryRecordRepository;
             this.allLibraryRecordsQuery = allLibraryRecordsQuery;
-            this.allLibraryRecordDetailsQuery = allLibraryRecordDetailsQuery;
+            this.validLibraryRecordDetailsQuery = validRecordDetailsQuery;
             this.userRepository = userRepository;
             this.bookRepository = bookRepository;
         }
+
+        public async Task<List<LibraryRecordId>> GetLibraryRecordsByUserAsync(UserRecord user)
+        {
+            var query = allLibraryRecordsQuery;
+            query.Filter = (a => a.User == user);
+
+            var records = await query.GetResultsAsync();
+
+            return records.Select(a => (LibraryRecordId)a.Id).ToList();
+        }
+
         public async Task Create(LibraryRecordCreateDTO libraryRecordDto)
         {
             var user = await userRepository.GetByIdAsync(new UserId(libraryRecordDto.userId));
@@ -42,7 +54,7 @@ namespace Library.ApplicationLayer
                 books.Add(new BookRecord(bookId , new BookAmount(amount), new BookTitle(book.title)));
             }
 
-            var libraryRecord = LibraryRecord.Create(user, books);
+            var libraryRecord = LibraryRecord.Create(UserMapper.MapTo(user), books);
             await libraryRecordRepository.InsertNewAsync(libraryRecord);
         }
 
@@ -57,7 +69,7 @@ namespace Library.ApplicationLayer
 
         public async Task<List<LibraryRecordDetailDTO>> GetLibraryRecords()
         {
-            var libraryRecords = await allLibraryRecordDetailsQuery.GetResultsAsync();
+            var libraryRecords = await validLibraryRecordDetailsQuery.GetResultsAsync();
             return libraryRecords.ToList();
         }
 

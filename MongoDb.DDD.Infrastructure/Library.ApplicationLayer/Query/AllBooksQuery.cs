@@ -4,28 +4,29 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Library.ApplicationLayer.Query
 {
-    public class AllBooksQuery : Query<BookDetailDTO>
+    public class AllBooksQuery : Query<Book>
     {
+        public Expression<Func<Book, bool>> Filter { get; set; }
         public AllBooksQuery(IMongoDbContext dbContext) : base(dbContext)
         {
         }
-
-        public override async Task<IList<BookDetailDTO>> GetResultsAsync()
+        public override async Task<IList<Book>> GetResultsAsync()
         {
-            var bookCollection = dbContext.GetCollection<Book>().AsQueryable();
+            var records = base.dbContext.GetCollection<Book>().AsQueryable();
 
-            var returnCollection = new List<BookDetailDTO>();
-            foreach (var book in bookCollection)
+            if (Filter != null)
             {
-                returnCollection.Add(new BookDetailDTO() { Id = book.Id.Value, Title = book.Title.Value, AuthorName = book.AuthorName, Amount = book.Amount.Amount, AuthorId = book.AuthorId.Value, Description = book.Description });
+                records = records.Where(Filter);
             }
 
-            return returnCollection;
+            return await records.ToListAsync();
+
         }
     }
 }

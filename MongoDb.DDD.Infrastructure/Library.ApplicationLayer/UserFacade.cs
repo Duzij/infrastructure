@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Core;
+using Library.ApplicationLayer.Mappers;
 using Library.ApplicationLayer.Query;
 using Library.Domain;
 using System;
@@ -61,7 +62,7 @@ namespace Library.ApplicationLayer
         public async Task Update(UserDetailDTO userDto)
         {
             var allRecords = await allLibraryRecordsQuery.GetResultsAsync();
-            var userHasSomeRecords = allRecords.Any(a => a.User.Id.Value == userDto.Id && !a.IsClosed);
+            var userHasSomeRecords = allRecords.Any(a => a.User == UserMapper.MapTo(userDto) && !a.IsClosed);
 
             await repository.ModifyAsync(user =>
             {
@@ -80,6 +81,7 @@ namespace Library.ApplicationLayer
                 {
                     user.Unban();
                 }
+                user.UpdateUser(userDto.Name, userDto.Surname, userDto.Email);
             }, new UserId(userDto.Id));
         }
 

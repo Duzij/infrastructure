@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Library.ApplicationLayer.DTO;
+using Library.Domain;
 
 namespace Library.ApplicationLayer
 {
@@ -16,5 +17,6 @@ namespace Library.ApplicationLayer
         Task ReturnBookAsync(ReturnBookDTO returnBookDTO);
         Task PayLibraryRecord(string id);
         Task<List<LibraryRecordDetailDTO>> GetAllLibraryRecords();
+        Task<List<LibraryRecordId>> GetLibraryRecordsByUserAsync(UserRecord user);
     }
 }

@@ -18,5 +18,10 @@ namespace Library.ApplicationLayer.Mappers
 
             return new AuthorDetailDTO(author.Id.Value, author.Name, author.Surname, books);
         }
+
+        public static string GetAuthorName(string name, string surname)
+        {
+            return $"{name} {surname}";
+        }
     }
 }

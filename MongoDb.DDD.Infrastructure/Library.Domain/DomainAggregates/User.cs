@@ -29,7 +29,16 @@ namespace Library.Domain
         public void SetAsBanned()
         {
             this.IsBanned = true;
-            AddEvent(new UserSetAsBanned(this.Id.Value, this.Email));
+        }
+
+        public void UpdateUser(string name, string surname, string email)
+        {
+            var oldUser = new UserRecord(this.IsBanned, this.Name, this.Surname, this.Email);
+            this.Name = name;
+            this.Surname = surname;
+            this.Email = email;
+            var updatedUser = new UserRecord(this.IsBanned, name, surname, email);
+            AddEvent(new UserUpdated(oldUser, updatedUser));
         }
 
         public override void CheckState()
@@ -48,15 +57,4 @@ namespace Library.Domain
         }
     }
 
-    public  class UserSetAsBanned
-    {
-        public string Value { get; set; }
-        public string Email { get; set; }
-
-        public UserSetAsBanned(string value, string email)
-        {
-            this.Value = value;
-            this.Email = email;
-        }
-    }
 }

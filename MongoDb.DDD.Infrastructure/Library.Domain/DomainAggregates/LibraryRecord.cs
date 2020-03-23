@@ -8,7 +8,7 @@ namespace Library.Domain
     public class LibraryRecord : AppDomainAggregate
     {
         public bool IsClosed { get; set; }
-        public User User { get; set; }
+        public UserRecord User { get; set; }
         public List<BookRecord> Books { get; private set; }
 
         public DateTime CreatedDate { get; private set; }
@@ -16,12 +16,12 @@ namespace Library.Domain
 
         public ReturnFine ReturnFine { get; set; }
 
-        public static LibraryRecord Create(User user, List<BookRecord> books)
+        public static LibraryRecord Create(UserRecord user, List<BookRecord> books)
         {
             var record = new LibraryRecord(TypedId.GetNewId<LibraryRecordId>(), user, books);
             return record;
         }
-        private LibraryRecord(LibraryRecordId id, User user, List<BookRecord> books)
+        private LibraryRecord(LibraryRecordId id, UserRecord user, List<BookRecord> books)
         {
             Id = id;
             if (user.IsNotBanned)
@@ -38,6 +38,14 @@ namespace Library.Domain
             foreach (var book in books)
             {
                 AddEvent(new BookAddedToLibraryRecord(book.BookId, id, book.BookAmount.Amount));
+            }
+        }
+
+        public void UpdateUser(UserRecord userRecord)
+        {
+            if (userRecord.IsNotBanned)
+            {
+                this.User = userRecord;
             }
         }
 

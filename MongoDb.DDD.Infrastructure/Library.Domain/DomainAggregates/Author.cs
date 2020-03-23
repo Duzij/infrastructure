@@ -54,14 +54,13 @@ namespace Library.Domain
             CheckState();
         }
 
-        public void ChangeName(string name)
+        public void UpdateAuthor(string name, string surname)
         {
+            var oldName = new AuthorFullName(this.Name, this.Surname);
             this.Name = name;
-        }
-
-        public void ChangeSurname(string surname)
-        {
             this.Surname = surname;
+            var newName = new AuthorFullName(this.Name, this.Surname);
+            AddEvent(new AuthorUpdated(oldName, newName, (AuthorId)Id));
         }
     }
 }
