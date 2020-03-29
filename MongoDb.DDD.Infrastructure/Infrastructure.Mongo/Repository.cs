@@ -16,12 +16,14 @@ namespace Infrastructure.MongoDb
         private readonly IMongoDbContext dbContext;
         private readonly IMongoDbSettings mongoDbSettings;
         private readonly ILogger<Repository<T, TKey>> logger;
+        private readonly EventWriter eventWriter;
 
-        public Repository(IMongoDbContext dbContext, IMongoDbSettings mongoDbSettings, ILogger<Repository<T, TKey>> logger)
+        public Repository(IMongoDbContext dbContext, IMongoDbSettings mongoDbSettings, ILogger<Repository<T, TKey>> logger, EventWriter eventWriter)
         {
             this.dbContext = dbContext;
             this.mongoDbSettings = mongoDbSettings;
             this.logger = logger;
+            this.eventWriter = eventWriter;
             collection = dbContext.Database.GetCollection<T>(MongoUtils.GetCollectionName<T>());
         }
 
@@ -48,12 +50,8 @@ namespace Infrastructure.MongoDb
                         domainAggregate.Etag = Guid.NewGuid().ToString();
                         await collection.InsertOneAsync(domainAggregate);
 
-                        foreach (var @event in domainAggregate.GetEvents())
-                        {
-                            var mongoEvent = new Event(Guid.NewGuid().ToString(), @event.GetType(), @event, domainAggregate.Id.Value);
-                            var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<Event>(MongoDefaultSettings.EventsDocumentName);
-                            await eventsCollection.InsertOneAsync(mongoEvent);
-                        }
+                        eventWriter.Write(domainAggregate.GetEvents());
+
                     });
                 }
                 catch (Exception exception)

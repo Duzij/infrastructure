@@ -33,7 +33,6 @@ namespace Infrastructure.MongoDb
 
         private static void AddMongoDbInfrastructureServices(IServiceCollection services)
         {
-            services.AddTransient<EventWriter>();
             services.AddTransient<IMongoDbContext, MongoDbContext>();
             services.AddHostedService<EventHandlerBackgroundService>();
 
