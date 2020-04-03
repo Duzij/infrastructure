@@ -9,7 +9,7 @@ namespace Infrastructure.Core
     /// </summary>
     public abstract class Aggregate<TKey> : IAggreagate<TKey>
     {
-        public IId<TKey> Id { get; set; }
+        public IId<TKey> Id { get; protected set; }
         public IList<object> GetEvents()
         {
             if (Events == null)
@@ -43,7 +43,7 @@ namespace Infrastructure.Core
             return base.GetHashCode();
         }
 
-        public void AddEvent(object @event)
+        protected void AddEvent(object @event)
         {
             CheckState();
             if (Events == null)
@@ -53,5 +53,9 @@ namespace Infrastructure.Core
             Events.Add(@event);
         }
 
+        void IAggreagate<TKey>.AddEvent(object @event)
+        {
+            AddEvent(@event);
+        }
     }
 }
