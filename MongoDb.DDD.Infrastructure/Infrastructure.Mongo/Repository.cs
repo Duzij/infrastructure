@@ -10,27 +10,25 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.MongoDb
 {
-    public class Repository<T, TKey> : IRepository<T, string> where T : IDomainAggreagate<string>
+    public class Repository<T, TKey> : IRepository<T, string> where T : IAggreagate<string>
     {
         private readonly IMongoCollection<T> collection;
         private readonly IMongoDbContext dbContext;
         private readonly IMongoDbSettings mongoDbSettings;
         private readonly ILogger<Repository<T, TKey>> logger;
-        private readonly EventWriter eventWriter;
 
-        public Repository(IMongoDbContext dbContext, IMongoDbSettings mongoDbSettings, ILogger<Repository<T, TKey>> logger, EventWriter eventWriter)
+        public Repository(IMongoDbContext dbContext, IMongoDbSettings mongoDbSettings, ILogger<Repository<T, TKey>> logger)
         {
             this.dbContext = dbContext;
             this.mongoDbSettings = mongoDbSettings;
             this.logger = logger;
-            this.eventWriter = eventWriter;
             collection = dbContext.Database.GetCollection<T>(MongoUtils.GetCollectionName<T>());
         }
 
         private async Task<Type> GetFirstFromCollectionAsync<Type>(IMongoCollection<Type> entityCollection, FilterDefinition<Type> filter)
         {
-            var domainAggregate = await entityCollection.FindAsync(filter);
-            var d = domainAggregate.FirstOrDefault();
+            var aggregate = await entityCollection.FindAsync(filter);
+            var d = aggregate.FirstOrDefault();
             if (d == null)
             {
                 throw new EntityNotFoundException(typeof(Type));
@@ -38,7 +36,7 @@ namespace Infrastructure.MongoDb
             return d;
         }
 
-        public async Task InsertNewAsync(T domainAggregate)
+        public async Task InsertNewAsync(T aggregate)
         {
             using (var session = dbContext.Database.Client.StartSession())
             {
@@ -47,11 +45,15 @@ namespace Infrastructure.MongoDb
                     await session.WithTransaction(
                     async (s, ct) =>
                     {
-                        domainAggregate.Etag = Guid.NewGuid().ToString();
-                        await collection.InsertOneAsync(domainAggregate);
+                        aggregate.Etag = Guid.NewGuid().ToString();
+                        await collection.InsertOneAsync(aggregate);
 
-                        eventWriter.Write(domainAggregate.GetEvents());
-
+                        foreach (var @event in aggregate.GetEvents())
+                        {
+                            var mongoEvent = new Event(Guid.NewGuid().ToString(), @event.GetType(), @event, aggregate.Id.Value);
+                            var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<Event>(MongoDefaultSettings.EventsDocumentName);
+                            await eventsCollection.InsertOneAsync(mongoEvent);
+                        }
                     });
                 }
                 catch (Exception exception)
@@ -62,7 +64,7 @@ namespace Infrastructure.MongoDb
             }
         }
 
-        public async Task ReplaceAsync(T domainAggregate)
+        public async Task ReplaceAsync(T aggregate)
         {
             using (var session = dbContext.Database.Client.StartSession())
             {
@@ -71,12 +73,12 @@ namespace Infrastructure.MongoDb
                   await session.WithTransaction(
                       async (s, ct) =>
                       {
-                          var filter = Builders<T>.Filter.Eq(MongoDefaultSettings.IdName, domainAggregate.Id.Value);
-                          await collection.ReplaceOneAsync(filter, domainAggregate, new ReplaceOptions { IsUpsert = false });
+                          var filter = Builders<T>.Filter.Eq(MongoDefaultSettings.IdName, aggregate.Id.Value);
+                          await collection.ReplaceOneAsync(filter, aggregate, new ReplaceOptions { IsUpsert = false });
 
-                          foreach (var @event in domainAggregate.GetEvents())
+                          foreach (var @event in aggregate.GetEvents())
                           {
-                              var mongoEvent = new Event(Guid.NewGuid().ToString(), @event.GetType(), @event, domainAggregate.Id.Value);
+                              var mongoEvent = new Event(Guid.NewGuid().ToString(), @event.GetType(), @event, aggregate.Id.Value);
                               var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<Event>(MongoDefaultSettings.EventsDocumentName);
                               await eventsCollection.InsertOneAsync(mongoEvent);
                           }
@@ -102,28 +104,28 @@ namespace Infrastructure.MongoDb
                          var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<Event>(MongoDefaultSettings.EventsDocumentName);
 
                          ReplaceOneResult result;
-                         T foundDomainAggregate;
+                         T foundAggregate;
 
                          do
                          {
                              var filter = Builders<T>.Filter.Eq(MongoDefaultSettings.IdName, id.Value);
-                             foundDomainAggregate = await GetFirstFromCollectionAsync(entityCollection, filter);
-                             var version = foundDomainAggregate.Etag;
-                             foundDomainAggregate.Etag = Guid.NewGuid().ToString();
+                             foundAggregate = await GetFirstFromCollectionAsync(entityCollection, filter);
+                             var version = foundAggregate.Etag;
+                             foundAggregate.Etag = Guid.NewGuid().ToString();
 
-                             modifyLogic(foundDomainAggregate);
+                             modifyLogic(foundAggregate);
                              filter = filter & Builders<T>.Filter.Eq(MongoDefaultSettings.EtagName, version);
 
-                             result = await entityCollection.ReplaceOneAsync(filter, foundDomainAggregate, new ReplaceOptions { IsUpsert = false });
+                             result = await entityCollection.ReplaceOneAsync(filter, foundAggregate, new ReplaceOptions { IsUpsert = false });
 
                          } while (result.ModifiedCount != 1);
 
                          //events are saved after sucessfull transformation
                          if (result.ModifiedCount == 1)
                          {
-                             foreach (var @event in foundDomainAggregate.GetEvents())
+                             foreach (var @event in foundAggregate.GetEvents())
                              {
-                                 var mongoEvent = new Event(Guid.NewGuid().ToString(), @event.GetType(), @event, foundDomainAggregate.Id.Value);
+                                 var mongoEvent = new Event(Guid.NewGuid().ToString(), @event.GetType(), @event, foundAggregate.Id.Value);
                                  eventsCollection.InsertOne(mongoEvent);
                              }
                          }

@@ -2,12 +2,12 @@
 
 namespace Infrastructure.Core
 {
-    public interface IDomainAggreagate<TKey> : IEntity<TKey>
+    public interface IAggreagate<TKey> : IEntity<TKey>
     {
+        void CheckState();
         public string Etag { get; set; }
         bool Equals(object other);
         int GetHashCode();
-        void CheckState();
         void AddEvent(object @event);
         IList<object> GetEvents();
     }

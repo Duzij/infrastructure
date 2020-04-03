@@ -7,7 +7,7 @@ namespace Infrastructure.Core
     /// <summary>
     /// High level object
     /// </summary>
-    public abstract class DomainAggregate<TKey> : IDomainAggreagate<TKey>
+    public abstract class Aggregate<TKey> : IAggreagate<TKey>
     {
         public IId<TKey> Id { get; set; }
         public IList<object> GetEvents()
@@ -19,7 +19,7 @@ namespace Infrastructure.Core
             return Events;
         }
 
-        public DomainAggregate()
+        public Aggregate()
         {
             Events = new List<object>();
         }
