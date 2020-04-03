@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Library.Domain
 {
-    public abstract class AppDomainAggregate : Aggregate<string>
+    public abstract class AppAggregate : Aggregate<string>
     {
     }
 }

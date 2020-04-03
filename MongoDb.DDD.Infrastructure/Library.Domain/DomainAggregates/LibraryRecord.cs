@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Library.Domain
 {
-    public class LibraryRecord : AppDomainAggregate
+    public class LibraryRecord : AppAggregate
     {
         public bool IsClosed { get; set; }
         public UserRecord User { get; set; }

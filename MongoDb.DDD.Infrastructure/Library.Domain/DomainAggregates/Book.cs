@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Library.Domain
 {
-    public class Book : AppDomainAggregate
+    public class Book : AppAggregate
     {
         public BookAmount Amount { get; private set; }
         public BookTitle Title { get; private set; }

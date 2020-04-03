@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Library.Domain
 {
-    public class User : AppDomainAggregate
+    public class User : AppAggregate
     {
         public bool IsNotBanned => !IsBanned;
         public bool IsBanned { get; set; }
