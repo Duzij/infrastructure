@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Library.Domain
 {
-    public class AuthorFullName : Value
+    public class AuthorFullName : ValueObject
     {
         public string Name { get; set; }
         public string Surname { get; set; }

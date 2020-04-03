@@ -7,9 +7,9 @@ using System.Reflection;
 
 namespace Infrastructure.Core
 {
-    public abstract class Value
+    public abstract class ValueObject
     {
-        public static bool operator ==(Value left, Value right)
+        public static bool operator ==(ValueObject left, ValueObject right)
         {
             if (ReferenceEquals(left, null) ^ ReferenceEquals(right, null))
             {
@@ -18,7 +18,7 @@ namespace Infrastructure.Core
             return ReferenceEquals(left, null) || left.Equals(right);
         }
 
-        public static bool operator !=(Value left, Value right)
+        public static bool operator !=(ValueObject left, ValueObject right)
         {
             return !(left == right);
         }
@@ -32,7 +32,7 @@ namespace Infrastructure.Core
                 return false;
             }
 
-            Value other = (Value)obj;
+            ValueObject other = (ValueObject)obj;
             IEnumerator<object> thisValues = GetAtomicValues().GetEnumerator();
             IEnumerator<object> otherValues = other.GetAtomicValues().GetEnumerator();
             while (thisValues.MoveNext() && otherValues.MoveNext())

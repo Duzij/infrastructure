@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Library.Domain
 {
-    public class UserRecord : Value
+    public class UserRecord : ValueObject
     {
         public bool IsBanned { get; set; }
         public string Name { get; set; }

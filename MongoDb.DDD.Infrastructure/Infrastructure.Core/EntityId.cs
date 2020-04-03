@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Infrastructure.Core
 {
-    public class EntityId<T> : Value, IId<string>
+    public class EntityId<T> : ValueObject, IId<string>
     {
         public string Value { get; private set; }
         public EntityId(string value)

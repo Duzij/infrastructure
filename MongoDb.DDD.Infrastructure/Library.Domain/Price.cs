@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Library.Domain
 {
-    public class ReturnFine : Value
+    public class ReturnFine : ValueObject
     {
         public decimal Value { get; private set; }
 

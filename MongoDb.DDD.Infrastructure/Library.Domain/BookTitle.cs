@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Library.Domain
 {
-    public class BookTitle : Value
+    public class BookTitle : ValueObject
     {
         public string Value;
 
