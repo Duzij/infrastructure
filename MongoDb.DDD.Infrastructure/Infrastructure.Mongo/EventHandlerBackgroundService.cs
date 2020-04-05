@@ -53,7 +53,7 @@ namespace Infrastructure.MongoDb
 
             using (var factory = serviceScopeFactory.CreateScope())
             {
-                Type handlerGenericType = typeof(IEventHandler<>).MakeGenericType(Type.GetType(@event.EvenType));
+                Type handlerGenericType = typeof(IEventHandler<>).MakeGenericType(Type.GetType(@event.EventType));
                 var service = factory.ServiceProvider.GetRequiredService(handlerGenericType);
                 HandleEvent(service, @event);
             }

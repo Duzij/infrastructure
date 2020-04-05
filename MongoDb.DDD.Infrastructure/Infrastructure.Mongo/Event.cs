@@ -9,10 +9,10 @@ namespace Infrastructure.MongoDb
     public class Event : IEvent<string>
     {
         [BsonId]
-        public string Id { get; set; }
+        public string Id { get; protected set; }
         public string EntityId { get; set; }
 
-        public string EvenType { get; set; }
+        public string EventType { get; set; }
 
         public object EventValue { get; set; }
 
@@ -21,7 +21,7 @@ namespace Infrastructure.MongoDb
         public Event(string id, Type evenType, object @event, string entityId)
         {
             Id = id;
-            EvenType = evenType.AssemblyQualifiedName;
+            EventType = evenType.AssemblyQualifiedName;
             EventValue = @event;
             EntityId = entityId;
         }

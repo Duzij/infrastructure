@@ -58,6 +58,5 @@ namespace Infrastructure.Core
              .Select(x => x != null ? x.GetHashCode() : 0)
              .Aggregate((x, y) => x ^ y);
         }
-        // Other utility methods
     }
 }

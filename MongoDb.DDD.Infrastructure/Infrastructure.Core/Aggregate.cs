@@ -7,9 +7,8 @@ namespace Infrastructure.Core
     /// <summary>
     /// High level object
     /// </summary>
-    public abstract class Aggregate<TKey> : IAggreagate<TKey>
+    public abstract class Aggregate<TKey> : Entity<TKey>, IAggreagate<TKey>
     {
-        public IId<TKey> Id { get; protected set; }
         public IList<object> GetEvents()
         {
             if (Events == null)
