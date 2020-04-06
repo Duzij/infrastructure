@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using Infrastructure.Core;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
 
-namespace Infrastructure.MongoDb
+namespace Infrastructure.Core
 {
     public class Event : IEvent<string>
     {
-        [BsonId]
         public string Id { get; protected set; }
         public string EntityId { get; set; }
 

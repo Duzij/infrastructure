@@ -7,6 +7,9 @@ using System.Reflection;
 
 namespace Infrastructure.Core
 {
+    /// <summary>
+    /// Referenced from https://github.com/dotnet-architecture/eShopOnContainers/blob/dev/src/Services/Ordering/Ordering.Domain/SeedWork/ValueObject.cs
+    /// </summary>
     public abstract class ValueObject
     {
         public static bool operator ==(ValueObject left, ValueObject right)
