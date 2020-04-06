@@ -1,5 +1,5 @@
 ﻿using Infrastructure.Core;
-using Infrastructure.MongoDb;
+using Infrastructure.MongoDB;
 using Library.ApplicationLayer.Query;
 using Library.Domain;
 using System;

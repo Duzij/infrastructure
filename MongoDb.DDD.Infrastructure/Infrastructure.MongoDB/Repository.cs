@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Infrastructure.MongoDb
+namespace Infrastructure.MongoDB
 {
     public class Repository<T, TKey> : IRepository<T, string> where T : IAggreagate<string>
     {

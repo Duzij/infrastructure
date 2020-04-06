@@ -1,4 +1,5 @@
-﻿namespace Infrastructure.MongoDb
+﻿
+namespace Infrastructure.MongoDB
 {
     public class MongoDbSettings : IMongoDbSettings
     {

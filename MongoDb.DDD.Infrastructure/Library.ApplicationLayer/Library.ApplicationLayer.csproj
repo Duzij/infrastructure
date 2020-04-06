@@ -10,8 +10,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Infrastructure.MongoDB\Infrastructure.MongoDB.csproj" />
+    <ProjectReference Include="..\Infrastructure.Mongo\Infrastructure.MongoDB.csproj" />
     <ProjectReference Include="..\Library.Domain\Library.Domain.csproj" />
-    <ProjectReference Include="..\Infrastructure.Mongo\Infrastructure.MongoDb.csproj" />
   </ItemGroup>
 
   <ItemGroup>

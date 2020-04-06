@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.MongoDb
+namespace Infrastructure.MongoDB
 {
     public abstract class Query<TResult> : IQuery<TResult>
     {

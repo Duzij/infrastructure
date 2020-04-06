@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Infrastructure.MongoDb
+namespace Infrastructure.MongoDB
 {
     public static class MongoUtils
     {

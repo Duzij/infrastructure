@@ -8,7 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Infrastructure.MongoDb
+namespace Infrastructure.MongoDB
 {
     public static class ServiceCollectionExtensions
     {

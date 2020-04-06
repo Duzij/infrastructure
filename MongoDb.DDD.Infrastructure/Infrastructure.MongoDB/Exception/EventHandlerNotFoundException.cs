@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Infrastructure.MongoDb
+namespace Infrastructure.MongoDB
 {
     [Serializable]
     internal class EventHandlerNotFoundException : Exception

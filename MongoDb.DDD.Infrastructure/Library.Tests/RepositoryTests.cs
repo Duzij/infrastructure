@@ -1,4 +1,4 @@
-﻿using Infrastructure.MongoDb;
+﻿using Infrastructure.MongoDB;
 using Library.Domain;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

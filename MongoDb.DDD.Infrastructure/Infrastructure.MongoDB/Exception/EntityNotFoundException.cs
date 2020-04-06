@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Infrastructure.MongoDB;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Infrastructure.MongoDb
+namespace Infrastructure.MongoDB
 {
     public class EntityNotFoundException : Exception
     {
