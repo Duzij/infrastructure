@@ -4,9 +4,6 @@ using System.Text;
 
 namespace Infrastructure.Core
 {
-    /// <summary>
-    /// High level object
-    /// </summary>
     public abstract class Aggregate<TKey> : Entity<TKey>, IAggregate<TKey>
     {
         public IList<object> GetEvents()
@@ -23,11 +20,15 @@ namespace Infrastructure.Core
             Events = new List<object>();
         }
 
-        public string Etag { get; set; }
+        public string Etag { get; protected set; }
+
+        public void RegenerateEtag()
+        {
+            Etag = Guid.NewGuid().ToString();
+        }
 
         private IList<object> Events { get; set; }
 
-        //for complex state cheking between properties
         public abstract void CheckState();
 
         public override bool Equals(object other)
@@ -56,5 +57,7 @@ namespace Infrastructure.Core
         {
             AddEvent(@event);
         }
+
+      
     }
 }

@@ -45,7 +45,7 @@ namespace Infrastructure.MongoDB
                     await session.WithTransaction(
                     async (s, ct) =>
                     {
-                        aggregate.Etag = Guid.NewGuid().ToString();
+                        aggregate.RegenerateEtag();
                         await collection.InsertOneAsync(aggregate);
 
                         foreach (var @event in aggregate.GetEvents())
@@ -111,7 +111,7 @@ namespace Infrastructure.MongoDB
                              var filter = Builders<T>.Filter.Eq(MongoDefaultSettings.IdName, id.Value);
                              foundAggregate = await GetFirstFromCollectionAsync(entityCollection, filter);
                              var version = foundAggregate.Etag;
-                             foundAggregate.Etag = Guid.NewGuid().ToString();
+                             foundAggregate.RegenerateEtag();
 
                              modifyLogic(foundAggregate);
                              filter = filter & Builders<T>.Filter.Eq(MongoDefaultSettings.EtagName, version);
