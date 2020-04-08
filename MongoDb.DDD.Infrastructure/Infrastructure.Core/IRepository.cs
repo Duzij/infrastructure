@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Core
 {
-    public interface IRepository<T, TKey> where T : IEntity<TKey>
+    public interface IRepository<T, TKey> where T : IAggregate<TKey>
     {
         /// <summary>
         /// New entity is inserted to collection named after entity type

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.MongoDB
 {
-    public class Repository<T, TKey> : IRepository<T, string> where T : IAggreagate<string>
+    public class Repository<T, TKey> : IRepository<T, string> where T : IAggregate<string>
     {
         private readonly IMongoCollection<T> collection;
         private readonly IMongoDbContext dbContext;

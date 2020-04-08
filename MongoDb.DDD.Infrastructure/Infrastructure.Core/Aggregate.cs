@@ -7,7 +7,7 @@ namespace Infrastructure.Core
     /// <summary>
     /// High level object
     /// </summary>
-    public abstract class Aggregate<TKey> : Entity<TKey>, IAggreagate<TKey>
+    public abstract class Aggregate<TKey> : Entity<TKey>, IAggregate<TKey>
     {
         public IList<object> GetEvents()
         {
@@ -52,7 +52,7 @@ namespace Infrastructure.Core
             Events.Add(@event);
         }
 
-        void IAggreagate<TKey>.AddEvent(object @event)
+        void IAggregate<TKey>.AddEvent(object @event)
         {
             AddEvent(@event);
         }

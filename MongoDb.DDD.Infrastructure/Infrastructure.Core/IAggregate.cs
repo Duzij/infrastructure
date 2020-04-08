@@ -2,7 +2,7 @@
 
 namespace Infrastructure.Core
 {
-    public interface IAggreagate<TKey> : IEntity<TKey>
+    public interface IAggregate<TKey> : IEntity<TKey>
     {
         void CheckState();
         public string Etag { get; set; }
