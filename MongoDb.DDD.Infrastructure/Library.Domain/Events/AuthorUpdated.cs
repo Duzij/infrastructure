@@ -1,4 +1,6 @@
-﻿namespace Library.Domain
+﻿using Infrastructure.Core;
+
+namespace Library.Domain
 {
     public class AuthorUpdated
     {

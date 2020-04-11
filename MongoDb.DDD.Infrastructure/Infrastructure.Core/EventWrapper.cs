@@ -4,10 +4,10 @@ using Infrastructure.Core;
 
 namespace Infrastructure.Core
 {
-    public class Event : IEvent<string>
+    public class EventWrapper : IEventWrapper<string>
     {
         public string Id { get; protected set; }
-        public string EntityId { get; set; }
+        public string EntityId { get; protected set; }
 
         public string EventType { get; set; }
 
@@ -15,12 +15,13 @@ namespace Infrastructure.Core
 
         public DateTime CreatedTime { get; set; }
 
-        public Event(string id, Type evenType, object @event, string entityId)
+        public EventWrapper(string eventId, Type eventType, object @event, string entityId)
         {
-            Id = id;
-            EventType = evenType.AssemblyQualifiedName;
+            Id = eventId;
+            EventType = eventType.AssemblyQualifiedName;
             EventValue = @event;
             EntityId = entityId;
+            CreatedTime = DateTime.UtcNow;
         }
 
     }

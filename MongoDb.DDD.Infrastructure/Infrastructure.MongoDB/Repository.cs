@@ -50,8 +50,8 @@ namespace Infrastructure.MongoDB
 
                         foreach (var @event in aggregate.GetEvents())
                         {
-                            var mongoEvent = new Event(Guid.NewGuid().ToString(), @event.GetType(), @event, aggregate.Id.Value);
-                            var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<Event>(MongoDefaultSettings.EventsDocumentName);
+                            var mongoEvent = new EventWrapper(Guid.NewGuid().ToString(), @event.GetType(), @event, aggregate.Id.Value);
+                            var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<EventWrapper>(MongoDefaultSettings.EventsDocumentName);
                             await eventsCollection.InsertOneAsync(mongoEvent);
                         }
                     });
@@ -78,8 +78,8 @@ namespace Infrastructure.MongoDB
 
                           foreach (var @event in aggregate.GetEvents())
                           {
-                              var mongoEvent = new Event(Guid.NewGuid().ToString(), @event.GetType(), @event, aggregate.Id.Value);
-                              var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<Event>(MongoDefaultSettings.EventsDocumentName);
+                              var mongoEvent = new EventWrapper(Guid.NewGuid().ToString(), @event.GetType(), @event, aggregate.Id.Value);
+                              var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<EventWrapper>(MongoDefaultSettings.EventsDocumentName);
                               await eventsCollection.InsertOneAsync(mongoEvent);
                           }
                       });
@@ -101,7 +101,7 @@ namespace Infrastructure.MongoDB
                      async (s, ct) =>
                      {
                          var entityCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<T>(MongoUtils.GetCollectionName<T>());
-                         var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<Event>(MongoDefaultSettings.EventsDocumentName);
+                         var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<EventWrapper>(MongoDefaultSettings.EventsDocumentName);
 
                          ReplaceOneResult result;
                          T foundAggregate;
@@ -125,7 +125,7 @@ namespace Infrastructure.MongoDB
                          {
                              foreach (var @event in foundAggregate.GetEvents())
                              {
-                                 var mongoEvent = new Event(Guid.NewGuid().ToString(), @event.GetType(), @event, foundAggregate.Id.Value);
+                                 var mongoEvent = new EventWrapper(Guid.NewGuid().ToString(), @event.GetType(), @event, foundAggregate.Id.Value);
                                  eventsCollection.InsertOne(mongoEvent);
                              }
                          }

@@ -27,8 +27,8 @@ namespace Infrastructure.MongoDB
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var collection = dbContext.Database.GetCollection<Event>(MongoDefaultSettings.EventsDocumentName);
-            var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<Event>>()
+            var collection = dbContext.Database.GetCollection<EventWrapper>(MongoDefaultSettings.EventsDocumentName);
+            var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<EventWrapper>>()
            .Match(x => x.OperationType == ChangeStreamOperationType.Insert);
             using (var cursor = await collection.WatchAsync(pipeline))
             {
@@ -47,7 +47,7 @@ namespace Infrastructure.MongoDB
             }
         }
 
-        private void ProcessEvent(ChangeStreamDocument<Event> change)
+        private void ProcessEvent(ChangeStreamDocument<EventWrapper> change)
         {
             var @event = change.FullDocument;
 
@@ -60,7 +60,7 @@ namespace Infrastructure.MongoDB
            
         }
 
-        private void HandleEvent(object service, Event @event)
+        private void HandleEvent(object service, EventWrapper @event)
         {
             var methodInfo = service.GetType().GetMethod("Handle");
             var eventParameter = new object[1] { @event.EventValue };

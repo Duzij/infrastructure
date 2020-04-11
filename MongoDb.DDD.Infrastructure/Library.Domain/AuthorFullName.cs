@@ -5,8 +5,8 @@ namespace Library.Domain
 {
     public class AuthorFullName : ValueObject
     {
-        public string Name { get; set; }
-        public string Surname { get; set; }
+        public string Name { get; private set; }
+        public string Surname { get; private set; }
 
         public override string ToString()
         {
