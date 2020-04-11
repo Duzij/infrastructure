@@ -4,7 +4,7 @@ using Infrastructure.Core;
 
 namespace Infrastructure.Core
 {
-    public class EventWrapper : IEventWrapper<string>
+    public class EventWrapper 
     {
         public string Id { get; protected set; }
         public string EntityId { get; protected set; }
