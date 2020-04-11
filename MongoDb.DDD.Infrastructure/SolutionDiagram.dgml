@@ -1,44 +1,44 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <DirectedGraph DataVirtualized="True" GraphDirection="BottomToTop" Layout="Sugiyama" ZoomLevel="-1" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
   <Nodes>
-    <Node Id="(@9)" Category="CodeSchema_Assembly" Bounds="33.3190676829655,163.41903959348,144.326666666667,25" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" FilePath="$(c156df18-58bf-4fd9-924a-441a68fed530.OutputPath)" Group="Collapsed" Label="Library.Client.dll" UseManualLocation="True">
+    <Node Id="(@9)" Category="CodeSchema_Assembly" Bounds="215.603333333333,0,144.326666666667,25" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" FilePath="$(c156df18-58bf-4fd9-924a-441a68fed530.OutputPath)" Group="Collapsed" Label="Library.Client.dll">
       <Category Ref="FileSystem.Category.FileOfType.dll" />
     </Node>
-    <Node Id="@2" Category="CodeSchema_Assembly" Bounds="-90.458316606577,52.871510833492,203.06,25" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" FilePath="$(13b072b0-a37f-42f9-bbdc-4f57e239b11b.OutputPath)" Group="Collapsed" Label="Infrastructure.MongoDB.dll" UseManualLocation="True">
+    <Node Id="@2" Category="CodeSchema_Assembly" Bounds="186.236666666667,110,203.06,25" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" FilePath="$(13b072b0-a37f-42f9-bbdc-4f57e239b11b.OutputPath)" Group="Collapsed" Label="Infrastructure.MongoDB.dll">
       <Category Ref="FileSystem.Category.FileOfType.dll" />
     </Node>
-    <Node Id="@4" Category="CodeSchema_Assembly" Bounds="14.5383333333333,-2.12858916650805,173.983333333333,25" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" FilePath="$(23ba2ff6-5bc7-4b9c-9587-be3152a1fb71.OutputPath)" Group="Collapsed" Label="Infrastructure.Core.dll">
+    <Node Id="@4" Category="CodeSchema_Assembly" Bounds="200.775,165,173.983333333333,25" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" FilePath="$(23ba2ff6-5bc7-4b9c-9587-be3152a1fb71.OutputPath)" Group="Collapsed" Label="Infrastructure.Core.dll">
       <Category Ref="FileSystem.Category.FileOfType.dll" />
     </Node>
-    <Node Id="@6" Category="CodeSchema_Assembly" Bounds="142.601683393423,52.9332367069379,155.533333333333,25.0000000000001" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" FilePath="$(63b47493-0720-4c7d-aa1b-c43e78466270.OutputPath)" Group="Collapsed" Label="Library.Domain.dll" UseManualLocation="True">
+    <Node Id="@6" Category="CodeSchema_Assembly" Bounds="0,110,155.533333333333,25" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" FilePath="$(63b47493-0720-4c7d-aa1b-c43e78466270.OutputPath)" Group="Collapsed" Label="Library.Domain.dll">
       <Category Ref="FileSystem.Category.FileOfType.dll" />
     </Node>
-    <Node Id="@8" Category="CodeSchema_Assembly" Bounds="4.2585874797058,108.41898959348,202.066666666667,24.9999999999999" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" FilePath="$(d93e760b-7741-4c5f-a2f3-5ede33e60f4d.OutputPath)" Group="Collapsed" Label="Library.ApplicationLayer.dll" UseManualLocation="True">
+    <Node Id="@8" Category="CodeSchema_Assembly" Bounds="186.733333333333,55,202.066666666667,25" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" FilePath="$(d93e760b-7741-4c5f-a2f3-5ede33e60f4d.OutputPath)" Group="Collapsed" Label="Library.ApplicationLayer.dll">
       <Category Ref="FileSystem.Category.FileOfType.dll" />
     </Node>
   </Nodes>
   <Links>
-    <Link Source="(@9)" Target="@8" Category="CodeMap_ProjectReference" Bounds="105.366381001515,142.418935619788,0.0727290988532445,21.0001039736925" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="233">
+    <Link Source="(@9)" Target="@8" Category="CodeMap_ProjectReference" Bounds="287.766662597656,25,0,21" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="233">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_ReturnTypeLink" />
       <Category Ref="References" />
     </Link>
-    <Link Source="@2" Target="@4" Category="CodeMap_ProjectReference" Bounds="31.6303543336979,27.5471189276704,41.6508671963477,25.3243919058216" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="67">
+    <Link Source="@2" Target="@4" Category="CodeMap_ProjectReference" Bounds="287.766662597656,135,0,21" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="67">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="Implements" />
       <Category Ref="References" />
     </Link>
-    <Link Source="@6" Target="@4" Category="CodeMap_ProjectReference" Bounds="136.674436551082,26.6550166292438,56.7155241768891,26.278220077694" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="58">
+    <Link Source="@6" Target="@4" Category="CodeMap_ProjectReference" Bounds="125.493942260742,135,105.839096069336,27.7197723388672" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="58">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="InheritsFrom" />
     </Link>
-    <Link Source="@8" Target="@2" Category="CodeMap_ProjectReference" Bounds="40.0272713228219,82.4422585787784,44.062013582401,25.9767310147022" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="52">
+    <Link Source="@8" Target="@2" Category="CodeMap_ProjectReference" Bounds="287.766662597656,80,0,21" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="52">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_FieldRead" />
       <Category Ref="InheritsFrom" />
       <Category Ref="References" />
     </Link>
-    <Link Source="@8" Target="@6" Category="CodeMap_ProjectReference" Bounds="131.216690519769,81.8420708197085,55.1200398979601,26.576918773772" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="587">
+    <Link Source="@8" Target="@6" Category="CodeMap_ProjectReference" Bounds="134.200286865234,80,105.839111328125,27.7197647094727" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="587">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_FieldRead" />
       <Category Ref="CodeSchema_ReturnTypeLink" />
@@ -82,7 +82,6 @@
     <Property Id="NavigationActionLabel" Label="NavigationActionLabel" Description="NavigationActionLabel" DataType="System.String" />
     <Property Id="OutgoingActionLabel" Label="OutgoingActionLabel" Description="OutgoingActionLabel" DataType="System.String" />
     <Property Id="TargetType" DataType="System.Type" />
-    <Property Id="UseManualLocation" DataType="System.Boolean" />
     <Property Id="Value" DataType="System.String" />
     <Property Id="ValueLabel" DataType="System.String" />
     <Property Id="Visibility" Label="Visibility" Description="Defines whether a node in the graph is visible or not" DataType="System.Windows.Visibility" />
@@ -318,6 +317,14 @@
       <Setter Property="Stroke" Value="#9A9A9A" />
       <Setter Property="StrokeDashArray" Value="2 2" />
       <Setter Property="DrawArrow" Value="true" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Comment" ValueLabel="Has comment">
+      <Condition Expression="HasCategory('Comment')" />
+      <Setter Property="Background" Value="#FFFFFACD" />
+      <Setter Property="Stroke" Value="#FFE5C365" />
+      <Setter Property="StrokeThickness" Value="1" />
+      <Setter Property="NodeRadius" Value="2" />
+      <Setter Property="MaxWidth" Value="250" />
     </Style>
   </Styles>
   <Paths>
