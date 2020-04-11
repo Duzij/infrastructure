@@ -6,15 +6,6 @@ namespace Infrastructure.Core
 {
     public abstract class Aggregate<TKey> : Entity<TKey>, IAggregate<TKey>
     {
-        public IList<object> GetEvents()
-        {
-            if (Events == null)
-            {
-                return new List<object>();
-            }
-            return Events;
-        }
-
         public Aggregate()
         {
             Events = new List<object>();
@@ -27,7 +18,7 @@ namespace Infrastructure.Core
             Etag = Guid.NewGuid().ToString();
         }
 
-        private IList<object> Events { get; set; }
+        private List<object> Events { get; set; }
 
         public abstract void CheckState();
 
@@ -53,11 +44,13 @@ namespace Infrastructure.Core
             Events.Add(@event);
         }
 
-        void IAggregate<TKey>.AddEvent(object @event)
+        public IEnumerable<object> GetEvents()
         {
-            AddEvent(@event);
+            if (Events == null)
+            {
+                return new List<object>();
+            }
+            return Events;
         }
-
-      
     }
 }

@@ -9,7 +9,6 @@ namespace Infrastructure.Core
         void RegenerateEtag();
         bool Equals(object other);
         int GetHashCode();
-        void AddEvent(object @event);
-        IList<object> GetEvents();
+        public IEnumerable<object> GetEvents();
     }
 }
