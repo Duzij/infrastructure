@@ -6,7 +6,7 @@ namespace Infrastructure.Core
     {
         TKey EntityId { get; }
         TKey Id { get; }
-        string EventType { get; set; }
-        object EventValue { get; set; }
+        string EventType { get; }
+        object EventValue { get; }
     }
 }

@@ -9,11 +9,11 @@ namespace Infrastructure.Core
         public string Id { get; protected set; }
         public string EntityId { get; protected set; }
 
-        public string EventType { get; set; }
+        public string EventType { get; protected set; }
 
-        public object EventValue { get; set; }
+        public object EventValue { get; protected set; }
 
-        public DateTime CreatedTime { get; set; }
+        public DateTime CreatedTime { get; protected set; }
 
         public EventWrapper(string eventId, Type eventType, object @event, string entityId)
         {
