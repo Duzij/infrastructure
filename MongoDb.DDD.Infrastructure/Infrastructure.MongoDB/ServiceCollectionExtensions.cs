@@ -42,6 +42,12 @@ namespace Infrastructure.MongoDB
             .AddClasses(classes => classes.AssignableTo(typeof(IEventHandler<>)))
             .AsImplementedInterfaces()
             .WithTransientLifetime());
+
+
+            services.Scan(scan => scan.FromApplicationDependencies()
+            .AddClasses(classes => classes.AssignableTo(typeof(Query<>)))
+            .AsSelf()
+            .WithTransientLifetime());
         }
     }
 }

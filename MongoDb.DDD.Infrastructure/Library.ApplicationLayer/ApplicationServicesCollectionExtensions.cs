@@ -22,17 +22,8 @@ namespace Infrastructure.ApplicationLayer
             services.AddTransient<IUserFacade, UserFacade>();
             services.AddTransient<ILibraryRecordFacade, LibraryRecordFacade>();
 
-            services.AddTransient<AllAuthorsQuery>();
-            services.AddTransient<AllBookDetailsQuery>();
-            services.AddTransient<AllUsersQuery>();
-            services.AddTransient<ValidLibraryRecordDetailsQuery>();
-            services.AddTransient<AllLibraryRecordsQuery>();
-            services.AddTransient<AllBooksQuery>();
-
             var settings = new MongoDbSettings("mongodb://localhost:27017?connect=replicaSet", databaseName);
             services.AddMongoDbInfrastructure(settings);
-
-            services.AddTransient<AuthorByBookTitleQuery>();
 
             BsonClassMap.RegisterClassMap(new BsonClassMap(typeof(AuthorId)));
             BsonClassMap.RegisterClassMap(new BsonClassMap(typeof(BookId)));
@@ -41,6 +32,5 @@ namespace Infrastructure.ApplicationLayer
 
             return services;
         }
-
     }
 }
