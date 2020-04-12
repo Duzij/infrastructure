@@ -7,10 +7,10 @@ namespace Library.Domain
     public class User : AppAggregate
     {
         public bool IsNotBanned => !IsBanned;
-        public bool IsBanned { get; set; }
-        public string Name { get; set; }
-        public string Surname { get; set; }
-        public string Email { get; set; }
+        public bool IsBanned { get; private set; }
+        public string Name { get; private set; }
+        public string Surname { get; private set; }
+        public string Email { get; private set; }
 
         public static User Create(string name, string surname, string email)
         {

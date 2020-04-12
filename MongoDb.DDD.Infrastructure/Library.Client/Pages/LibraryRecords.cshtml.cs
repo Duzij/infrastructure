@@ -12,14 +12,12 @@ namespace Library.Client.Pages
 {
     public class LibraryRecordsModel : PageModel
     {
-        private readonly ILogger<LibraryRecordsModel> _logger;
         private readonly ILibraryRecordFacade libraryRecordFacade;
 
         public List<LibraryRecordDetailDTO> Records { get; set; }
 
-        public LibraryRecordsModel(ILogger<LibraryRecordsModel> logger, ILibraryRecordFacade libraryRecordFacade)
+        public LibraryRecordsModel(ILibraryRecordFacade libraryRecordFacade)
         {
-            _logger = logger;
             this.libraryRecordFacade = libraryRecordFacade;
         }
 

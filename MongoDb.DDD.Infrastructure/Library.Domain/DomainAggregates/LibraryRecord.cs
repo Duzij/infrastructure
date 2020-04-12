@@ -7,8 +7,8 @@ namespace Library.Domain
 {
     public class LibraryRecord : AppAggregate
     {
-        public bool IsClosed { get; set; }
-        public UserRecord User { get; set; }
+        public bool IsClosed { get; private set; }
+        public UserRecord User { get; private set; }
         public List<BookRecord> Books { get; private set; }
 
         public DateTime CreatedDate { get; private set; }
