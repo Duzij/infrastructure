@@ -63,11 +63,12 @@ namespace Library.ApplicationLayer
 
         public async Task Update(BookDetailDTO bookDetail)
         {
-            await repository.ModifyAsync(book =>
+            await repository.ModifyAsync(async book => 
             {
                 if (bookDetail.AuthorId != book.AuthorId.Value)
                 {
-                    var newAuthorName = new AuthorFullName(bookDetail.AuthorName);
+                    var author = await authorRepository.GetByIdAsync(new AuthorId(bookDetail.AuthorId));
+                    var newAuthorName = new AuthorFullName(author.Name, author.Surname);
                     book.ChangeAuthor(newAuthorName, new AuthorId(bookDetail.AuthorId));
                 }
                 if (bookDetail.Title != book.Title.Value)

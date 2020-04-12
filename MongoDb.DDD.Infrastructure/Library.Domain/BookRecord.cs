@@ -4,9 +4,9 @@ namespace Library.Domain
 {
     public class BookRecord 
     {
-        public BookId BookId { get; }
-        public BookAmount BookAmount { get; }
-        public BookTitle Title { get; }
+        public BookId BookId;
+        public BookAmount BookAmount;
+        public BookTitle Title;
 
         public BookRecord(BookId bookId, BookAmount bookAmount, BookTitle title)
         {

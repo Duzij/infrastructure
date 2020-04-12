@@ -14,7 +14,7 @@ namespace Library.Domain
         public DateTime CreatedDate { get; private set; }
         public DateTime ReturnDate => CreatedDate.AddDays(7);
 
-        public ReturnFine ReturnFine { get; set; }
+        public ReturnFine ReturnFine { get; private set; }
 
         public static LibraryRecord Create(UserRecord user, List<BookRecord> books)
         {

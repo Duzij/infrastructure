@@ -5,8 +5,8 @@ namespace Library.Domain
 {
     public class AuthorFullName : ValueObject
     {
-        public string Name { get; private set; }
-        public string Surname { get; private set; }
+        public string Name { get; }
+        public string Surname { get; }
 
         public override string ToString()
         {
@@ -15,9 +15,7 @@ namespace Library.Domain
 
         public AuthorFullName(string authorName)
         {
-            var words = authorName.Split(' ');
-            Name = words[0];
-            Surname = words[1];
+            Name = authorName;
         }
 
         public AuthorFullName(string name, string surname)

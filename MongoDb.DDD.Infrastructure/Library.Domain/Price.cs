@@ -7,7 +7,7 @@ namespace Library.Domain
 {
     public class ReturnFine : ValueObject
     {
-        public decimal Value { get; private set; }
+        public decimal Value;
 
         public ReturnFine(decimal value)
         {
