@@ -11,24 +11,10 @@ namespace Library.Domain
 
         public IList<AuthorBookRecord> Books { get; private set; }
 
-        public static Author Create(IList<AuthorBookRecord> books, string name, string surname)
-        {
-            var author = new Author(TypedId.GetNewId<AuthorId>(), books, name,surname);
-            return author;
-        }
-
         public static Author Create(string name, string surname)
         {
             var author = new Author(TypedId.GetNewId<AuthorId>(), name, surname);
             return author;
-        }
-
-        private Author(AuthorId id, IList<AuthorBookRecord> books, string name, string surname)
-        {
-            Id = id;
-            Books = books;
-            Name = name;
-            Surname = surname;
         }
 
         private Author(AuthorId id, string name, string surname)

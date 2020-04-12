@@ -6,7 +6,6 @@ namespace Library.Domain
 {
     public class User : AppAggregate
     {
-        public bool IsNotBanned => !IsBanned;
         public bool IsBanned { get; private set; }
         public string Name { get; private set; }
         public string Surname { get; private set; }
@@ -56,5 +55,4 @@ namespace Library.Domain
             this.IsBanned = false;
         }
     }
-
 }

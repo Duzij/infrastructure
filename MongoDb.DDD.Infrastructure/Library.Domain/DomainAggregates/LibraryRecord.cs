@@ -21,6 +21,7 @@ namespace Library.Domain
             var record = new LibraryRecord(TypedId.GetNewId<LibraryRecordId>(), user, books);
             return record;
         }
+
         private LibraryRecord(LibraryRecordId id, UserRecord user, List<BookRecord> books)
         {
             Id = id;
