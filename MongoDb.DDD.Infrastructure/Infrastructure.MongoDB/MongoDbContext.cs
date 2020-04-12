@@ -7,11 +7,8 @@ namespace Infrastructure.MongoDB
 {
     public class MongoDbContext : IMongoDbContext
     {
-        private readonly IMongoDbSettings settings;
-
         public MongoDbContext(IMongoDbSettings settings)
         {
-            this.settings = settings;
             var client = new MongoClient(settings.ConnectionString);
             Database = client.GetDatabase(settings.DatabaseName);
         }
