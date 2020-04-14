@@ -26,7 +26,7 @@ namespace Library.ApplicationLayer
 
         public async Task Create(CreateAuthorDTO author)
         {
-            var authorEntity = Author.Create(author.Name, author.Surname);
+            var authorEntity = Author.Create(new AuthorFullName(author.Name, author.Surname));
             await repository.InsertNewAsync(authorEntity);
         }
 
@@ -68,7 +68,7 @@ namespace Library.ApplicationLayer
         public async Task Update(AuthorDetailDTO authorDto)
         {
             await repository.ModifyAsync(author => {
-                author.UpdateAuthor(authorDto.Name, authorDto.Surname);
+                author.UpdateAuthorFullName(new AuthorFullName(authorDto.Name, authorDto.Surname));
             }, new AuthorId(authorDto.Id));
         }
 

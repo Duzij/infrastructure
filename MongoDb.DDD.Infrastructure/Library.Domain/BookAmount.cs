@@ -14,7 +14,8 @@ namespace Library.Domain
             {
                 throw new ArgumentException(nameof(BookAmount) + "cannot be less than 0");
             }
-            this.Amount = amount;
+
+            Amount = amount;
         }
 
         public static bool operator > (BookAmount left, BookAmount right) => left.Amount > right.Amount;
@@ -24,7 +25,7 @@ namespace Library.Domain
 
         protected override IEnumerable<object> GetAtomicValues()
         {
-            return new List<object>() { this.Amount };
+            return new List<object>() { Amount };
         }
     }
 }

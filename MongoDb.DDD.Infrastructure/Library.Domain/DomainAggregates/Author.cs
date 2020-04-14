@@ -6,29 +6,27 @@ namespace Library.Domain
 {
     public class Author : AppAggregate
     {
-        public string Name { get; private set; }
-        public string Surname { get; private set; }
+        public AuthorFullName authorFullName { get; private set; }
 
         public IList<AuthorBookRecord> Books { get; private set; }
 
-        public static Author Create(string name, string surname)
+        public static Author Create(AuthorFullName authorFullName)
         {
-            var author = new Author(TypedId.GetNewId<AuthorId>(), name, surname);
+            var author = new Author(TypedId.GetNewId<AuthorId>(), authorFullName);
             return author;
         }
 
-        private Author(AuthorId id, string name, string surname)
+        private Author(AuthorId id, AuthorFullName authorFullName)
         {
             Id = id;
-            Name = name;
-            Surname = surname;
             this.Books = new List<AuthorBookRecord>();
+            this.authorFullName = authorFullName;
         }
 
 
         public override void CheckState()
         {
-            if (Id == null || string.IsNullOrWhiteSpace(Id.Value) || string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Surname) || Books == null)
+            if (authorFullName != null || Books == null)
             {
                 throw new InvalidEntityStateException();
             }
@@ -40,13 +38,14 @@ namespace Library.Domain
             CheckState();
         }
 
-        public void UpdateAuthor(string name, string surname)
+        public void UpdateAuthorFullName(AuthorFullName newAuthorFullName)
         {
-            var oldName = new AuthorFullName(this.Name, this.Surname);
-            this.Name = name;
-            this.Surname = surname;
-            var newName = new AuthorFullName(this.Name, this.Surname);
-            AddEvent(new AuthorUpdated(oldName, newName, (AuthorId)Id));
+            var oldAuthorName = authorFullName;
+            if (authorFullName != newAuthorFullName)
+            {
+                authorFullName = newAuthorFullName;
+                AddEvent(new AuthorUpdated(oldAuthorName, newAuthorFullName, (AuthorId)Id));
+            }
         }
     }
 }
