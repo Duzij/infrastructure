@@ -16,7 +16,7 @@ namespace Library.ApplicationLayer.Mappers
                 books.Add(book.Title.Value);
             }
 
-            return new AuthorDetailDTO(author.Id.Value, author.Name, author.Surname, books);
+            return new AuthorDetailDTO(author.Id.Value, author.authorFullName.Name, author.authorFullName.Surname, books);
         }
 
         public static string GetAuthorName(string name, string surname)

@@ -1,4 +1,5 @@
 ﻿using Infrastructure.MongoDB;
+using Library.ApplicationLayer.Mappers;
 using Library.Domain;
 using MongoDB.Driver;
 using System;
@@ -27,7 +28,7 @@ namespace Library.ApplicationLayer.Query
                     .Select(b => b.Title.Value)
                     .ToList();
 
-                authorDetails.Add(new AuthorDetailDTO(author.Id.Value, author.Name, author.Surname, bookTitles));
+                authorDetails.Add(AuthorMapper.MapTo(author));
             }
 
             return authorDetails;

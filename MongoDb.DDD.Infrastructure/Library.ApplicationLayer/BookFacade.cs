@@ -68,8 +68,7 @@ namespace Library.ApplicationLayer
                 if (bookDetail.AuthorId != book.AuthorId.Value)
                 {
                     var author = await authorRepository.GetByIdAsync(new AuthorId(bookDetail.AuthorId));
-                    var newAuthorName = new AuthorFullName(author.Name, author.Surname);
-                    book.ChangeAuthor(newAuthorName, new AuthorId(bookDetail.AuthorId));
+                    book.ChangeAuthor(author.authorFullName, new AuthorId(bookDetail.AuthorId));
                 }
                 if (bookDetail.Title != book.Title.Value)
                 {

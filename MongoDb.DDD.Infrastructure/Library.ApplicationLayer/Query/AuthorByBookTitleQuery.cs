@@ -1,5 +1,6 @@
 ﻿using Infrastructure.Core;
 using Infrastructure.MongoDB;
+using Library.ApplicationLayer.Mappers;
 using Library.Domain;
 using MongoDB.Driver;
 using System;
@@ -37,7 +38,7 @@ namespace Library.ApplicationLayer.Query
                     books.Add(book.Title.Value);
                 }
 
-                authorDetails.Add(new AuthorDetailDTO(author.Id.Value, author.Name, author.Surname, books));
+                authorDetails.Add(AuthorMapper.MapTo(author));
             }
             return authorDetails;
         }
