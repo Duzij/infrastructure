@@ -26,7 +26,7 @@ namespace Library.Domain
 
         public override void CheckState()
         {
-            if (authorFullName != null || Books == null)
+            if (authorFullName == null || Books == null)
             {
                 throw new InvalidEntityStateException();
             }

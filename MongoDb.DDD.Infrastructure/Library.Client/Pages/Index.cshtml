@@ -6,16 +6,11 @@
 
 <p>All active library records are displayed here.</p>
 
-<style>
-    .isDisabled {
-  color: currentColor;
-  cursor: not-allowed;
-  opacity: 0.5;
-  text-decoration: none;
-}
-</style>
 
-<a asp-page="./LibraryRecords/CreateLibraryRecord" class="btn btn-primary">Create new library record</a>
+
+<div class="btn-container">
+    <a asp-page="./LibraryRecords/CreateLibraryRecord" class="btn btn-primary">Create new library record</a>
+</div>
 
 <table class="table">
     <thead>
@@ -39,43 +34,43 @@
     <tbody>
         @foreach (var item in Model.Records)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Username)
-            </td>
-            <td>
-                @foreach (var book in item.Books)
-                {
-                    <p><b>@book.title</b> : @book.amount</p>
-                }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReturnDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsExpired)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReturnFine)
-            </td>
-            <td>
-            <td>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Username)
+                </td>
+                <td>
+                    @foreach (var book in item.Books)
+                    {
+                        <p><b>@book.title</b> : @book.amount</p>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReturnDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsExpired)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReturnFine)
+                </td>
+                <td>
+                <td>
 
-                @if (item.ShowReturnBooksButton)
-                {
-                    <a asp-page="./LibraryRecords/ReturnBooks" class="btn" asp-route-id="@item.Id">Return books</a>
-                }
-                else
-                {
-                    <a class="btn isDisabled">Return books</a>
-                }
-            </td>
-            <td>
-                <form asp-page-handler="pay" asp-route-id="@item.Id" method="post">
-                    <button class="btn" disabled="@item.ShowReturnFineButton">Pay fine</button>
-                </form>
-            </td>
-        </tr>
+                    @if (item.ShowReturnBooksButton)
+                    {
+                        <a asp-page="./LibraryRecords/ReturnBooks" class="btn" asp-route-id="@item.Id">Return books</a>
+                    }
+                    else
+                    {
+                        <a class="btn isDisabled">Return books</a>
+                    }
+                </td>
+                <td>
+                    <form asp-page-handler="pay" asp-route-id="@item.Id" method="post">
+                        <button class="btn" disabled="@item.ShowReturnFineButton">Pay fine</button>
+                    </form>
+                </td>
+            </tr>
         }
     </tbody>
 </table>

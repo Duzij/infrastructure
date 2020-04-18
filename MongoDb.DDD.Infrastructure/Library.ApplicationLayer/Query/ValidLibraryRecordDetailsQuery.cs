@@ -13,7 +13,6 @@ namespace Library.ApplicationLayer.Query
 {
     public class ValidLibraryRecordDetailsQuery : Query<LibraryRecordDetailDTO>
     {
-
         public ValidLibraryRecordDetailsQuery(IMongoDbContext dbContext) : base(dbContext)
         {
         }

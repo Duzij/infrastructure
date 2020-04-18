@@ -7,9 +7,9 @@
 
 <p>All library books are displayed here.</p>
 
-
-<a asp-page="./Books/CreateBook" class="btn btn-primary">Create new books</a>
-
+<div class="btn-container">
+    <a asp-page="./Books/CreateBook" class="btn btn-primary">Create new books</a>
+</div>
 
 <table class="table">
     <thead>
@@ -32,28 +32,28 @@
     <tbody>
         @foreach (var item in Model.Books)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AuthorName)
-            </td>
-            <td>
-                <a asp-page="./Books/EditBook" class="btn" asp-route-id="@item.Id">Edit</a>
-            </td>
-            <td>
-                <a asp-page="./Books/AddStockBook" class="btn" asp-route-id="@item.Id">Add Stock</a>
-            </td>
-            @*<td>
-            <form asp-page-handler="delete" asp-route-id="@item.Id" method="post">
-                <button class="btn">Delete</button>
-            </form>
-        </td>*@
-        </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Amount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AuthorName)
+                </td>
+                <td>
+                    <a asp-page="./Books/EditBook" class="btn" asp-route-id="@item.Id">Edit</a>
+                </td>
+                <td>
+                    <a asp-page="./Books/AddStockBook" class="btn" asp-route-id="@item.Id">Add Stock</a>
+                </td>
+                @*<td>
+                        <form asp-page-handler="delete" asp-route-id="@item.Id" method="post">
+                            <button class="btn">Delete</button>
+                        </form>
+                    </td>*@
+            </tr>
         }
     </tbody>
 </table>

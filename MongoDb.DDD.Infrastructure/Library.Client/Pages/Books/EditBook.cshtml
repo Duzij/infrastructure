@@ -5,8 +5,6 @@
 }
 <h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
-
 <form method="post">
     <div class="form-group">
         <label for="title">Title</label>
@@ -20,5 +18,5 @@
         <label for="authorId">Author</label>
         <select id="authorId" name="authorId" asp-items="Model.Authors"></select>
     </div>
-    <button class="btn btn-primary" type="submit">Save</button>
+    <button class="btn btn-primary" type="submit">Save book record</button>
 </form>
