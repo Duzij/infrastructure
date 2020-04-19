@@ -25,7 +25,7 @@ namespace Library.Tests
                 .BuildServiceProvider();
 
             var logger = serviceProvider.GetService<ILogger<Repository<TestCounter, string>>>();
-            var settings = new MongoDbSettings(MongoDefaultSettings.ServerUrl, "Tests");
+            var settings = new MongoDbSettings(MongoDefaultSettings.ConnectionString, "Tests");
             context = new MongoDbContext(settings);
             repository = new Repository<TestCounter, string>(context, settings, logger);
             id = TypedId.GetNewId<CounterId>();

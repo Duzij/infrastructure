@@ -3,7 +3,7 @@ namespace Infrastructure.MongoDB
 {
     public interface IMongoDbSettings
     {
-        string ServerAddress { get; }
+        string ConnectionString { get; }
         string DatabaseName { get; }
     }
 }

@@ -9,12 +9,7 @@ namespace Infrastructure.MongoDB
     {
         public MongoDbContext(IMongoDbSettings settings)
         {
-            var client = new MongoClient(new MongoClientSettings()
-            {
-                Server = new MongoServerAddress(settings.ServerAddress),
-                WaitQueueTimeout = TimeSpan.FromSeconds(1),
-                MaxConnectionPoolSize = 1000,
-            });
+            var client = new MongoClient(settings.ConnectionString);
 
             Database = client.GetDatabase(settings.DatabaseName);
         }

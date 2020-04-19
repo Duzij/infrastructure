@@ -27,7 +27,7 @@ namespace Library.Tests
         [SetUp]
         public void Setup()
         {
-            settings = new MongoDbSettings(MongoDefaultSettings.ServerUrl, "AuthorTests");
+            settings = new MongoDbSettings(MongoDefaultSettings.ConnectionString, "AuthorTests");
 
             serviceProvider = new ServiceCollection()
                 .AddLogging()

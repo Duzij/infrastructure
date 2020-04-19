@@ -7,11 +7,11 @@ namespace Infrastructure.MongoDB
 
         public MongoDbSettings(string connectionString, string databaseName)
         {
-            ServerAddress = connectionString;
+            ConnectionString = connectionString;
             DatabaseName = databaseName;
         }
 
-        public string ServerAddress { get; set; }
+        public string ConnectionString { get; set; }
 
         public string DatabaseName { get; set; }
     }

@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Infrastructure.MongoDB
 {
-    public static class MongoDefaultSettings
+    public static class MongoDefaultSettings 
     {
-        public static string ServerUrl = "localhost";
+        public static string ConnectionString = "mongodb://localhost:27017?connect=replicaSet&maxPoolSize=500";
         public static string EventsDocumentName = "__events";
         public static string TransientTransactionError = "TransientTransactionError";
         public static string UnknownTransactionCommitResult = "UnknownTransactionCommitResult";
