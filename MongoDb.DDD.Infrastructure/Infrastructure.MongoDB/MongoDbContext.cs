@@ -9,13 +9,19 @@ namespace Infrastructure.MongoDB
     {
         public MongoDbContext(IMongoDbSettings settings)
         {
-            var client = new MongoClient(settings.ConnectionString);
+            var client = new MongoClient(new MongoClientSettings()
+            {
+                Server = new MongoServerAddress(settings.ServerAddress),
+                WaitQueueTimeout = TimeSpan.FromSeconds(1),
+                MaxConnectionPoolSize = 1000,
+            });
+
             Database = client.GetDatabase(settings.DatabaseName);
         }
 
         public IMongoDatabase Database { get; }
 
         public IMongoCollection<T> GetCollection<T>() => Database.GetCollection<T>(MongoUtils.GetCollectionName<T>());
-      
+
     }
 }

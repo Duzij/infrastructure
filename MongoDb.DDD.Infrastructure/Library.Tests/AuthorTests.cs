@@ -1,9 +1,11 @@
-﻿using Infrastructure.MongoDB;
+﻿using Infrastructure.Core;
+using Infrastructure.MongoDB;
 using Library.Domain;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using NUnit.Framework;
+using Polly;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,44 +17,48 @@ namespace Library.Tests
     public class AuthorTests
     {
         private MongoDbSettings settings;
-        private MongoDbContext context;
-        private Repository<Author, string> authorRepo;
+        private IMongoDbContext context;
+        private IRepository<Author, string> authorRepo;
         private AuthorFullName authorName;
         private Author insertedAuthor;
-        private Repository<Book, string> bookRepo;
+        private IRepository<Book, string> bookRepo;
         private ServiceProvider serviceProvider;
 
         [SetUp]
         public void Setup()
         {
+            settings = new MongoDbSettings(MongoDefaultSettings.ServerUrl, "AuthorTests");
+
             serviceProvider = new ServiceCollection()
                 .AddLogging()
+                .AddMongoDbInfrastructure(settings)
                 .BuildServiceProvider();
-
-            var logger = serviceProvider.GetService<ILogger<Repository<Author, string>>>();
-            settings = new MongoDbSettings(MongoDefaultSettings.ConnectionString, "AuthorTests");
-            context = new MongoDbContext(settings);
-            authorRepo = new Repository<Author, string>(context, settings, logger);
+            authorRepo = serviceProvider.GetService<IRepository<Author, string>>();
+            
             authorName = new AuthorFullName("Test", "Author");
             authorRepo.InsertNewAsync(Author.Create(authorName)).GetAwaiter().GetResult();
 
-
+            context = serviceProvider.GetService<IMongoDbContext>();
         }
 
         [Test]
         public async Task UpdateAuthorName()
         {
             insertedAuthor = context.GetCollection<Author>().AsQueryable().ToList().Find(a => a.authorFullName == authorName);
-
-            var bookLogger = serviceProvider.GetService<ILogger<Repository<Book, string>>>();
-            bookRepo = new Repository<Book, string>(context, settings, bookLogger);
+            bookRepo = serviceProvider.GetService<IRepository<Book, string>>();
             await bookRepo.InsertNewAsync(Book.Create("Test Book", "Test description", (AuthorId)insertedAuthor.Id, authorName));
 
-            await Task.Delay(1000);
-
-            insertedAuthor = context.GetCollection<Author>().AsQueryable().ToList().Find(a => a.authorFullName == authorName);
-
-            Assert.IsTrue(insertedAuthor.Books.Any(a => a.Title == new BookTitle("Test Book")));
+            Policy
+                .Handle<TestException>()
+                .WaitAndRetry(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
+                .Execute(() =>
+                {
+                    insertedAuthor = context.GetCollection<Author>().AsQueryable().ToList().Find(a => a.authorFullName == authorName);
+                    if(!insertedAuthor.Books.Any(a => a.Title == new BookTitle("Test Book")))
+                    {
+                        throw new TestException();
+                    }
+                });
 
             var updatedName = new AuthorFullName("Test", "Author 2");
             await authorRepo.ModifyAsync
@@ -64,5 +70,9 @@ namespace Library.Tests
             var foundBook = context.GetCollection<Book>().AsQueryable().ToList().Find(a => a.Title == new BookTitle("Test Book"));
             Assert.AreEqual(foundBook.AuthorName, updatedName);
         }
+    }
+
+    internal class TestException : Exception
+    {
     }
 }

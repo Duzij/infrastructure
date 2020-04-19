@@ -1,6 +1,8 @@
 ﻿using Infrastructure.Core;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using Polly;
+using Polly.Retry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +18,8 @@ namespace Infrastructure.MongoDB
         private readonly IMongoDbContext dbContext;
         private readonly IMongoDbSettings mongoDbSettings;
         private readonly ILogger<Repository<T, TKey>> logger;
+
+        public int NUMBER_OF_RETRIES { get; private set; } = 100;
 
         public Repository(IMongoDbContext dbContext, IMongoDbSettings mongoDbSettings, ILogger<Repository<T, TKey>> logger)
         {
@@ -70,19 +74,19 @@ namespace Infrastructure.MongoDB
             {
                 try
                 {
-                  await session.WithTransaction(
-                      async (s, ct) =>
-                      {
-                          var filter = Builders<T>.Filter.Eq(MongoDefaultSettings.IdName, aggregate.Id.Value);
-                          await collection.ReplaceOneAsync(filter, aggregate, new ReplaceOptions { IsUpsert = false });
+                    await session.WithTransaction(
+                        async (s, ct) =>
+                        {
+                            var filter = Builders<T>.Filter.Eq(MongoDefaultSettings.IdName, aggregate.Id.Value);
+                            await collection.ReplaceOneAsync(filter, aggregate, new ReplaceOptions { IsUpsert = false });
 
-                          foreach (var @event in aggregate.GetEvents())
-                          {
-                              var mongoEvent = new EventWrapper(Guid.NewGuid().ToString(), @event.GetType(), @event, aggregate.Id.Value);
-                              var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<EventWrapper>(MongoDefaultSettings.EventsDocumentName);
-                              await eventsCollection.InsertOneAsync(mongoEvent);
-                          }
-                      });
+                            foreach (var @event in aggregate.GetEvents())
+                            {
+                                var mongoEvent = new EventWrapper(Guid.NewGuid().ToString(), @event.GetType(), @event, aggregate.Id.Value);
+                                var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<EventWrapper>(MongoDefaultSettings.EventsDocumentName);
+                                await eventsCollection.InsertOneAsync(mongoEvent);
+                            }
+                        });
                 }
                 catch (Exception exception)
                 {
@@ -93,49 +97,56 @@ namespace Infrastructure.MongoDB
 
         public async Task ModifyAsync(Action<T> modifyLogic, IId<string> id)
         {
-            using (var session = dbContext.Database.Client.StartSession())
+            await Policy
+            .Handle<MongoWaitQueueFullException>()
+            .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
+            .ExecuteAsync(async () =>
             {
-                try
+                using (var session = dbContext.Database.Client.StartSession())
                 {
-                    await session.WithTransaction(
-                     async (s, ct) =>
-                     {
-                         var entityCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<T>(MongoUtils.GetCollectionName<T>());
-                         var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<EventWrapper>(MongoDefaultSettings.EventsDocumentName);
+                    try
+                    {
+                        await session.WithTransaction(
+                            async (s, ct) =>
+                            {
+                                var entityCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<T>(MongoUtils.GetCollectionName<T>());
+                                var eventsCollection = session.Client.GetDatabase(mongoDbSettings.DatabaseName).GetCollection<EventWrapper>(MongoDefaultSettings.EventsDocumentName);
 
-                         ReplaceOneResult result;
-                         T foundAggregate;
+                                ReplaceOneResult result;
+                                T foundAggregate;
 
-                         do
-                         {
-                             var filter = Builders<T>.Filter.Eq(MongoDefaultSettings.IdName, id.Value);
-                             foundAggregate = await GetFirstFromCollectionAsync(entityCollection, filter);
-                             var version = foundAggregate.Etag;
-                             foundAggregate.RegenerateEtag();
+                                do
+                                {
+                                    var filter = Builders<T>.Filter.Eq(MongoDefaultSettings.IdName, id.Value);
+                                    foundAggregate = await GetFirstFromCollectionAsync(entityCollection, filter);
+                                    var version = foundAggregate.Etag;
+                                    foundAggregate.RegenerateEtag();
 
-                             modifyLogic(foundAggregate);
-                             filter = filter & Builders<T>.Filter.Eq(MongoDefaultSettings.EtagName, version);
+                                    modifyLogic(foundAggregate);
+                                    filter = filter & Builders<T>.Filter.Eq(MongoDefaultSettings.EtagName, version);
 
-                             result = await entityCollection.ReplaceOneAsync(filter, foundAggregate, new ReplaceOptions { IsUpsert = false });
+                                    result = await entityCollection.ReplaceOneAsync(filter, foundAggregate, new ReplaceOptions { IsUpsert = false });
 
-                         } while (result.ModifiedCount != 1);
+                                } while (result.ModifiedCount != 1);
 
-                         //events are saved after sucessfull transformation
-                         if (result.ModifiedCount == 1)
-                         {
-                             foreach (var @event in foundAggregate.GetEvents())
-                             {
-                                 var mongoEvent = new EventWrapper(Guid.NewGuid().ToString(), @event.GetType(), @event, foundAggregate.Id.Value);
-                                 eventsCollection.InsertOne(mongoEvent);
-                             }
-                         }
-                     });
+                            //events are saved after sucessfull transformation
+                            if (result.ModifiedCount == 1)
+                                {
+                                    foreach (var @event in foundAggregate.GetEvents())
+                                    {
+                                        var mongoEvent = new EventWrapper(Guid.NewGuid().ToString(), @event.GetType(), @event, foundAggregate.Id.Value);
+                                        eventsCollection.InsertOne(mongoEvent);
+                                    }
+                                }
+                            });
+                    }
+                    catch (MongoWaitQueueFullException exception)
+                    {
+                        logger.LogError($"{Messages.NonTransientExceptionCaught} ${exception.Message}.", exception);
+                        throw;
+                    }
                 }
-                catch (Exception exception)
-                {
-                    logger.LogError($"{Messages.NonTransientExceptionCaught} ${exception.Message}.", exception);
-                }
-            }
+            });
         }
 
         public async Task<T> GetByIdAsync(IId<string> id)

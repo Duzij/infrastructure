@@ -25,7 +25,7 @@ namespace Library.Tests
                 .BuildServiceProvider();
 
             var logger = serviceProvider.GetService<ILogger<Repository<TestCounter, string>>>();
-            var settings = new MongoDbSettings(MongoDefaultSettings.ConnectionString, "Tests");
+            var settings = new MongoDbSettings(MongoDefaultSettings.ServerUrl, "Tests");
             context = new MongoDbContext(settings);
             repository = new Repository<TestCounter, string>(context, settings, logger);
             id = TypedId.GetNewId<CounterId>();
@@ -57,7 +57,7 @@ namespace Library.Tests
         [Test]
         public async Task ModifyAsync()
         {
-            var tasks = Enumerable.Range(0, 100).Select(async i =>
+            var tasks = Enumerable.Range(0, 1000).Select(async i =>
             {
                 await repository.ModifyAsync(counter => {
                     counter.IncrementValue();
