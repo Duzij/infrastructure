@@ -57,7 +57,7 @@ namespace Library.Tests
         [Test]
         public async Task ModifyAsync()
         {
-            var tasks = Enumerable.Range(0, 1500).Select(async i =>
+            var tasks = Enumerable.Range(0, 1000).Select(async i =>
             {
                 await repository.ModifyAsync(counter => {
                     counter.IncrementValue();

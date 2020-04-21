@@ -36,7 +36,6 @@ namespace Infrastructure.Core
 
         protected void AddEvent(object @event)
         {
-            CheckState();
             if (Events == null)
             {
                 Events = new List<object>();
