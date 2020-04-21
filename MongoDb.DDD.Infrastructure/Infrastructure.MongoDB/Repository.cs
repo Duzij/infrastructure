@@ -99,7 +99,7 @@ namespace Infrastructure.MongoDB
         {
             await Policy
             .Handle<MongoWaitQueueFullException>()
-            .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
+            .WaitAndRetryForeverAsync(retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt)))
             .ExecuteAsync(async () =>
             {
                 using (var session = dbContext.Database.Client.StartSession())
