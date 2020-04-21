@@ -39,10 +39,27 @@
                     @Html.DisplayFor(modelItem => item.Username)
                 </td>
                 <td>
-                    @foreach (var book in item.Books)
-                    {
-                        <p><b>@book.title</b> : @book.amount</p>
-                    }
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>
+                                    Title
+                                </th>
+                                <th>
+                                    Amount
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var book in item.Books)
+                            {
+                                <tr>
+                                    <td>@book.title </td>
+                                    <td> @book.amount</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ReturnDate)
