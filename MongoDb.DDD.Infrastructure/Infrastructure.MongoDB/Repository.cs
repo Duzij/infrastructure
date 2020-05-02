@@ -49,7 +49,9 @@ namespace Infrastructure.MongoDB
                     await session.WithTransaction(
                     async (s, ct) =>
                     {
+                        aggregate.CheckState();
                         aggregate.RegenerateEtag();
+
                         await collection.InsertOneAsync(aggregate);
 
                         foreach (var @event in aggregate.GetEvents())
@@ -77,7 +79,10 @@ namespace Infrastructure.MongoDB
                     await session.WithTransaction(
                         async (s, ct) =>
                         {
+                            aggregate.CheckState();
+
                             var filter = Builders<T>.Filter.Eq(MongoDefaultSettings.IdName, aggregate.Id.Value);
+
                             await collection.ReplaceOneAsync(filter, aggregate, new ReplaceOptions { IsUpsert = false });
 
                             foreach (var @event in aggregate.GetEvents())
@@ -99,7 +104,7 @@ namespace Infrastructure.MongoDB
         {
             await Policy
             .Handle<MongoWaitQueueFullException>()
-            .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
+            .WaitAndRetryForeverAsync(retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt)))
             .ExecuteAsync(async () =>
             {
                 using (var session = dbContext.Database.Client.StartSession())
@@ -123,6 +128,9 @@ namespace Infrastructure.MongoDB
                                     foundAggregate.RegenerateEtag();
 
                                     modifyLogic(foundAggregate);
+
+                                    foundAggregate.CheckState();
+
                                     filter = filter & Builders<T>.Filter.Eq(MongoDefaultSettings.EtagName, version);
 
                                     result = await entityCollection.ReplaceOneAsync(filter, foundAggregate, new ReplaceOptions { IsUpsert = false });

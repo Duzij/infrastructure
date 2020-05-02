@@ -22,7 +22,7 @@ namespace Infrastructure.ApplicationLayer
             services.AddTransient<IUserFacade, UserFacade>();
             services.AddTransient<ILibraryRecordFacade, LibraryRecordFacade>();
 
-            var settings = new MongoDbSettings("localhost", databaseName);
+            var settings = new MongoDbSettings("mongodb://localhost:27017?connect=replicaSet", databaseName);
             services.AddMongoDbInfrastructure(settings);
 
             BsonClassMap.RegisterClassMap(new BsonClassMap(typeof(AuthorId)));

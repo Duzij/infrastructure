@@ -26,7 +26,8 @@ namespace Library.ApplicationLayer
         }
         public async Task Create(BookCreateDTO bookCreateDTO)
         {
-            var book = Book.Create(bookCreateDTO.Title, bookCreateDTO.Description, new AuthorId(bookCreateDTO.AuthorId), new AuthorFullName(bookCreateDTO.AuthorName));
+            var author = await authorRepository.GetByIdAsync(new AuthorId(bookCreateDTO.AuthorId));
+            var book = Book.Create(bookCreateDTO.Title, bookCreateDTO.Description, new AuthorId(bookCreateDTO.AuthorId), author.authorFullName);
             await repository.InsertNewAsync(book);
         }
 

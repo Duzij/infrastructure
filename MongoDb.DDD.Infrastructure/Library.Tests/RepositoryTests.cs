@@ -71,7 +71,7 @@ namespace Library.Tests
         [Test]
         public async Task ModifyWithEventAsync()
         {
-            var tasks = Enumerable.Range(0, 100).Select(async i =>
+            var tasks = Enumerable.Range(0, 1000).Select(async i =>
             {
                 await repository.ModifyAsync(counter => {
                     counter.IncrementValueWithEvent();
