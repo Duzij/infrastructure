@@ -1,0 +1,52 @@
+﻿@page
+@model LibraryRecordsModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<p>All library records are displayed here.</p>
+
+<style>
+    .isDisabled {
+  color: currentColor;
+  cursor: not-allowed;
+  opacity: 0.5;
+  text-decoration: none;
+}
+</style>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Username
+            </th>
+            <th>
+                ReturnDate
+            </th>
+            <th>
+                IsExpired
+            </th>
+            <th>ReturnFine</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Records)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Username)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReturnDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsExpired)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReturnFine)
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

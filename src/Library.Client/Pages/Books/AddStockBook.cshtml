@@ -1,0 +1,33 @@
+﻿@page
+@model AddStockBook
+@{
+    ViewData["Title"] = "Book Detail";
+}
+<h1>@ViewData["Title"]</h1>
+
+<div class="form-group">
+    <b><label for="title">Title</label></b>:
+    @Html.DisplayFor(modelItem => modelItem.BookDetail.Title)
+</div>
+<div class="form-group">
+    <b><label for="title">Description</label></b>:
+    @Html.DisplayFor(modelItem => modelItem.BookDetail.Description)
+</div>
+<div class="form-group">
+    <b><label for="title">Author name</label></b>:
+    @Html.DisplayFor(modelItem => modelItem.BookDetail.AuthorName)
+</div>
+<div class="form-group">
+    <b><label for="title">Amount</label></b>:
+    @Html.DisplayFor(modelItem => modelItem.BookDetail.Amount)
+</div>
+
+<form asp-page-handler="addAmount" asp-route-id="@Model.BookDetail.Id" method="post">
+    <div class="form-group row">
+        <label for="amountValue" class="col-2 col-form-label">Number of books</label>
+        <div class="col-10">
+            <input class="form-control" type="number" id="amountValue" asp-for="@Model.AmountValue">
+        </div>
+    </div>
+    <button class="btn">Add to Stock</button>
+</form>
