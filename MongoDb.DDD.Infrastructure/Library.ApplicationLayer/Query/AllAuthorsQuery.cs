@@ -1,12 +1,9 @@
 ﻿using Infrastructure.MongoDB;
+using Library.ApplicationLayer.DTO;
 using Library.ApplicationLayer.Mappers;
-using Library.Domain;
+using Library.Domain.DomainAggregates;
+using Library.Domain.Id;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Library.ApplicationLayer.Query
 {

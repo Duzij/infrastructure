@@ -1,9 +1,7 @@
-﻿using Infrastructure.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Library.Domain.Events;
+using Library.Domain.Id;
 
-namespace Library.Domain
+namespace Library.Domain.DomainAggregates
 {
     public class Book : AppAggregate
     {
@@ -35,27 +33,27 @@ namespace Library.Domain
 
         public void ChangeAuthor(AuthorFullName author, AuthorId authorId)
         {
-            if (this.AuthorName == author)
+            if (AuthorName == author)
             {
                 throw new InvalidOperationException("Author name was already changed");
             }
-            AddEvent(new BookAuthorNameChanged(Id.Value, this.Title.Value, authorId.Value, AuthorId.Value));
-            this.AuthorId = authorId;
-            this.AuthorName = author;
+            AddEvent(new BookAuthorNameChanged(Id.Value, Title.Value, authorId.Value, AuthorId.Value));
+            AuthorId = authorId;
+            AuthorName = author;
         }
 
         public void AddStock(BookAmount amount)
         {
-            this.Amount = new BookAmount(this.Amount.Amount + amount.Amount);
-            this.State = BookState.InStock;
+            Amount = new BookAmount(Amount.Amount + amount.Amount);
+            State = BookState.InStock;
         }
 
         public void RemoveStock(BookAmount amount)
         {
-            this.Amount = new BookAmount(this.Amount.Amount - amount.Amount);
-            if (this.Amount.Amount == 0)
+            Amount = new BookAmount(Amount.Amount - amount.Amount);
+            if (Amount.Amount == 0)
             {
-                this.State = BookState.InDatabase;
+                State = BookState.InDatabase;
             }
         }
 
@@ -72,13 +70,13 @@ namespace Library.Domain
 
         public void ChangeTitle(BookTitle bookTitle)
         {
-            AddEvent(new BookTitleChanged(Id.Value, this.Title.Value, bookTitle.Value));
-            this.Title = bookTitle;
+            AddEvent(new BookTitleChanged(Id.Value, Title.Value, bookTitle.Value));
+            Title = bookTitle;
         }
 
         public void ChangeDescription(string description)
         {
-            this.Description = description;
+            Description = description;
         }
     }
 }

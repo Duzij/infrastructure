@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Library.ApplicationLayer.DTO;
 
 namespace Library.ApplicationLayer
 {
@@ -12,6 +9,6 @@ namespace Library.ApplicationLayer
         Task Delete(string id);
         Task<UserDetailDTO> GetUserById(string v);
         Task Update(UserDetailDTO userDto);
-        Task<Dictionary<string,string>> GetActiveUsersSelectorAsync();
+        Task<Dictionary<string, string>> GetActiveUsersSelectorAsync();
     }
 }

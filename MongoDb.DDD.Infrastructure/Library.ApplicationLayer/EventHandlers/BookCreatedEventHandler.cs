@@ -1,13 +1,10 @@
 ﻿using Infrastructure.Core;
-using Infrastructure.MongoDB;
 using Library.Domain;
+using Library.Domain.DomainAggregates;
+using Library.Domain.Events;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Library.ApplicationLayer
+namespace Library.ApplicationLayer.EventHandlers
 {
     public class BookCreatedEventHandler : IEventHandler<BookCreated>
     {
@@ -21,12 +18,13 @@ namespace Library.ApplicationLayer
             this.authorRepository = authorRepository;
             this.bookRepository = bookRepository;
         }
-        
+
         public async Task Handle(BookCreated @event)
         {
             var book = await bookRepository.GetByIdAsync(@event.BookId);
 
-            await authorRepository.ModifyAsync(author => {
+            await authorRepository.ModifyAsync(author =>
+            {
                 var bookList = author.Books;
                 bookList.Add(new AuthorBookRecord(@event.BookId, book.Title));
                 author.UpdateBooks(bookList);

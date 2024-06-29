@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Infrastructure.MongoDB
+﻿namespace Infrastructure.MongoDB
 {
-    public static class MongoDefaultSettings 
+    public static class MongoDefaultSettings
     {
         public static string ConnectionString = "mongodb://localhost:27017?connect=replicaSet&maxPoolSize=500";
         public static string EventsDocumentName = "__events";

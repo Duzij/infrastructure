@@ -1,10 +1,4 @@
-﻿using Infrastructure.Core;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
-
-namespace Infrastructure.Core
+﻿namespace Infrastructure.Core
 {
     public class EntityId<T> : ValueObject, IId<string>
     {
@@ -15,7 +9,7 @@ namespace Infrastructure.Core
         }
         protected override IEnumerable<object> GetAtomicValues()
         {
-            return new List<object>() { this.Value };
+            return [Value];
         }
     }
 }

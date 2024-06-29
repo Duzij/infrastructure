@@ -1,13 +1,8 @@
 ﻿using Infrastructure.MongoDB;
-using Library.Domain;
+using Library.Domain.Id;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Library.Tests
 {
@@ -29,7 +24,7 @@ namespace Library.Tests
             context = new MongoDbContext(settings);
             repository = new Repository<TestCounter, string>(context, settings, logger);
             id = TypedId.GetNewId<CounterId>();
-            repository.InsertNewAsync(TestCounter.Create(id.Value,0)).GetAwaiter().GetResult();
+            repository.InsertNewAsync(TestCounter.Create(id.Value, 0)).GetAwaiter().GetResult();
         }
 
         [Test]
@@ -39,7 +34,7 @@ namespace Library.Tests
 
             var tasks = Enumerable.Range(0, 100).Select(async i =>
             {
-                var counter =  await repository.GetByIdAsync(id);
+                var counter = await repository.GetByIdAsync(id);
                 counter.UpdateCounterWithValue(value++);
                 await repository.ReplaceAsync(counter);
             }).ToList();
@@ -51,7 +46,7 @@ namespace Library.Tests
             counter.UpdateCounterWithValue(value++);
             await repository.ReplaceAsync(counter);
 
-            Assert.IsTrue(tasks.All(t => t.IsCompletedSuccessfully));
+            Assert.That(tasks.All(t => t.IsCompletedSuccessfully));
         }
 
         [Test]
@@ -59,13 +54,14 @@ namespace Library.Tests
         {
             var tasks = Enumerable.Range(0, 1000).Select(async i =>
             {
-                await repository.ModifyAsync(counter => {
+                await repository.ModifyAsync(counter =>
+                {
                     counter.IncrementValue();
                 }, id);
             }).ToList();
 
             tasks.ForEach(a => a.Wait());
-            Assert.IsTrue(tasks.All(t => t.IsCompletedSuccessfully));
+            Assert.That(tasks.All(t => t.IsCompletedSuccessfully));
         }
 
         [Test]
@@ -73,13 +69,14 @@ namespace Library.Tests
         {
             var tasks = Enumerable.Range(0, 1000).Select(async i =>
             {
-                await repository.ModifyAsync(counter => {
+                await repository.ModifyAsync(counter =>
+                {
                     counter.IncrementValueWithEvent();
                 }, id);
             }).ToList();
 
             tasks.ForEach(a => a.Wait());
-            Assert.IsTrue(tasks.All(t => t.IsCompletedSuccessfully));
+            Assert.That(tasks.All(t => t.IsCompletedSuccessfully));
         }
 
     }

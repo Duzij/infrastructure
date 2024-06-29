@@ -1,10 +1,6 @@
-﻿using System;
-using System.Runtime.Serialization;
-using Infrastructure.Core;
-
-namespace Infrastructure.Core
+﻿namespace Infrastructure.Core
 {
-    public class EventWrapper 
+    public class EventWrapper
     {
         public string Id { get; private set; }
         public string EntityId { get; private set; }

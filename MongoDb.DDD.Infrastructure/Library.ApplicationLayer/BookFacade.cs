@@ -1,12 +1,9 @@
 ﻿using Infrastructure.Core;
-using Infrastructure.MongoDB;
+using Library.ApplicationLayer.DTO;
 using Library.ApplicationLayer.Query;
 using Library.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Library.Domain.DomainAggregates;
+using Library.Domain.Id;
 
 namespace Library.ApplicationLayer
 {
@@ -21,7 +18,7 @@ namespace Library.ApplicationLayer
         {
             this.repository = repository;
             this.authorRepository = authorRepository;
-            this.bookDetailsQuery = bookQuery;
+            bookDetailsQuery = bookQuery;
             this.allBooksQuery = allBooksQuery;
         }
         public async Task Create(BookCreateDTO bookCreateDTO)
@@ -64,7 +61,7 @@ namespace Library.ApplicationLayer
 
         public async Task Update(BookDetailDTO bookDetail)
         {
-            await repository.ModifyAsync(async book => 
+            await repository.ModifyAsync(async book =>
             {
                 if (bookDetail.AuthorId != book.AuthorId.Value)
                 {

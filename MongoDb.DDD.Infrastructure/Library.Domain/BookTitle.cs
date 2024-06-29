@@ -1,6 +1,4 @@
 ﻿using Infrastructure.Core;
-using System;
-using System.Collections.Generic;
 
 namespace Library.Domain
 {
@@ -10,16 +8,16 @@ namespace Library.Domain
 
         public BookTitle(string title)
         {
-            if (String.IsNullOrWhiteSpace(title))
+            if (string.IsNullOrWhiteSpace(title))
             {
                 throw new ArgumentException("Book title cannot be null of white space");
             }
-            this.Value = title;
+            Value = title;
         }
 
         protected override IEnumerable<object> GetAtomicValues()
         {
-            return new List<object>() { this.Value };
+            return [Value];
         }
     }
 }

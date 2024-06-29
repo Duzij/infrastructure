@@ -1,13 +1,11 @@
 ﻿using Infrastructure.Core;
+using Library.ApplicationLayer.DTO;
 using Library.ApplicationLayer.Mappers;
 using Library.ApplicationLayer.Query;
 using Library.Domain;
+using Library.Domain.DomainAggregates;
+using Library.Domain.Id;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Library.ApplicationLayer
 {
@@ -17,7 +15,7 @@ namespace Library.ApplicationLayer
         private readonly AuthorByBookTitleQuery query;
         private readonly AllAuthorsQuery allAuthorsQuery;
 
-        public AuthorFacade(IRepository<Author,string> repository, AuthorByBookTitleQuery query, AllAuthorsQuery allAuthorsQuery)
+        public AuthorFacade(IRepository<Author, string> repository, AuthorByBookTitleQuery query, AllAuthorsQuery allAuthorsQuery)
         {
             this.repository = repository;
             this.query = query;
@@ -67,7 +65,8 @@ namespace Library.ApplicationLayer
 
         public async Task Update(AuthorDetailDTO authorDto)
         {
-            await repository.ModifyAsync(author => {
+            await repository.ModifyAsync(author =>
+            {
                 author.UpdateAuthorFullName(new AuthorFullName(authorDto.Name, authorDto.Surname));
             }, new AuthorId(authorDto.Id));
         }

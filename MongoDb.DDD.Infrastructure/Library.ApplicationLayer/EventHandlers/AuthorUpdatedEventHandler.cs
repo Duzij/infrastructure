@@ -1,9 +1,7 @@
 ﻿using Infrastructure.Core;
-using Library.Domain;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+using Library.Domain.DomainAggregates;
+using Library.Domain.Events;
+using Library.Domain.Id;
 
 namespace Library.ApplicationLayer.EventHandlers
 {
@@ -23,7 +21,7 @@ namespace Library.ApplicationLayer.EventHandlers
 
             foreach (var id in bookIds)
             {
-               await repository.ModifyAsync(b => b.ChangeAuthor(@event.newName, @event.AuthorId), id);
+                await repository.ModifyAsync(b => b.ChangeAuthor(@event.newName, @event.AuthorId), id);
             }
         }
     }

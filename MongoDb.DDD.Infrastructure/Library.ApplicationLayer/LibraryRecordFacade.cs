@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Infrastructure.Core;
+﻿using Infrastructure.Core;
 using Library.ApplicationLayer.DTO;
 using Library.ApplicationLayer.Mappers;
 using Library.ApplicationLayer.Query;
 using Library.Domain;
+using Library.Domain.DomainAggregates;
+using Library.Domain.Id;
 
 namespace Library.ApplicationLayer
 {
@@ -23,7 +20,7 @@ namespace Library.ApplicationLayer
         {
             this.libraryRecordRepository = libraryRecordRepository;
             this.allLibraryRecordsQuery = allLibraryRecordsQuery;
-            this.validLibraryRecordDetailsQuery = validRecordDetailsQuery;
+            validLibraryRecordDetailsQuery = validRecordDetailsQuery;
             this.userRepository = userRepository;
             this.bookRepository = bookRepository;
         }
@@ -42,7 +39,7 @@ namespace Library.ApplicationLayer
         {
             var user = await userRepository.GetByIdAsync(new UserId(libraryRecordDto.userId));
 
-            List<BookRecord> books = new List<BookRecord>();
+            List<BookRecord> books = [];
             foreach (var book in libraryRecordDto.books)
             {
                 var amount = Convert.ToInt32(book.amount);
@@ -51,7 +48,7 @@ namespace Library.ApplicationLayer
                 await CheckBookAvailibility(bookId, book.title,
                     amount);
 
-                books.Add(new BookRecord(bookId , new BookAmount(amount), new BookTitle(book.title)));
+                books.Add(new BookRecord(bookId, new BookAmount(amount), new BookTitle(book.title)));
             }
 
             var libraryRecord = LibraryRecord.Create(UserMapper.MapTo(user), books);

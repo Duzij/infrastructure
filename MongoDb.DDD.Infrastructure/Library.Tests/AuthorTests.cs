@@ -1,16 +1,12 @@
 ﻿using Infrastructure.Core;
 using Infrastructure.MongoDB;
 using Library.Domain;
+using Library.Domain.DomainAggregates;
+using Library.Domain.Id;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using NUnit.Framework;
 using Polly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Library.Tests
 {
@@ -34,7 +30,7 @@ namespace Library.Tests
                 .AddMongoDbInfrastructure(settings)
                 .BuildServiceProvider();
             authorRepo = serviceProvider.GetService<IRepository<Author, string>>();
-            
+
             authorName = new AuthorFullName("Test", "Author");
             authorRepo.InsertNewAsync(Author.Create(authorName)).GetAwaiter().GetResult();
 
@@ -54,7 +50,7 @@ namespace Library.Tests
                 .Execute(() =>
                 {
                     insertedAuthor = context.GetCollection<Author>().AsQueryable().ToList().Find(a => a.authorFullName == authorName);
-                    if(!insertedAuthor.Books.Any(a => a.Title == new BookTitle("Test Book")))
+                    if (!insertedAuthor.Books.Any(a => a.Title == new BookTitle("Test Book")))
                     {
                         throw new TestException();
                     }
@@ -65,10 +61,10 @@ namespace Library.Tests
                 (author => author.UpdateAuthorFullName(updatedName), insertedAuthor.Id);
 
             insertedAuthor = context.GetCollection<Author>().AsQueryable().ToList().Find(a => a.authorFullName == updatedName);
-            Assert.IsTrue(insertedAuthor.Books.Any(a => a.Title == new BookTitle("Test Book")));
+            Assert.That(insertedAuthor.Books.Any(a => a.Title == new BookTitle("Test Book")));
 
             var foundBook = context.GetCollection<Book>().AsQueryable().ToList().Find(a => a.Title == new BookTitle("Test Book"));
-            Assert.AreEqual(foundBook.AuthorName, updatedName);
+            Assert.Equals(foundBook.AuthorName, updatedName);
         }
     }
 

@@ -1,34 +1,35 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
+﻿# From .NET Core 3.0 you can use the command: `dotnet new gitignore` to generate a customizable .gitignore file
 
-/MongoDb.DDD.Infrastructure/Client.Console/obj
-/MongoDb.DDD.Infrastructure/Client.Console/bin/Debug/netcoreapp3.0
-/MongoDb.DDD.Infrastructure/Infrastructure.Core/obj
-/MongoDb.DDD.Infrastructure/Infrastructure.Core/bin/Debug/netcoreapp3.0
-/MongoDb.DDD.Infrastructure/Test.DAL/obj
-/MongoDb.DDD.Infrastructure/Test.DAL/bin/Debug/netcoreapp3.0
-/MongoDb.DDD.Infrastructure/.vs/MongoDb.DDD.Infrastructure
-/MongoDb.DDD.Infrastructure/Test.Client/obj
-/MongoDb.DDD.Infrastructure/Test.Client/bin/Debug/netcoreapp3.0
-/.vs
-/MongoDb.DDD.Infrastructure/Test.Client/.vs/Test.Client
-/MongoDb.DDD.Infrastructure/Infrastructure.Mongo/obj
-/MongoDb.DDD.Infrastructure/Infrastructure.Mongo/bin/Debug
-/MongoDb.DDD.Infrastructure/Infrastucture.Tests/obj
-/MongoDb.DDD.Infrastructure/Infrastucture.Tests/bin/Debug/netcoreapp3.1
-/MongoDb.DDD.Infrastructure/Library.ApplicationLayer/obj
-/MongoDb.DDD.Infrastructure/Library.ApplicationLayer/bin/Debug
-/MongoDb.DDD.Infrastructure/Library.Client/.vs/Test.Client
-/MongoDb.DDD.Infrastructure/Library.Client/bin/Debug/netcoreapp3.0
-/MongoDb.DDD.Infrastructure/Library.Client/obj
-/MongoDb.DDD.Infrastructure/Library.Domain/.vs/Library.Domain
-/MongoDb.DDD.Infrastructure/Library.Domain/bin/Debug/netcoreapp3.0
-/MongoDb.DDD.Infrastructure/Library.Domain/obj
-/MongoDb.DDD.Infrastructure/Library.Tests/bin/Debug/netcoreapp3.1
-/MongoDb.DDD.Infrastructure/Library.Tests/obj
-/MongoDb.DDD.Infrastructure/Library.Client/bin/Debug/netcoreapp3.1
-/MongoDb.DDD.Infrastructure/Library.Client/wwwroot/lib
-/MongoDb.DDD.Infrastructure/Library.Tests/bin/Debug/netcoreapp3.0
-/MongoDb.DDD.Infrastructure/Infrastructure.MongoDB/bin/Debug/netcoreapp3.0
-/MongoDb.DDD.Infrastructure/Infrastructure.MongoDB/obj
+*.swp
+*.*~
+project.lock.json
+.DS_Store
+*.pyc
+
+# Visual Studio Code
+.vscode
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+msbuild.log
+msbuild.err
+msbuild.wrn
+
+# Visual Studio 2015
+.vs/
+/MongoDb.DDD.Infrastructure/Library.Client/Library.Client.csproj.user

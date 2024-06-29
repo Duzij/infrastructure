@@ -1,7 +1,4 @@
 ﻿using Infrastructure.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Library.Domain
 {
@@ -24,7 +21,7 @@ namespace Library.Domain
 
         protected override IEnumerable<object> GetAtomicValues()
         {
-            return new List<object>() { this.IsBanned, this.Name, this.Surname, this.Email };
+            return [IsBanned, Name, Surname, Email];
         }
     }
 }

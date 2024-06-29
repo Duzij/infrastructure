@@ -1,13 +1,10 @@
 ﻿using Infrastructure.Core;
 using Infrastructure.MongoDB;
+using Library.ApplicationLayer.DTO;
 using Library.ApplicationLayer.Mappers;
-using Library.Domain;
+using Library.Domain.DomainAggregates;
+using Library.Domain.Id;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Library.ApplicationLayer.Query
 {
@@ -15,7 +12,7 @@ namespace Library.ApplicationLayer.Query
     {
         private readonly IRepository<Book, string> bookRepository;
 
-        public AuthorByBookTitleQuery(IMongoDbContext dbContext, IRepository<Book, string> bookRepository) :  base(dbContext)
+        public AuthorByBookTitleQuery(IMongoDbContext dbContext, IRepository<Book, string> bookRepository) : base(dbContext)
         {
             this.bookRepository = bookRepository;
         }

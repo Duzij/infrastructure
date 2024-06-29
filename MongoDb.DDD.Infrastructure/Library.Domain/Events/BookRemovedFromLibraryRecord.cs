@@ -1,4 +1,6 @@
-﻿namespace Library.Domain
+﻿using Library.Domain.Id;
+
+namespace Library.Domain.Events
 {
     public class BookRemovedFromLibraryRecord
     {
@@ -9,8 +11,8 @@
 
         public BookRemovedFromLibraryRecord(BookId bookId, int bookStock, LibraryRecordId libraryRecordId)
         {
-            this.LibraryRecordId = libraryRecordId;
-            this.BookId = bookId;
+            LibraryRecordId = libraryRecordId;
+            BookId = bookId;
             BookStock = bookStock;
         }
     }

@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Infrastructure.MongoDB {
-    using System;
-    
-    
+using System;
+
+namespace Infrastructure.MongoDB
+{
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -22,121 +22,147 @@ namespace Infrastructure.MongoDB {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Messages {
-        
+    internal class Messages
+    {
+
         private static global::System.Resources.ResourceManager resourceMan;
-        
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Messages() {
+        internal Messages()
+        {
         }
-        
+
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
-            get {
-                if (object.ReferenceEquals(resourceMan, null)) {
+        internal static global::System.Resources.ResourceManager ResourceManager
+        {
+            get
+            {
+                if (object.ReferenceEquals(resourceMan, null))
+                {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Infrastructure.MongoDb.Messages", typeof(Messages).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
-            get {
+        internal static global::System.Globalization.CultureInfo Culture
+        {
+            get
+            {
                 return resourceCulture;
             }
-            set {
+            set
+            {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Error during commit:.
         /// </summary>
-        internal static string CommitError {
-            get {
+        internal static string CommitError
+        {
+            get
+            {
                 return ResourceManager.GetString("CommitError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Caught exception during transaction, aborting:.
         /// </summary>
-        internal static string DuringTransactionError {
-            get {
+        internal static string DuringTransactionError
+        {
+            get
+            {
                 return ResourceManager.GetString("DuringTransactionError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Entity was not found..
         /// </summary>
-        internal static string EntityWasNotFoundMessage {
-            get {
+        internal static string EntityWasNotFoundMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("EntityWasNotFoundMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} was not found with id {1}..
         /// </summary>
-        internal static string EntityWithTypeAndIdNotFound {
-            get {
+        internal static string EntityWithTypeAndIdNotFound
+        {
+            get
+            {
                 return ResourceManager.GetString("EntityWithTypeAndIdNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Entity of type {0} was not found..
         /// </summary>
-        internal static string EntityWithTypeNotFound {
-            get {
+        internal static string EntityWithTypeNotFound
+        {
+            get
+            {
                 return ResourceManager.GetString("EntityWithTypeNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Non transient exception caught during transaction:.
         /// </summary>
-        internal static string NonTransientExceptionCaught {
-            get {
+        internal static string NonTransientExceptionCaught
+        {
+            get
+            {
                 return ResourceManager.GetString("NonTransientExceptionCaught", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Transaction committed..
         /// </summary>
-        internal static string TransactionCommitted {
-            get {
+        internal static string TransactionCommitted
+        {
+            get
+            {
                 return ResourceManager.GetString("TransactionCommitted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to TransientTransactionError, retrying transaction..
         /// </summary>
-        internal static string TransientTransactionError {
-            get {
+        internal static string TransientTransactionError
+        {
+            get
+            {
                 return ResourceManager.GetString("TransientTransactionError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to UnknownTransactionCommitResult, retrying commit operation..
         /// </summary>
-        internal static string UnknownTransactionCommitResult {
-            get {
+        internal static string UnknownTransactionCommitResult
+        {
+            get
+            {
                 return ResourceManager.GetString("UnknownTransactionCommitResult", resourceCulture);
             }
         }

@@ -1,11 +1,9 @@
-﻿using Library.Domain;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Library.ApplicationLayer.DTO;
+using Library.Domain.DomainAggregates;
 
 namespace Library.ApplicationLayer.Mappers
 {
-    public static class AuthorMapper 
+    public static class AuthorMapper
     {
         public static AuthorDetailDTO MapTo(Author author)
         {

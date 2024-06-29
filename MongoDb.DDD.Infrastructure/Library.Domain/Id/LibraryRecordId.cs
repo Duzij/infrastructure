@@ -1,6 +1,7 @@
 ﻿using Infrastructure.Core;
+using Library.Domain.DomainAggregates;
 
-namespace Library.Domain
+namespace Library.Domain.Id
 {
     public class LibraryRecordId : EntityId<LibraryRecord>
     {

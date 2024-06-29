@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Library.ApplicationLayer.DTO;
+﻿using Library.ApplicationLayer.DTO;
 using Library.Domain;
+using Library.Domain.Id;
 
 namespace Library.ApplicationLayer
 {

@@ -1,6 +1,5 @@
 ﻿using Infrastructure.Core;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 namespace Library.Tests
 {

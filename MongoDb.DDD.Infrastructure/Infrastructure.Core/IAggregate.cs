@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Infrastructure.Core
+﻿namespace Infrastructure.Core
 {
     public interface IAggregate<TKey> : IEntity<TKey>
     {

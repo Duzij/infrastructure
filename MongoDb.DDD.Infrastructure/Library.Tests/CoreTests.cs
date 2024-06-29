@@ -1,12 +1,8 @@
 ﻿using Library.Domain;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Library.Tests
 {
-
     public class CoreTests
     {
         private CounterId Id;
@@ -23,14 +19,14 @@ namespace Library.Tests
         [Test]
         public void CompareIds()
         {
-            Assert.IsTrue(Id == Id2);
-            Assert.IsFalse(Id != Id2);
+            Assert.That(Id == Id2);
+            Assert.That(Id != Id2);
 
-            Assert.IsFalse(Id == null);
-            Assert.IsTrue(Id != null);
+            Assert.That(Id == null);
+            Assert.That(Id != null);
 
             Id = null;
-            Assert.IsTrue(Id == null);
+            Assert.That(Id == null);
         }
 
         [Test]
@@ -38,7 +34,7 @@ namespace Library.Tests
         {
             var bookAmount = new BookAmount(1);
             var bookAmount2 = new BookAmount(1);
-            Assert.IsTrue(bookAmount == bookAmount2);
+            Assert.That(bookAmount == bookAmount2);
         }
     }
 }

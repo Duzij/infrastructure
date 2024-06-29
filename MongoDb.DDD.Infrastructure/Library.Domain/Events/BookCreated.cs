@@ -1,4 +1,6 @@
-﻿namespace Library.Domain
+﻿using Library.Domain.Id;
+
+namespace Library.Domain.Events
 {
     public class BookCreated
     {

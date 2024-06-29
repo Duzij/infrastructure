@@ -1,6 +1,4 @@
 ﻿using Infrastructure.Core;
-using System;
-using System.Collections.Generic;
 
 namespace Library.Domain
 {
@@ -18,14 +16,29 @@ namespace Library.Domain
             Amount = amount;
         }
 
-        public static bool operator > (BookAmount left, BookAmount right) => left.Amount > right.Amount;
-        public static bool operator < (BookAmount left, BookAmount right) => left.Amount < right.Amount;
-        public static BookAmount operator - (BookAmount left, BookAmount right) => new BookAmount(left.Amount - right.Amount);
-        public static BookAmount operator + (BookAmount left, BookAmount right) => new BookAmount(left.Amount + right.Amount);
+        public static bool operator >(BookAmount left, BookAmount right)
+        {
+            return left.Amount > right.Amount;
+        }
+
+        public static bool operator <(BookAmount left, BookAmount right)
+        {
+            return left.Amount < right.Amount;
+        }
+
+        public static BookAmount operator -(BookAmount left, BookAmount right)
+        {
+            return new BookAmount(left.Amount - right.Amount);
+        }
+
+        public static BookAmount operator +(BookAmount left, BookAmount right)
+        {
+            return new BookAmount(left.Amount + right.Amount);
+        }
 
         protected override IEnumerable<object> GetAtomicValues()
         {
-            return new List<object>() { Amount };
+            return [Amount];
         }
     }
 }

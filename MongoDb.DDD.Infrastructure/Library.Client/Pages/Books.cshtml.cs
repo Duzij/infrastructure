@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Library.ApplicationLayer;
-using Microsoft.AspNetCore.Mvc;
+﻿using Library.ApplicationLayer;
+using Library.ApplicationLayer.DTO;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
 
 namespace Library.Client.Pages
 {
@@ -13,7 +8,7 @@ namespace Library.Client.Pages
     {
         private readonly ILogger<BooksModel> _logger;
         private readonly IBookFacade bookFacade;
-        public List<BookDetailDTO> Books { get; set; } = new List<BookDetailDTO>();
+        public List<BookDetailDTO> Books { get; set; } = [];
 
         public BooksModel(ILogger<BooksModel> logger, IBookFacade bookFacade)
         {

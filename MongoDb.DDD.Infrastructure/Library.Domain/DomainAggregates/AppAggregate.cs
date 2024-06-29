@@ -1,9 +1,6 @@
 ﻿using Infrastructure.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Library.Domain
+namespace Library.Domain.DomainAggregates
 {
     public abstract class AppAggregate : Aggregate<string>
     {

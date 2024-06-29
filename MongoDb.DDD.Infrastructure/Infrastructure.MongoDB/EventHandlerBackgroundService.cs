@@ -2,14 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using MongoDB.Bson;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Infrastructure.MongoDB
 {
@@ -30,34 +23,30 @@ namespace Infrastructure.MongoDB
             var collection = dbContext.Database.GetCollection<EventWrapper>(MongoDefaultSettings.EventsDocumentName);
             var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<EventWrapper>>()
            .Match(x => x.OperationType == ChangeStreamOperationType.Insert);
-            using (var cursor = await collection.WatchAsync(pipeline))
+            using var cursor = await collection.WatchAsync(pipeline);
+            await cursor.ForEachAsync(change =>
             {
-                await cursor.ForEachAsync(change =>
+                logger.LogInformation($"{change.CollectionNamespace.FullName} changed. Processing change.");
+                try
                 {
-                    logger.LogInformation($"{change.CollectionNamespace.FullName} changed. Processing change.");
-                    try
-                    {
-                        ProcessEvent(change);
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.LogError(ex.Message, ex);
-                    }
-                });
-            }
+                    ProcessEvent(change);
+                }
+                catch (System.Exception ex)
+                {
+                    logger.LogError(ex.Message, ex);
+                }
+            });
         }
 
         private void ProcessEvent(ChangeStreamDocument<EventWrapper> change)
         {
             var @event = change.FullDocument;
 
-            using (var factory = serviceScopeFactory.CreateScope())
-            {
-                Type handlerGenericType = typeof(IEventHandler<>).MakeGenericType(Type.GetType(@event.EventType));
-                var service = factory.ServiceProvider.GetRequiredService(handlerGenericType);
-                HandleEvent(service, @event);
-            }
-           
+            using var factory = serviceScopeFactory.CreateScope();
+            Type handlerGenericType = typeof(IEventHandler<>).MakeGenericType(Type.GetType(@event.EventType));
+            var service = factory.ServiceProvider.GetRequiredService(handlerGenericType);
+            HandleEvent(service, @event);
+
         }
 
         private void HandleEvent(object service, EventWrapper @event)

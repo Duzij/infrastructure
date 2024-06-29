@@ -3,7 +3,7 @@ namespace Infrastructure.MongoDB
 {
     public class MongoDbSettings : IMongoDbSettings
     {
- 
+
 
         public MongoDbSettings(string connectionString, string databaseName)
         {

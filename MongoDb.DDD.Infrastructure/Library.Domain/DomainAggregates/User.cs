@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Library.Domain.Events;
+using Library.Domain.Id;
 
-namespace Library.Domain
+namespace Library.Domain.DomainAggregates
 {
     public class User : AppAggregate
     {
@@ -27,16 +26,16 @@ namespace Library.Domain
 
         public void SetAsBanned()
         {
-            this.IsBanned = true;
+            IsBanned = true;
         }
 
         public void UpdateUser(string name, string surname, string email)
         {
-            var oldUser = new UserRecord(this.IsBanned, this.Name, this.Surname, this.Email);
-            this.Name = name;
-            this.Surname = surname;
-            this.Email = email;
-            var updatedUser = new UserRecord(this.IsBanned, name, surname, email);
+            var oldUser = new UserRecord(IsBanned, Name, Surname, Email);
+            Name = name;
+            Surname = surname;
+            Email = email;
+            var updatedUser = new UserRecord(IsBanned, name, surname, email);
             AddEvent(new UserUpdated(oldUser, updatedUser));
         }
 
@@ -52,7 +51,7 @@ namespace Library.Domain
 
         public void Unban()
         {
-            this.IsBanned = false;
+            IsBanned = false;
         }
     }
 }

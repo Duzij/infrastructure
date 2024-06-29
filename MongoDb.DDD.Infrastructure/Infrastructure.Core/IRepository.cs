@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace Infrastructure.Core
+﻿namespace Infrastructure.Core
 {
     public interface IRepository<T, TKey> where T : IAggregate<TKey>
     {

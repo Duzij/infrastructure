@@ -1,12 +1,8 @@
 ﻿using Infrastructure.Core;
-using Library.Domain;
+using Library.Domain.Events;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Library.ApplicationLayer
+namespace Library.ApplicationLayer.EventHandlers
 {
     /// <summary>
     /// In case book title changed all related authors should be notified and updated
@@ -30,10 +26,7 @@ namespace Library.ApplicationLayer
 
             var newAuthor = await authorFacade.GetById(@event.NewAuthorId);
 
-            if (newAuthor.BookTitles == null)
-            {
-                newAuthor.BookTitles = new List<string>();
-            }
+            newAuthor.BookTitles ??= [];
 
             newAuthor.BookTitles.Add(@event.BookTitle);
             await authorFacade.Update(newAuthor);

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Library.ApplicationLayer
+﻿namespace Library.ApplicationLayer.DTO
 {
     public class BookDetailDTO
     {
@@ -21,11 +17,11 @@ namespace Library.ApplicationLayer
 
         }
 
-        public string Id { get;  set; }
-        public string Title { get;  set; }
-        public string Description { get;  set; }
-        public string AuthorName { get;  set; }
-        public int Amount { get;  set; }
+        public string Id { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string AuthorName { get; set; }
+        public int Amount { get; set; }
         public string AuthorId { get; set; }
     }
 }

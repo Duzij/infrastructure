@@ -1,11 +1,8 @@
 ﻿using Infrastructure.Core;
-using Library.Domain;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+using Library.ApplicationLayer.DTO;
+using Library.Domain.Events;
 
-namespace Library.ApplicationLayer
+namespace Library.ApplicationLayer.EventHandlers
 {
     public class BookTitleChangedEventHandler : IEventHandler<BookTitleChanged>
     {

@@ -1,9 +1,7 @@
 ﻿using Infrastructure.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Library.Domain.DomainAggregates;
 
-namespace Library.Domain
+namespace Library.Domain.Id
 {
     public class BookId : EntityId<Book>
     {

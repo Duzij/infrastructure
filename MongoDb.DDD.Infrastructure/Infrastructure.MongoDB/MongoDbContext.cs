@@ -1,7 +1,4 @@
 ﻿using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Infrastructure.MongoDB
 {
@@ -16,7 +13,9 @@ namespace Infrastructure.MongoDB
 
         public IMongoDatabase Database { get; }
 
-        public IMongoCollection<T> GetCollection<T>() => Database.GetCollection<T>(MongoUtils.GetCollectionName<T>());
-
+        public IMongoCollection<T> GetCollection<T>()
+        {
+            return Database.GetCollection<T>(MongoUtils.GetCollectionName<T>());
+        }
     }
 }

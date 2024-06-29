@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Infrastructure.MongoDB
+﻿namespace Infrastructure.MongoDB.Exception
 {
-    public class EtagNotEqualException : Exception
+    public class EtagNotEqualException : System.Exception
     {
         public override string Message { get; }
 
