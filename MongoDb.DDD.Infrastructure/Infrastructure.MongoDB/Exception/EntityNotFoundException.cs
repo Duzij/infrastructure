@@ -1,11 +1,6 @@
-﻿using Infrastructure.MongoDB;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Infrastructure.MongoDB
+﻿namespace Infrastructure.MongoDB.Exception
 {
-    public class EntityNotFoundException : Exception
+    public class EntityNotFoundException : System.Exception
     {
 
         public override string Message { get; }

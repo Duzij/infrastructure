@@ -1,17 +1,9 @@
-﻿using Infrastructure.Core;
-using Infrastructure.MongoDB;
-using Library.ApplicationLayer;
-using Library.ApplicationLayer.Query;
-using Library.Domain;
+﻿using Infrastructure.MongoDB;
+using Library.Domain.Id;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Reflection;
-using System.Text;
 
-namespace Infrastructure.ApplicationLayer
+namespace Library.ApplicationLayer
 {
     public static class ApplicationServicesCollectionExtensions
     {

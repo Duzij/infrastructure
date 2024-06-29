@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Infrastructure.MongoDB
+﻿namespace Infrastructure.MongoDB
 {
     public static class MongoUtils
     {
-        public static string GetCollectionName<T>() => typeof(T).FullName;
-
+        public static string GetCollectionName<T>()
+        {
+            return typeof(T).FullName;
+        }
     }
 }

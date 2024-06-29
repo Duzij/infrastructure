@@ -1,11 +1,7 @@
 ﻿using Infrastructure.MongoDB;
-using Library.Domain;
+using Library.ApplicationLayer.DTO;
+using Library.Domain.DomainAggregates;
 using MongoDB.Driver;
-using MongoDB.Driver.Linq;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Library.ApplicationLayer.Query
 {

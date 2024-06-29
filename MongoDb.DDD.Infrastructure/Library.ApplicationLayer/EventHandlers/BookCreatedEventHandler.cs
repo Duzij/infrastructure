@@ -1,13 +1,10 @@
 ﻿using Infrastructure.Core;
-using Infrastructure.MongoDB;
 using Library.Domain;
+using Library.Domain.DomainAggregates;
+using Library.Domain.Events;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Library.ApplicationLayer
+namespace Library.ApplicationLayer.EventHandlers
 {
     public class BookCreatedEventHandler : IEventHandler<BookCreated>
     {

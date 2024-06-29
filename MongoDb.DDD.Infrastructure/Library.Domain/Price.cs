@@ -1,7 +1,4 @@
 ﻿using Infrastructure.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Library.Domain
 {
@@ -15,12 +12,12 @@ namespace Library.Domain
             {
                 throw new ArgumentOutOfRangeException(nameof(ReturnFine) + "cannot be less than 0");
             }
-            this.Value = value;
+            Value = value;
         }
 
         protected override IEnumerable<object> GetAtomicValues()
         {
-            return new List<object>() { Value };
+            return [Value];
         }
     }
 }

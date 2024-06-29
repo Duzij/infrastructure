@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Reflection;
-
-namespace Infrastructure.Core
+﻿namespace Infrastructure.Core
 {
     /// <summary>
     /// Referenced from https://github.com/dotnet-architecture/eShopOnContainers/blob/dev/src/Services/Ordering/Ordering.Domain/SeedWork/ValueObject.cs
@@ -14,11 +7,11 @@ namespace Infrastructure.Core
     {
         public static bool operator ==(ValueObject left, ValueObject right)
         {
-            if (ReferenceEquals(left, null) ^ ReferenceEquals(right, null))
+            if (left is null ^ right is null)
             {
                 return false;
             }
-            return ReferenceEquals(left, null) || left.Equals(right);
+            return left is null || left.Equals(right);
         }
 
         public static bool operator !=(ValueObject left, ValueObject right)
@@ -40,8 +33,8 @@ namespace Infrastructure.Core
             IEnumerator<object> otherValues = other.GetAtomicValues().GetEnumerator();
             while (thisValues.MoveNext() && otherValues.MoveNext())
             {
-                if (ReferenceEquals(thisValues.Current, null) ^
-                    ReferenceEquals(otherValues.Current, null))
+                if (thisValues.Current is null ^
+                    otherValues.Current is null)
                 {
                     return false;
                 }

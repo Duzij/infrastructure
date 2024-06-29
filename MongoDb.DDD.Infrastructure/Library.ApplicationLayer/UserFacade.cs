@@ -1,12 +1,9 @@
 ﻿using Infrastructure.Core;
+using Library.ApplicationLayer.DTO;
 using Library.ApplicationLayer.Mappers;
 using Library.ApplicationLayer.Query;
-using Library.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Library.Domain.DomainAggregates;
+using Library.Domain.Id;
 
 namespace Library.ApplicationLayer
 {

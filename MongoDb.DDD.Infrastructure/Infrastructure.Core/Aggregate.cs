@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Infrastructure.Core
+﻿namespace Infrastructure.Core
 {
     public abstract class Aggregate<TKey> : Entity<TKey>, IAggregate<TKey>
     {
         public Aggregate()
         {
-            Events = new List<object>();
+            Events = [];
         }
 
         public string Etag { get; protected set; }
@@ -24,8 +20,16 @@ namespace Infrastructure.Core
 
         public override bool Equals(object other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (other is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
             return this == other;
         }
 
@@ -36,10 +40,7 @@ namespace Infrastructure.Core
 
         protected void AddEvent(object @event)
         {
-            if (Events == null)
-            {
-                Events = new List<object>();
-            }
+            Events ??= [];
             Events.Add(@event);
         }
 
@@ -47,7 +48,7 @@ namespace Infrastructure.Core
         {
             if (Events == null)
             {
-                return new List<object>();
+                return [];
             }
             return Events;
         }

@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Library.ApplicationLayer
+﻿namespace Library.ApplicationLayer.DTO
 {
     public class CreateAuthorDTO
     {
         public Guid Id;
 
-        public List<string> BookTitles { get; set; } = new List<string>();
+        public List<string> BookTitles { get; set; } = [];
         public CreateAuthorDTO(Guid id)
         {
-            this.Id = id;
+            Id = id;
         }
 
         public CreateAuthorDTO(Guid id, List<string> bookTitles)
         {
-            this.Id = id;
+            Id = id;
             BookTitles = bookTitles;
         }
 

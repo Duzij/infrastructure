@@ -3,11 +3,8 @@ using Library.ApplicationLayer.DTO;
 using Library.ApplicationLayer.Mappers;
 using Library.ApplicationLayer.Query;
 using Library.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Library.Domain.DomainAggregates;
+using Library.Domain.Id;
 
 namespace Library.ApplicationLayer
 {
@@ -23,7 +20,7 @@ namespace Library.ApplicationLayer
         {
             this.libraryRecordRepository = libraryRecordRepository;
             this.allLibraryRecordsQuery = allLibraryRecordsQuery;
-            this.validLibraryRecordDetailsQuery = validRecordDetailsQuery;
+            validLibraryRecordDetailsQuery = validRecordDetailsQuery;
             this.userRepository = userRepository;
             this.bookRepository = bookRepository;
         }
@@ -42,7 +39,7 @@ namespace Library.ApplicationLayer
         {
             var user = await userRepository.GetByIdAsync(new UserId(libraryRecordDto.userId));
 
-            List<BookRecord> books = new List<BookRecord>();
+            List<BookRecord> books = [];
             foreach (var book in libraryRecordDto.books)
             {
                 var amount = Convert.ToInt32(book.amount);

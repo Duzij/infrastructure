@@ -1,8 +1,4 @@
-﻿using Infrastructure.Core;
-using System;
-using System.Runtime.Serialization;
-
-namespace Infrastructure.Core
+﻿namespace Infrastructure.Core
 {
     public class EventWrapper
     {

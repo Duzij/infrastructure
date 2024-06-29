@@ -1,4 +1,6 @@
-﻿namespace Library.Domain
+﻿using Library.Domain.Id;
+
+namespace Library.Domain.Events
 {
     public class BookAddedToLibraryRecord
     {
@@ -8,9 +10,9 @@
 
         public BookAddedToLibraryRecord(BookId bookId, LibraryRecordId libraryRecordId, int bookStock)
         {
-            this.LibraryRecordId = libraryRecordId;
+            LibraryRecordId = libraryRecordId;
             BookStock = bookStock;
-            this.BookId = bookId;
+            BookId = bookId;
         }
     }
 }

@@ -1,12 +1,8 @@
 ﻿using Library.ApplicationLayer;
+using Library.ApplicationLayer.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Library.Client.Pages.Books
 {
@@ -17,7 +13,7 @@ namespace Library.Client.Pages.Books
 
         public BookCreateDTO BookDto { get; set; }
 
-        public List<SelectListItem> Authors { get; set; } = new List<SelectListItem>();
+        public List<SelectListItem> Authors { get; set; } = [];
 
         public CreateBook(ILogger<CreateBook> logger, IBookFacade bookFacade, IAuthorFacade authorFacade)
         {

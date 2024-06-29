@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Library.Domain.Events;
+using Library.Domain.Id;
 
-namespace Library.Domain
+namespace Library.Domain.DomainAggregates
 {
     public class LibraryRecord : AppAggregate
     {
@@ -33,8 +31,8 @@ namespace Library.Domain
             {
                 throw new InvalidEntityStateException();
             }
-            this.CreatedDate = DateTime.UtcNow;
-            this.ReturnFine = new ReturnFine(0);
+            CreatedDate = DateTime.UtcNow;
+            ReturnFine = new ReturnFine(0);
             Books = books;
             foreach (var book in books)
             {
@@ -46,7 +44,7 @@ namespace Library.Domain
         {
             if (userRecord.IsNotBanned)
             {
-                this.User = userRecord;
+                User = userRecord;
             }
         }
 
@@ -72,7 +70,7 @@ namespace Library.Domain
             if (ReturnDate < DateTime.UtcNow)
             {
                 var oldFineValue = ReturnFine.Value;
-                var daysBetweenTodayAndReturnDate = ((DateTime.UtcNow - ReturnDate)).Days;
+                var daysBetweenTodayAndReturnDate = (DateTime.UtcNow - ReturnDate).Days;
                 var newFineValue = daysBetweenTodayAndReturnDate * 10;
                 ReturnFine = new ReturnFine(oldFineValue + newFineValue);
             }
@@ -87,7 +85,7 @@ namespace Library.Domain
         {
             if (Books.Count == 0)
             {
-                this.IsClosed = true;
+                IsClosed = true;
             }
         }
 

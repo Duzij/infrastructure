@@ -1,12 +1,6 @@
 ﻿using Infrastructure.Core;
 using Microsoft.Extensions.DependencyInjection;
-using MongoDB.Bson.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Infrastructure.MongoDB
 {

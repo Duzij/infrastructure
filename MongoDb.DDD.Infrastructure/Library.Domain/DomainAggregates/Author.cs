@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Library.Domain.Events;
+using Library.Domain.Id;
 
-namespace Library.Domain
+namespace Library.Domain.DomainAggregates
 {
     public class Author : AppAggregate
     {
@@ -19,7 +18,7 @@ namespace Library.Domain
         private Author(AuthorId id, AuthorFullName authorFullName)
         {
             Id = id;
-            this.Books = new List<AuthorBookRecord>();
+            Books = [];
             this.authorFullName = authorFullName;
         }
 
@@ -34,7 +33,7 @@ namespace Library.Domain
 
         public void UpdateBooks(IList<AuthorBookRecord> books)
         {
-            this.Books = books;
+            Books = books;
             CheckState();
         }
 

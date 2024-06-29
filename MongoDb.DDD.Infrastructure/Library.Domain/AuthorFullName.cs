@@ -1,5 +1,4 @@
 ﻿using Infrastructure.Core;
-using System.Collections.Generic;
 
 namespace Library.Domain
 {
@@ -45,7 +44,7 @@ namespace Library.Domain
 
         protected override IEnumerable<object> GetAtomicValues()
         {
-            return new List<object>() { Name, Surname };
+            return [Name, Surname];
         }
     }
 }

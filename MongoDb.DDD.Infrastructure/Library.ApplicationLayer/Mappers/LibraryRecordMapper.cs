@@ -1,10 +1,7 @@
 ﻿using Library.ApplicationLayer.DTO;
-using Library.Domain;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Library.Domain.DomainAggregates;
 
-namespace Library.ApplicationLayer
+namespace Library.ApplicationLayer.Mappers
 {
     public static class LibraryRecordMapper
     {

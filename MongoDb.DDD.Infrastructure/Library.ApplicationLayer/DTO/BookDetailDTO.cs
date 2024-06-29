@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Library.ApplicationLayer
+﻿namespace Library.ApplicationLayer.DTO
 {
     public class BookDetailDTO
     {

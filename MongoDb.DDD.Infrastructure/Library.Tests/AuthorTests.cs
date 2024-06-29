@@ -1,6 +1,8 @@
 ﻿using Infrastructure.Core;
 using Infrastructure.MongoDB;
 using Library.Domain;
+using Library.Domain.DomainAggregates;
+using Library.Domain.Id;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using NUnit.Framework;

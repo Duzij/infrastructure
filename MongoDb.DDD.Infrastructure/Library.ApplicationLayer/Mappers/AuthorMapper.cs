@@ -1,7 +1,5 @@
-﻿using Library.Domain;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Library.ApplicationLayer.DTO;
+using Library.Domain.DomainAggregates;
 
 namespace Library.ApplicationLayer.Mappers
 {

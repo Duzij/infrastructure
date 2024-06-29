@@ -1,10 +1,6 @@
 ﻿using Infrastructure.Core;
-using Library.ApplicationLayer.Mappers;
-using Library.Domain;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+using Library.Domain.DomainAggregates;
+using Library.Domain.Events;
 
 namespace Library.ApplicationLayer.EventHandlers
 {

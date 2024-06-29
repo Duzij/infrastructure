@@ -1,7 +1,4 @@
-﻿using Library.Domain;
-using System;
-
-namespace Library.ApplicationLayer
+﻿namespace Library.ApplicationLayer.DTO
 {
     public class BookCreateDTO
     {

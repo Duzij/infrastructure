@@ -1,6 +1,6 @@
-﻿using Infrastructure.Core;
+﻿using Library.Domain.Id;
 
-namespace Library.Domain
+namespace Library.Domain.Events
 {
     public class AuthorUpdated
     {
@@ -12,7 +12,7 @@ namespace Library.Domain
         {
             this.oldName = oldName;
             this.newName = newName;
-            this.AuthorId = authorId;
+            AuthorId = authorId;
         }
     }
 }

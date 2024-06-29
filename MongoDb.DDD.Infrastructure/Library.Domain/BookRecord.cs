@@ -1,4 +1,4 @@
-﻿using Infrastructure.Core;
+﻿using Library.Domain.Id;
 
 namespace Library.Domain
 {

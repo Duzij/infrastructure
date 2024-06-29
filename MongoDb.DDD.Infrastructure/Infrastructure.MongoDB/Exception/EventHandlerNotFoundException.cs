@@ -1,10 +1,9 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
-namespace Infrastructure.MongoDB
+namespace Infrastructure.MongoDB.Exception
 {
     [Serializable]
-    internal class EventHandlerNotFoundException : Exception
+    internal class EventHandlerNotFoundException : System.Exception
     {
         private readonly Type eventType;
 
@@ -18,7 +17,7 @@ namespace Infrastructure.MongoDB
         {
         }
 
-        public EventHandlerNotFoundException(string message, Exception innerException) : base(message, innerException)
+        public EventHandlerNotFoundException(string message, System.Exception innerException) : base(message, innerException)
         {
         }
 
