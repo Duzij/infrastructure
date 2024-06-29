@@ -6,8 +6,8 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Library.ApplicationLayer\Library.ApplicationLayer.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Library.ApplicationLayer\Library.ApplicationLayer.csproj" />
+	</ItemGroup>
 
 </Project>
