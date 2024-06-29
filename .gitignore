@@ -32,3 +32,4 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
+/MongoDb.DDD.Infrastructure/Library.Client/Library.Client.csproj.user

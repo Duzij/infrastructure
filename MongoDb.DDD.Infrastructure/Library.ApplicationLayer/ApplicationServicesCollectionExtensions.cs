@@ -2,6 +2,7 @@
 using Library.Domain.Id;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 
 namespace Library.ApplicationLayer
 {
@@ -21,6 +22,9 @@ namespace Library.ApplicationLayer
             BsonClassMap.RegisterClassMap(new BsonClassMap(typeof(BookId)));
             BsonClassMap.RegisterClassMap(new BsonClassMap(typeof(LibraryRecordId)));
             BsonClassMap.RegisterClassMap(new BsonClassMap(typeof(UserId)));
+
+            var objectSerializer = new ObjectSerializer(ObjectSerializer.AllAllowedTypes);
+            BsonSerializer.RegisterSerializer(objectSerializer);
 
             return services;
         }
