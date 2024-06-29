@@ -1,32 +1,33 @@
-# infrastructure
-Simple .net core library which allows to use MongoDB and DDD approach
+# Infrastructure
+Simple .NET library with DDD and event sourcing in mind.
 
+Part of the project is POC library application with RazorPages client. 
+
+### Drivers 
+* [MongoDB](https://github.com/Duzij/infrastructure/tree/master/MongoDb.DDD.Infrastructure/Infrastructure.MongoDB)
 
 ## Prerequisites 
-* MongoDb: 4.2.3 2008R2Plus SSL (with replicaSet)
-
-* .NET Core 3.0
+* MongoDb: 7.0.9 (with replicaSet)
+* .NET Core 8.0
 
 sample mongod.conf
 
 ```
-    # mongod.conf
+# mongod.conf
 
-    storage:
-      dbPath: C:\Program Files\MongoDB\Server\4.2\data
-      journal:
-        enabled: true
+storage:
+  dbPath: C:\Program Files\MongoDB\Server\7.0\data
 
-    systemLog:
-      destination: file
-      logAppend: true
-      path:  C:\Program Files\MongoDB\Server\4.2\log\mongod.log
+systemLog:
+  destination: file
+  logAppend: true
+  path:  C:\Program Files\MongoDB\Server\7.0\log\mongod.log
 
-    net:
-      port: 27017
-      bindIp: 127.0.0.1
+net:
+  port: 27017
+  bindIp: 127.0.0.1
 
-    replication:
-      replSetName: rs0
-      oplogSizeMB: 100
+replication:
+  replSetName: rs0
+
 ```
